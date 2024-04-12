@@ -1,14 +1,25 @@
 const mongoose = require('mongoose');
 
-const usersSchema = new mongoose.Schema({
-  email: {
-    type: String,
-    required: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
+const userSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    phoneNumber: {
+        type: String,
+        required: true,
+        unique: true // Assuming each phone number corresponds to a unique user
+    },
+    previousOrders: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Order' // Assuming you have an Order model/schema
+        }
+    ],
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
 });
 
-module.exports = mongoose.model('All_Users', usersSchema);
+module.exports = mongoose.model('User', userSchema);
