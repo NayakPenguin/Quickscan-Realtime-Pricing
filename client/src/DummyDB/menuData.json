@@ -1,0 +1,380 @@
+[
+  {
+    "index_order": 1,
+    "type": "Non-veg",
+    "name": "Chicken Alfredo Pasta",
+    "allow_visibility": true,
+    "unavailable": false,
+    "price": 12.99,
+    "discount": "",
+    "tag": "Top Seller 🔥",
+    "details": [],
+    "details_options": [],
+    "ordered": false,
+    "category": "Tea, coffee & Snacks"
+  },
+  {
+    "index_order": 2,
+    "type": "Veg",
+    "name": "Margherita Pizza",
+    "allow_visibility": true,
+    "unavailable": false,
+    "price": 10.99,
+    "discount": "10",
+    "tag": "",
+    "category": "Tea, coffee & Snacks",
+    "details_options": [
+      {
+        "options": ["Small", "Medium", "Large"],
+        "extra": [0, 2, 4]
+      },
+      {
+        "options": ["Thin Crust", "Stuffed"],
+        "extra": [0, 1.5]
+      },
+      {
+        "options": ["Low", "Indian", "WB"],
+        "extra": [0, 1.5, 9]
+      }
+    ],
+    "details": ["Size", "Pizza Crust", "Salt"],
+    "ordered": false
+  },
+  {
+    "index_order": 3,
+    "type": "Veg",
+    "name": "Grilled Salmon",
+    "allow_visibility": true,
+    "unavailable": false,
+    "price": 16.99,
+    "discount": "",
+    "tag": "",
+    "details": [],
+    "category": "Tea, coffee & Snacks",
+    "details_options": [],
+    "ordered": false
+  },
+  {
+    "index_order": 4,
+    "type": "Veg",
+    "name": "Vegetarian Sushi",
+    "allow_visibility": true,
+    "unavailable": false,
+    "price": 14.99,
+    "discount": "",
+    "tag": "Top Seller 🔥",
+    "category": "Tea, coffee & Snacks",
+    "details": ["Number of Pieces"],
+    "details_options": [
+      {
+        "options": ["6", "8", "12"],
+        "extra": [0, 2, 4]
+      }
+    ],
+    "ordered": false
+  },
+  {
+    "index_order": 5,
+    "type": "Non-veg",
+    "name": "Beef Tacos",
+    "allow_visibility": true,
+    "unavailable": false,
+    "price": 11.99,
+    "discount": "10",
+    "tag": "Few Left ⏰",
+    "details": ["Spiciness Level"],
+    "category": "Tea, coffee & Snacks",
+    "details_options": [
+      {
+        "options": ["Mild", "Medium", "Hot"],
+        "extra": [0, 1, 2]
+      }
+    ],
+    "ordered": false
+  },
+  {
+    "index_order": 6,
+    "type": "Non-veg",
+    "name": "Shrimp Scampi",
+    "allow_visibility": true,
+    "unavailable": false,
+    "price": 15.99,
+    "discount": "",
+    "tag": "",
+    "category": "Breakfast Delights",
+    "details": ["Garlic Bread"],
+    "details_options": [
+      {
+        "options": ["Yes", "No"],
+        "extra": [0, 1]
+      }
+    ],
+    "ordered": false
+  },
+  {
+    "index_order": 7,
+    "type": "Veg",
+    "name": "Spinach and Feta Salad",
+    "allow_visibility": true,
+    "unavailable": false,
+    "price": 8.99,
+    "discount": "",
+    "tag": "",
+    "details": ["Dressing"],
+    "category": "Breakfast Delights",
+    "details_options": [
+      {
+        "options": ["Balsamic Vinaigrette", "Ranch", "Italian"],
+        "extra": [0, 0, 0]
+      }
+    ],
+    "ordered": false
+  },
+  {
+    "index_order": 8,
+    "type": "Veg",
+    "name": "Eggplant Parmesan",
+    "allow_visibility": true,
+    "unavailable": false,
+    "price": 9.99,
+    "discount": "",
+    "tag": "",
+    "details": ["Cheese Type"],
+    "category": "Breakfast Delights",
+    "details_options": [
+      {
+        "options": ["Mozzarella", "Parmesan", "Cheddar"],
+        "extra": [0, 1, 2]
+      }
+    ],
+    "ordered": false
+  },
+  {
+    "index_order": 9,
+    "type": "Non-veg",
+    "name": "BBQ Pulled Pork Sandwich",
+    "allow_visibility": true,
+    "unavailable": false,
+    "price": 13.99,
+    "discount": "",
+    "tag": "",
+    "details": ["Side Dish"],
+    "category": "Breakfast Delights",
+    "details_options": [
+      {
+        "options": ["Fries", "Coleslaw", "Mixed Vegetables"],
+        "extra": [0, 1, 2]
+      }
+    ],
+    "ordered": false
+  },
+  {
+    "index_order": 10,
+    "type": "Veg",
+    "name": "Caprese Salad",
+    "allow_visibility": true,
+    "unavailable": false,
+    "price": 7.99,
+    "discount": "",
+    "tag": "",
+    "category": "Healthy Salads",
+    "details": ["Tomato Type"],
+    "details_options": [
+      {
+        "options": ["Roma", "Cherry", "Heirloom"],
+        "extra": [0, 1, 2]
+      }
+    ],
+    "ordered": false
+  },
+  {
+    "index_order": 11,
+    "type": "Non-veg",
+    "name": "Steak Fajitas",
+    "allow_visibility": true,
+    "unavailable": false,
+    "price": 17.99,
+    "discount": "",
+    "tag": "",
+    "category": "Healthy Salads",
+    "details": ["Serving Size"],
+    "details_options": [
+      {
+        "options": ["Single", "Double"],
+        "extra": [0, 5]
+      }
+    ],
+    "ordered": false
+  },
+  {
+    "index_order": 12,
+    "type": "Veg",
+    "name": "Mushroom Risotto",
+    "allow_visibility": true,
+    "unavailable": false,
+    "price": 12.99,
+    "discount": "30",
+    "tag": "",
+    "details": ["Mushroom Type"],
+    "category": "Healthy Salads",
+    "details_options": [
+      {
+        "options": ["Button", "Portobello", "Shiitake"],
+        "extra": [0, 2, 4]
+      }
+    ],
+    "ordered": false
+  },
+  {
+    "index_order": 13,
+    "type": "Non-veg",
+    "name": "Lemon Garlic Butter Shrimp",
+    "allow_visibility": true,
+    "unavailable": false,
+    "price": 16.99,
+    "category": "Healthy Salads",
+    "discount": "",
+    "tag": "",
+    "details": ["Spiciness Level"],
+    "details_options": [
+      {
+        "options": ["Mild", "Medium", "Hot"],
+        "extra": [0, 1, 2]
+      }
+    ],
+    "ordered": false
+  },
+  {
+    "index_order": 14,
+    "type": "Veg",
+    "name": "Quinoa and Roasted Vegetables",
+    "allow_visibility": true,
+    "unavailable": false,
+    "price": 10.99,
+    "category": "Healthy Salads",
+    "discount": "",
+    "tag": "",
+    "details": ["Quinoa Color"],
+    "details_options": [
+      {
+        "options": ["White", "Red", "Black"],
+        "extra": [0, 1, 2]
+      }
+    ],
+    "ordered": false
+  },
+  {
+    "index_order": 15,
+    "type": "Non-veg",
+    "name": "Chicken Caesar Salad",
+    "allow_visibility": true,
+    "unavailable": false,
+    "category": "Healthy Salads",
+    "price": 11.99,
+    "discount": "",
+    "tag": "",
+    "details": ["Dressing"],
+    "details_options": [
+      {
+        "options": ["Caesar", "Ranch"],
+        "extra": [0, 1]
+      }
+    ],
+    "ordered": false
+  },
+  {
+    "index_order": 16,
+    "type": "Veg",
+    "name": "Pesto Pasta",
+    "allow_visibility": true,
+    "unavailable": false,
+    "category": "Healthy Salads",
+    "price": 9.99,
+    "discount": "",
+    "tag": "",
+    "details": ["Pasta Type"],
+    "details_options": [
+      {
+        "options": ["Spaghetti", "Fettuccine", "Penne"],
+        "extra": [0, 1, 2]
+      }
+    ],
+    "ordered": false
+  },
+  {
+    "index_order": 17,
+    "type": "Non-veg",
+    "name": "Teriyaki Glazed Salmon",
+    "category": "Healthy Salads",
+    "allow_visibility": true,
+    "unavailable": false,
+    "price": 15.99,
+    "discount": "",
+    "tag": "",
+    "details": ["Serving Size"],
+    "details_options": [
+      {
+        "options": ["Single", "Double"],
+        "extra": [0, 5]
+      }
+    ],
+    "ordered": false
+  },
+  {
+    "index_order": 18,
+    "type": "Veg",
+    "name": "Greek Salad",
+    "allow_visibility": true,
+    "unavailable": false,
+    "category": "Healthy Salads",
+    "price": 8.99,
+    "discount": "",
+    "tag": "",
+    "details": ["Olives Type"],
+    "details_options": [
+      {
+        "options": ["Kalamata", "Green", "Black"],
+        "extra": [0, 1, 2]
+      }
+    ],
+    "ordered": false
+  },
+  {
+    "index_order": 19,
+    "type": "Non-veg",
+    "name": "Beef and Broccoli Stir-Fry",
+    "allow_visibility": true,
+    "unavailable": false,
+    "price": 14.99,
+    "category": "Healthy Salads",
+    "discount": "",
+    "tag": "",
+    "details": ["Spiciness Level"],
+    "details_options": [
+      {
+        "options": ["Mild", "Medium", "Hot"],
+        "extra": [0, 1, 2]
+      }
+    ],
+    "ordered": false
+  },
+  {
+    "index_order": 20,
+    "type": "Veg",
+    "name": "Tomato Basil Bruschetta",
+    "allow_visibility": true,
+    "unavailable": false,
+    "price": 7.99,
+    "discount": "",
+    "category": "Healthy Salads",
+    "tag": "",
+    "details": ["Bread Type"],
+    "details_options": [
+      {
+        "options": ["Baguette", "Ciabatta", "Sourdough"],
+        "extra": [0, 1, 2]
+      }
+    ],
+    "ordered": false
+  }
+]
