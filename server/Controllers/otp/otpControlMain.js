@@ -11,10 +11,22 @@ const getOTP = (req, res) => {
 
     const generatedOTP = generateOTP();
     otpStorage[userId] = generatedOTP;
+    console.log(otpStorage);
 
     // call sending SMS API
 
     res.status(200).json({ message: 'OTP generated successfully' });
 };
 
-module.exports = { getOTP };
+const verifyOTP = (req, res) => {
+    const { userId, userOTP } = req.body;
+    const storedOTP = otpStorage[userId];
+
+    if (userOTP == storedOTP) {
+        res.status(200).json({ success: true, message: 'OTP verification successful' });
+    } else {
+        res.status(400).json({ success: false, message: 'OTP verification failed' });
+    }
+};
+
+module.exports = { getOTP, verifyOTP };
