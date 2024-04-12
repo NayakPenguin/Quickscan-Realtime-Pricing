@@ -1,60 +1,137 @@
-// The entry point of the server file
+const express = require("express");
+const app = express();
+const mongoose = require("mongoose");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
 
+const dotenv = require("dotenv");
 
-var express = require("express")
-var jwt = require("jsonwebtoken")
-var app = express() ;
-//var dotenv = require('dotenv') ;
-const mongoose = require('mongoose')
-const cors = require('cors');
-const Restaurant = require("./Models/Restaurant")
-const User = require("./Models/User")
-//const nodemailer=require("./Utils/nodemailer");
+dotenv.config();
+const fs = require("fs");
 
-//Starting middleware
-app.use(express.urlencoded({extended:true}));
-app.use(express.json()) ;
-app.use(cors()) ;
+const morgan = require("morgan");
 
-app.get('/',(req,res)=>{
-    res.status(200).json('Hi')
-})
+require("dotenv").config({
+  path: "./config.env",
+});
+app.use(cookieParser());
 
-app.post('/login',async(req,res)=>{
-    const { restaurant_id , access } = req.body
-    const result = await Restaurant.find({'restaurant_id': restaurant_id , 'owner_access_key':access})
-    if(result.length==0)  return res.status(200).json("Invalid Credentials !") ;
-    const secretKey = 'achak47'
-    const payload = result[0]
-    const {owner_access_key,man_access_key,allowed_email_ids,is2FA} = payload
-    const token = jwt.sign ({restaurant_id,owner_access_key,man_access_key,allowed_email_ids,is2FA}, secretKey, {expiresIn : '1200m'});
-    res.status(200).json({"token":token})
-})
+const corsOptions = {
+  origin: "http://localhost:3000",
+  credentials: true, //access-control-allow-credentials:true
+  optionSuccessStatus: 200,
+};
 
-app.post('/login-user',async(req,res)=>{
-    const {name,mobile,email} = req.body
-    const user = new User({'name':name,'mobile':mobile,'email':email})
-    await user.save()
-    return res.status(200).json("Login Successful")
-})
-//app.use('/',require('./Routers/router_user'));
-//app.use('/admin',require('./Routers/router_admin')) ;
-//End of middlewares
+app.use(cors(corsOptions));
+app.set("trust proxy", 1);
+
+app.use(express.static("uploads"));
+//Middlewares
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(morgan("dev"));
+
+//Routes
+app.get("/", (req, res) => {
+  res.send("You are using Algolisted APIs. - a Atanu Nayak production");
+});
+
+app.use("/auth", require("./Routers/router_auth"));
+app.use("/resources", require("./Routers/router_resources"));
+app.use("/resumes", require("./Routers/router_resumes"));
+app.use("/coding-sheets", require("./Routers/coding_sheets"));
+app.use("/coding-questions", require("./Routers/coding_questions"));
+app.use("/blog-resources", require("./Routers/router_blog_resources"));
+app.use("/user-details", require("./Routers/router_user"));
+app.use("/problem-sheets", require("./Routers/router_sheets"));
+app.use("/sheetproblem", require("./Routers/router_problems"));
+app.use("/ai", require("./Routers/ai"));
 
 const port = process.env.PORT || 8000;
 
-app.listen(port, (err) => {
-    console.log(`App Listening at http://localhost:${port}...`);
+app.listen(port, "0.0.0.0", (err) => {
+  if (err) {
+    console.log("Error in setting up server!");
+    return;
+  }
+  console.log(`App Listening at http://localhost:${port}...`);
+  mongoose
+    .connect(process.env.DATABASE ?? "mongodb://localhost:27017", {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    })
+    .then(() => {
+      console.log("MongoDB Connection Successful !!!");
+    })
+    .catch((err) => console.log(err));
+});
 
-    if(err){
-        console.log("Error in setting up server!");
-        return;
-    }
-    mongoose.connect("mongodb+srv://seriousanurag123:anurag18@cluster0.edegawp.mongodb.net/?retryWrites=true&w=majority",
-    {  //connecting the database
-        useNewUrlParser: true ,
-        useUnifiedTopology: true
-    }).then(()=>{
-        console.log('Database Connection Succesful !!!');
-    }).catch((err)=> console.log(err,"Error in establishing Database."));
-})    
+// const express = require('express');
+// const app = express();
+// const mongoose = require('mongoose');
+// const cors = require('cors');
+// const morgan = require('morgan');
+// const axios = require('axios'); // Import axios for making the API call
+// require('dotenv').config({
+//   path: './config.env',
+// });
+
+// const corsOptions = {
+//   credentials: true,
+//   optionSuccessStatus: 200,
+// };
+
+// app.use(cors());
+// app.use(express.urlencoded({ extended: true }));
+// app.use(express.json());
+// app.use(morgan('dev'));
+
+// // Routes
+// app.get('/', (req, res) => {
+//   res.send('You are using Algolisted APIs. - a Atanu Nayak production');
+// });
+
+// app.use('/auth', require('./Routers/router_auth'));
+// app.use('/resources', require('./Routers/router_resources'));
+// app.use('/resumes', require('./Routers/router_resumes'));
+// app.use('/coding-sheets', require('./Routers/coding_sheets'));
+// app.use('/coding-questions', require('./Routers/coding_questions'));
+// app.use('/blog-resources', require('./Routers/router_blog_resources'));
+
+// // New route for calling the API
+// app.get('/fetch-leetcoderanking', async (req, res) => {
+//   try {
+//     const apiUrl =
+//       'https://leetcode.com/contest/api/ranking/weekly-contest-361/?pagination=1&region=global';
+//     const response = await axios.get(apiUrl);
+
+//     if (response.status === 200) {
+//       const data = response.data;
+//       const jsonData = JSON.parse(data); // Parse the response as JSON
+//       res.json(jsonData); // Return the parsed JSON data as a response
+//     } else {
+//       res.status(response.status).json({ message: 'API request failed' });
+//     }
+//   } catch (error) {
+//     res.status(500).json({ message: 'Error making API request' });
+//   }
+// });
+
+// const port = 1020;
+
+// app.listen(port, '0.0.0.0', (err) => {
+//   if (err) {
+//     console.log('Error in setting up server!');
+//     return;
+//   }
+//   console.log(`App Listening at http://localhost:${port}...`);
+//   mongoose
+//     .connect(process.env.DATABASE, {
+//       useNewUrlParser: true,
+//       useUnifiedTopology: true,
+//     })
+//     .then(() => {
+//       console.log('MongoDB Connection Successful !!!');
+//     })
+//     .catch((err) => console.log(err));
+// });
