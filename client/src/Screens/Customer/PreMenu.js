@@ -15,13 +15,14 @@ const PreMenu = () => {
     const [otp, setOtp] = useState(['', '', '', '', '', '']);
     const inputRefs = useRef([]);
 
-    const { scanId } = useParams();
+    const { creatorShopId, scanId } = useParams();
 
     const API_BASE_URL = "localhost:8000";
 
     useEffect(() => {
+        console.log(creatorShopId);
         console.log(scanId);
-    }, [scanId]);
+    }, [creatorShopId, scanId]);
 
     const handleOpenOTP = async () => {
         if (!name.trim()) {
