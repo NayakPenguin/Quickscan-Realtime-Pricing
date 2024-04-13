@@ -16,7 +16,7 @@ const getOTP = (req, res) => {
 
     // call sending SMS API
 
-    res.status(200).json({ message: 'OTP generated successfully' });
+    res.status(200).json({ message: 'OTP generated successfully', otp : generatedOTP});
 };
 
 const verifyOTP = (req, res) => {
@@ -29,7 +29,7 @@ const verifyOTP = (req, res) => {
         });
         res.status(200).json({ success: true, message: 'OTP verification successful', token });
     } else {
-        res.status(400).json({ success: false, message: 'OTP verification failed' });
+        res.status(200).json({ success: false, message: 'OTP verification failed' });
     }
 };
 

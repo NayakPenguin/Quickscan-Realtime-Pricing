@@ -6,11 +6,14 @@ import axios from 'axios'
 
 const PreMenu = () => {
     const [managerId, setManagerId] = useState("@NayakPenguin");
-    const [name, setName] = useState("");
-    const [mobile, setMobile] = useState("");
+    const [name, setName] = useState("ATANU NAYAK");
+    const [mobile, setMobile] = useState("9306191179");
     const [email, setEmail] = useState("");
     const [showOTPBox, setShowOTPBox] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    const [otp, setOtp] = useState(['', '', '', '', '', '']);
+    const inputRefs = useRef([]);
 
     const { scanId } = useParams();
 
@@ -39,13 +42,15 @@ const PreMenu = () => {
         setLoading(true);
 
         try {
-            const userId = `${name.trim()}@${cleanedMobile}`;
+            const userId = `customer@${cleanedMobile}`;
 
-            const response = await axios.post(`${API_BASE_URL}/otp/get-otp`, {
+            const response = await axios.post("http://localhost:8000/otp/get-otp", {
                 name: name.trim(),
                 mobile: cleanedMobile,
                 userId: userId
             });
+
+            console.log(response.data);
         } catch (error) {
             console.error('Error fetching OTP:', error);
         } finally {
@@ -56,11 +61,28 @@ const PreMenu = () => {
 
 
     const handleSubmit = async () => {
-        console.log(name, mobile);
-    }
-
-    const [otp, setOtp] = useState(['', '', '', '', '', '']);
-    const inputRefs = useRef([]);
+        const userOTP = otp.join('');
+    
+        try {
+            const response = await axios.post("http://localhost:8000/otp/verify-otp", {
+                name: name.trim(),
+                mobile: mobile.replace(/\s/g, ''),
+                userId: `customer@${mobile.replace(/\s/g, '')}`,
+                userOTP: userOTP
+            });
+    
+            const { success, message, token } = response.data;
+            
+            if (success) {
+                localStorage.setItem('token', token);
+                console.log(message);
+            } else {
+                console.error('OTP verification failed:', message);
+            }
+        } catch (error) {
+            console.error('Error verifying OTP:', error);
+        }
+    };
 
     const handleChange = (index, event) => {
         const { value } = event.target;
@@ -92,11 +114,11 @@ const PreMenu = () => {
             <div className="form">
                 <div className="desc-text">Fill in your details and get started!</div>
                 <div className="input-box">
-                    <input type="text" placeholder="Your Name" onChange={(e) => setName(e.target.value)} disabled={loading || showOTPBox} />
+                    <input type="text" placeholder="Your Name" value={name} onChange={(e) => setName(e.target.value)} disabled={loading || showOTPBox} />
                 </div>
                 <div className="input-box">
                     <div className="box">+91</div>
-                    <input type="text" placeholder="Mobile Number" onChange={(e) => setMobile(e.target.value)} inputMode="numeric" disabled={loading || showOTPBox} />
+                    <input type="text" placeholder="Mobile Number" value={mobile} onChange={(e) => setMobile(e.target.value)} inputMode="numeric" disabled={loading || showOTPBox} />
                 </div>
                 {/* <input type="text" placeholder="Email Address" onChange={(e) => setEmail(e.target.value)} /> */}
 
