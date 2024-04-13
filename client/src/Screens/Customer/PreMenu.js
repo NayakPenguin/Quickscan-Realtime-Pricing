@@ -12,24 +12,51 @@ const PreMenu = () => {
     const [showOTPBox, setShowOTPBox] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const { tableId } = useParams();
+    const { scanId } = useParams();
+
+    const API_BASE_URL = "localhost:8000";
 
     useEffect(() => {
-        console.log(tableId);
-    }, [tableId]);
+        console.log(scanId);
+    }, [scanId]);
 
-    const handleOpenOTP = () => {
-        setLoading(true); 
-        
-        setTimeout(() => {
+    const handleOpenOTP = async () => {
+        if (!name.trim()) {
+            alert('Please enter your name.');
+            return;
+        }
+
+        const cleanedMobile = mobile.replace(/\s/g, '');
+        if (!cleanedMobile) {
+            alert('Please enter your mobile number.');
+            return;
+        }
+        if (!/^\d{10}$/.test(cleanedMobile)) {
+            alert('Please enter a valid 10-digit mobile number.');
+            return;
+        }
+
+        setLoading(true);
+
+        try {
+            const userId = `${name.trim()}@${cleanedMobile}`;
+
+            const response = await axios.post(`${API_BASE_URL}/otp/get-otp`, {
+                name: name.trim(),
+                mobile: cleanedMobile,
+                userId: userId
+            });
+        } catch (error) {
+            console.error('Error fetching OTP:', error);
+        } finally {
             setLoading(false);
             setShowOTPBox(true);
-        }, 5000);
+        }
     };
 
 
     const handleSubmit = async () => {
-        console.log(name, mobile, email);
+        console.log(name, mobile);
     }
 
     const [otp, setOtp] = useState(['', '', '', '', '', '']);
@@ -65,11 +92,11 @@ const PreMenu = () => {
             <div className="form">
                 <div className="desc-text">Fill in your details and get started!</div>
                 <div className="input-box">
-                    <input type="text" placeholder="Your Name" onChange={(e) => setName(e.target.value)} disabled={loading || showOTPBox}/>
+                    <input type="text" placeholder="Your Name" onChange={(e) => setName(e.target.value)} disabled={loading || showOTPBox} />
                 </div>
                 <div className="input-box">
                     <div className="box">+91</div>
-                    <input type="text" placeholder="Mobile Number" onChange={(e) => setMobile(e.target.value)} inputMode="numeric" disabled={loading || showOTPBox}/>
+                    <input type="text" placeholder="Mobile Number" onChange={(e) => setMobile(e.target.value)} inputMode="numeric" disabled={loading || showOTPBox} />
                 </div>
                 {/* <input type="text" placeholder="Email Address" onChange={(e) => setEmail(e.target.value)} /> */}
 
