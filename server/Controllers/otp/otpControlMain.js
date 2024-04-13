@@ -1,3 +1,4 @@
+const jwt = require("jsonwebtoken");
 const otpStorage = {};
 
 function generateOTP() {
@@ -23,7 +24,10 @@ const verifyOTP = (req, res) => {
     const storedOTP = otpStorage[userId];
 
     if (userOTP == storedOTP) {
-        res.status(200).json({ success: true, message: 'OTP verification successful' });
+        const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
+            expiresIn: process.env.JWT_EXPIRE,
+        });
+        res.status(200).json({ success: true, message: 'OTP verification successful', token });
     } else {
         res.status(400).json({ success: false, message: 'OTP verification failed' });
     }

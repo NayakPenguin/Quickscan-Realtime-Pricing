@@ -1,20 +1,21 @@
-const asyncHandler = require("./asyncHandler");
 const jwt = require("jsonwebtoken");
-const User = require("../Models/userProfileModel");
-const { request } = require("express");
 
-exports.isAuthenticatedUser = asyncHandler(async (req, res, next) => {
-  const { token } = req.cookies;
+const authenticateJWT = (req, res, next) => {
+  const token = req.headers["authorization"];
   console.log(token);
+
   if (!token) {
-    res.status(401).send("Unauthorized: You do not have access.");
+    return res.status(401).json({ error: "Unauthorized" });
   }
 
-  const decodedData = jwt.verify(token, process.env.JWT_SECRET);
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    // console.log(err);
+    if (err) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    req.user = decoded.user;
+    next();
+  });
+};
 
-  const user = await User.findById(decodedData.id);
-  console.log(user);
-  request.user = user;
-
-  next();
-});
+module.exports = authenticateJWT;

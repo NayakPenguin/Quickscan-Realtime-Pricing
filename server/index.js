@@ -3,6 +3,8 @@ const app = express();
 const mongoose = require("mongoose");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
+const authenticateJWT = require("./Middleware/auth");
 
 const dotenv = require("dotenv");
 
@@ -38,6 +40,10 @@ app.get("/", (req, res) => {
 });
 
 app.use("/otp", require("./Routers/router_otp"));
+
+app.get("/protected", authenticateJWT, (req, res) => {
+  res.json({ message: "Protected route accessed", user: req.user });
+});
 
 const port = process.env.PORT || 8000;
 
