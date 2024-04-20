@@ -10,15 +10,28 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import MessageIcon from '@material-ui/icons/Message';
 
 const BottomNav = () => {
+    const [isOrderExpanded, setIsOrderExpanded] = useState(false);
+
+    const handleOrderClick = () => {
+        setIsOrderExpanded(!isOrderExpanded);
+    };
+
     return (
         <Container>
-            <div className="dark"></div>
+            {isOrderExpanded && <div className="dark" onClick={handleOrderClick}></div>}
+
             <div className="order-container">
-                <div className="upper-layer-text">
-                    Added 3 items for ₹192.78. <b>Click to Order</b>
+                <div className={`upper-layer-text ${isOrderExpanded ? 'expanded-layer-text' : ''}`} onClick={handleOrderClick}>
+                    Added 3 items for ₹192.78. 
+                    {
+                        isOrderExpanded ? <b>Click to Close</b> : <b>Click to Order</b>
+                    }
                 </div>
-                <div className="content"></div>
+                <div className={`content ${isOrderExpanded ? 'expanded' : ''}`}>
+                    
+                </div>
             </div>
+
             <div className="bottom-content">
                 <a href="/" className="link curr-link">
                     <ListIcon/>
@@ -47,94 +60,93 @@ const Container = styled.div`
     position: fixed;
     top: 0;
     left: 0;
-    height: 100vh;
+    height: auto;
     width: 100vw;
 
     z-index: 100;
     
-    /* border-top: 1px solid rgb(233, 229, 229); */
-    /* box-shadow: rgba(0, 0, 0, 0.05) 1px 1px 10px 0px; */
-    
-    .dark{
+    .dark {
         position: fixed;
         background-color: rgba(0, 0, 0, 0.7);
         width: 100vw;
         height: 100vh;
-
+        top: 0;
+        left: 0;
+        transition: opacity 1s ease-in-out;
     }
 
-    .order-container{
+    .order-container {
         position: fixed;
         width: 100vw;
         bottom: 70px;
         z-index: 101;
-
         display: flex;
         flex-direction: column;
 
-        .upper-layer-text{
+        .upper-layer-text {
             font-size: 0.8rem;
-            z-index: 500;
             height: 38px;
-        
             border-top: 1px solid rgb(233, 229, 229);
             background-color: #ede76d;
-        
             width: 100%;
             display: flex;
             align-items: center;
             justify-content: space-between;
-        
             padding: 0 15px;
             font-weight: 500;
-        
-            b{
+
+            b {
                 background-color: orange;
                 padding: 2.5px 7.5px;
                 border-radius: 5px;
             }
         }
 
-        .content{
-            height: 0px;
+        .expanded-layer-text{
+            border-top: none;
+        }
+
+        .content {
+            height: 0;
             background-color: white;
             border-bottom: 1px solid rgb(233, 229, 229);
+            transition: height 0.25s ease-in-out;
+        }
+
+        .expanded {
+            height: 550px;
         }
     }
 
-    .bottom-content{
+    .bottom-content {
         position: fixed;
         bottom: -10px;
-
         width: 100vw;
         padding: 0 30px;
         padding-top: 5px;
         height: 80px;
         background-color: rgba(255, 255, 255, 1);
-
         display: flex;  
         align-items: flex-start;
         justify-content: space-between;
     
-        .link{
+        .link {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-decoration: none;
-    
-            /* background-color: orange; */
             height: 60px;
             border-radius: 50%;
             aspect-ratio: 1/1;
     
-            svg{
+            svg {
                 font-size: 1.75rem;
                 margin-bottom: 2.5px;
                 fill: #babab9;
             }
     
-            .text{
+            .text {
                 font-size: 0.65rem;
                 text-decoration: none;
                 color: #babab9;
@@ -142,17 +154,16 @@ const Container = styled.div`
             }
         }
     
-        .curr-link{
+        .curr-link {
             background-color: #fff6f6;
     
-            svg{
+            svg {
                 fill: #333;
             }
     
-            .text{
+            .text {
                 color: #333;
             }
         }
     }
-
-`
+`;
