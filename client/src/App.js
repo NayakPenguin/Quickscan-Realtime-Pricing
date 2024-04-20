@@ -6,6 +6,7 @@ import PreMenu from "./Screens/PreMenu";
 import Menu from "./Screens/Menu";
 
 import { isAuthenticated } from './Controllers/IsAuthenticated'
+import MenuMain from "./Screens/MenuMain";
 
 const App = () => {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ const App = () => {
     <div>
       <Routes>
         <Route path="/qrscan/:creatorShopId/:scanId" element={<PreMenu/>} />
-        <Route path="/menu/:creatorShopId/:scanId" element={<Menu/>} />
+        <Route path="/menu/:creatorShopId/:scanId" element={<MenuMain/>} />
       </Routes>
     </div>
   )
