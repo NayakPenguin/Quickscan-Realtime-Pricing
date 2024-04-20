@@ -7,6 +7,7 @@ import InfoIcon from '@material-ui/icons/Info';
 
 import { db } from "../firebase";
 import { collection, onSnapshot, getDocs } from "firebase/firestore";
+import BottomNav from "../Components/BottomNav";
 
 const MenuMain = () => {
   const [isVegSelected, setVegSelected] = useState(true);
@@ -419,6 +420,7 @@ const MenuMain = () => {
         }
       </div>
       {/* <OrderedList menuData={menuData} orderedItemCount={orderedItemCount} expanded={expanded} handleToggleExpand={handleToggleExpand} scrollToTopMenuMain={scrollToTopMenuMain} /> */}
+      <BottomNav/>
     </Container>
   )
 }
