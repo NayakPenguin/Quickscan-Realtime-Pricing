@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, useHistory, redirect } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import styled from "styled-components";
 import axios from 'axios'
+
+import { isAuthenticated } from '../Controllers/IsAuthenticated'
 
 const PreMenu = () => {
     const [managerId, setManagerId] = useState("@NayakPenguin");
@@ -11,12 +13,18 @@ const PreMenu = () => {
     const [email, setEmail] = useState("");
     const [showOTPBox, setShowOTPBox] = useState(false);
     const [loading, setLoading] = useState(false);
-
     const [otp, setOtp] = useState(['', '', '', '', '', '']);
     const inputRefs = useRef([]);
-
+    
+    const navigate = useNavigate();
     const { creatorShopId, scanId } = useParams();
 
+    useEffect(() => {
+        if(isAuthenticated){
+            navigate(`/menu/${creatorShopId}/${scanId}`);
+        }
+    }, [])
+    
     const API_BASE_URL = "localhost:8000";
 
     useEffect(() => {

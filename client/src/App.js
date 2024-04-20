@@ -13,7 +13,7 @@ const App = () => {
     <div>
       <Routes>
         <Route path="/qrscan/:creatorShopId/:scanId" element={<PreMenu/>} />
-        <Route path="/:creatorShopId/:scanId/menu" element={<Menu/>} />
+        <Route path="/menu/:creatorShopId/:scanId" element={<Menu/>} />
       </Routes>
     </div>
   )
