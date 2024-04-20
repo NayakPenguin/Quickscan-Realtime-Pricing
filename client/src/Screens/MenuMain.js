@@ -433,7 +433,7 @@ const Container = styled.div`
   max-width: 500px;
   background-color: #fff;
   margin: 0 auto;
-  padding: 135px 0 50px 0;
+  padding: 135px 0 84px 0;
   background-color: #fffaf145;
   overflow-y: scroll;
 
