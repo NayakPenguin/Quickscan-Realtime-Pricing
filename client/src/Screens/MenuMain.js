@@ -323,15 +323,14 @@ const MenuMain = () => {
       </Filter>
 
       <div className="menu">
-        <div className="dishs-ordered-container">
+        {/* <div className="dishs-ordered-container">
           <h3>Your Orders</h3>
           <p className="desc">
-            {/* <InfoIcon /> */}
             All the updates and bill will be sent on your <b>Whatsapp</b> Number, (<b>+91 9306191179</b>).
             — For any assistance during your dining experience, simply click the <b>top-right icon</b>.
             <i>Click here to see all orders</i>
           </p>
-        </div>
+        </div> */}
 
         {
           allCategories && allCategories.map((category, categoryIndex) => (
@@ -419,7 +418,7 @@ const MenuMain = () => {
           ))
         }
       </div>
-      <OrderedList menuData={menuData} orderedItemCount={orderedItemCount} expanded={expanded} handleToggleExpand={handleToggleExpand} scrollToTopMenuMain={scrollToTopMenuMain} />
+      {/* <OrderedList menuData={menuData} orderedItemCount={orderedItemCount} expanded={expanded} handleToggleExpand={handleToggleExpand} scrollToTopMenuMain={scrollToTopMenuMain} /> */}
     </Container>
   )
 }
