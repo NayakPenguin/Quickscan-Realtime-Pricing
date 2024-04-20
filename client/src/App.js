@@ -2,32 +2,17 @@ import React, { useState, useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { useParams, useHistory } from "react-router-dom";
 import styled from "styled-components";
-import PreMenu from "./Screens/Customer/PreMenu";
+import PreMenu from "./Screens/PreMenu";
+import Menu from "./Screens/Menu";
 import { jwtDecode } from "jwt-decode";
 
 const App = () => {
   const navigate = useNavigate();
-  const { creatorShopId, scanId } = useParams();
-
-  useEffect(() => {
-    console.log(creatorShopId);
-    console.log(scanId);
-}, [creatorShopId, scanId]);
-
-  useEffect(() => {
-    console.log("creatorShopId : ", creatorShopId);
-    
-    if(creatorShopId != undefined){
-      if(!isAuthenticated()){
-        navigate(`/qrscan/${creatorShopId}/0`);
-      }
-    }
-  
-  }, [creatorShopId]);
-
 
   const isAuthenticated = () => {
     const token = localStorage.getItem("token");
+
+    console.log(token);
 
     if (!token) {
       return false;
@@ -62,7 +47,7 @@ const App = () => {
     <div>
       <Routes>
         <Route path="/qrscan/:creatorShopId/:scanId" element={<PreMenu/>} />
-
+        <Route path="/:creatorShopId/:scanId/menu" element={<Menu/>} />
       </Routes>
     </div>
   )
