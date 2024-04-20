@@ -420,7 +420,7 @@ const MenuMain = () => {
         }
       </div>
       {/* <OrderedList menuData={menuData} orderedItemCount={orderedItemCount} expanded={expanded} handleToggleExpand={handleToggleExpand} scrollToTopMenuMain={scrollToTopMenuMain} /> */}
-      <BottomNav/>
+      <BottomNav menuData={menuData} orderedItemCount={orderedItemCount} expanded={expanded} handleToggleExpand={handleToggleExpand} scrollToTopMenuMain={scrollToTopMenuMain} />
     </Container>
   )
 }
