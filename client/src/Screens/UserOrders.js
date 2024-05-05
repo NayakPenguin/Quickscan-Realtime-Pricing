@@ -7,7 +7,7 @@ const UserOrders = () => {
   return (
     <Container>
         <MenuNav showSearch={false}/>
-        <BottomNav currPage={"orders"} />
+        <BottomNav currPage={"orders"} realTimeOrderedItemCount={"otherpage"} />
     </Container>
   )
 }

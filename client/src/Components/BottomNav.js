@@ -14,7 +14,7 @@ const BottomNav = ({ currPage, realTimeOrderedItemCount }) => {
 
     const [orderedItemCount, setOrderedItemCount] = useState(() => {
         const savedOrderedItemCount = localStorage.getItem('orderedItemCount');
-        return savedOrderedItemCount ? JSON.parse(savedOrderedItemCount).data : realTimeOrderedItemCount;
+        return savedOrderedItemCount ? JSON.parse(savedOrderedItemCount).data : null;
     });
 
     useEffect(() => {
@@ -22,10 +22,10 @@ const BottomNav = ({ currPage, realTimeOrderedItemCount }) => {
     }, [orderedItemCount]);
 
     useEffect(() => {
-        setOrderedItemCount(realTimeOrderedItemCount);
+        if(realTimeOrderedItemCount != 'otherpage'){
+            setOrderedItemCount(realTimeOrderedItemCount);
+        }
     }, [realTimeOrderedItemCount]);
-
-    
 
     const handleOrderClick = () => {
         setIsOrderExpanded(!isOrderExpanded);
