@@ -89,6 +89,7 @@ const PreMenu = () => {
             if (success) {
                 localStorage.setItem('token', token);
                 console.log(message);
+                navigate("/restaurant/menu");
             } else {
                 console.error('OTP verification failed:', message);
             }
