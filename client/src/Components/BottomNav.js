@@ -33,7 +33,7 @@ const BottomNav = ({currPage}) => {
             </div> 
 
             <div className="bottom-content">
-                <a href="/" className="link">
+                <a href="/restaurant/menu" className={currPage == "menu" ? "link curr-link" : "link"}>
                     <ListIcon/>
                     <div className="text">Menu</div>
                 </a>
@@ -41,11 +41,11 @@ const BottomNav = ({currPage}) => {
                     <FastfoodIcon/>
                     <div className="text">Orders</div>
                 </a>
-                <a href="/user/bills" className="link">
+                <a href="/user/bills" className={currPage == "bills" ? "link curr-link" : "link"}>
                     <ReceiptIcon/>
                     <div className="text">Bills</div>
                 </a>
-                <a href="/user/profile" className="link">
+                <a href="/user/profile" className={currPage == "profile" ? "link curr-link" : "link"}>
                     <AccountCircleIcon/>
                     <div className="text">Profile</div>
                 </a>

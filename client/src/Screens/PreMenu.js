@@ -20,10 +20,15 @@ const PreMenu = () => {
     const { creatorShopId, scanId } = useParams();
 
     useEffect(() => {
-        if(isAuthenticated){
-            navigate(`/menu/${creatorShopId}/${scanId}`);
+        if (creatorShopId && scanId) {
+            localStorage.setItem('creatorShopId', creatorShopId);
+            localStorage.setItem('scanId', scanId);
+
+            if(isAuthenticated){
+                navigate("/restaurant/menu");
+            }
         }
-    }, [])
+    }, []);
     
     const API_BASE_URL = "localhost:8000";
 
@@ -67,7 +72,6 @@ const PreMenu = () => {
             setShowOTPBox(true);
         }
     };
-
 
     const handleSubmit = async () => {
         const userOTP = otp.join('');
@@ -113,7 +117,6 @@ const PreMenu = () => {
             inputRefs.current[index - 1].focus();
         }
     };
-
 
     return (
         <Container>
