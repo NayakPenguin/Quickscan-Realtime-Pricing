@@ -9,7 +9,7 @@ import FastfoodIcon from '@material-ui/icons/Fastfood';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ReceiptIcon from '@material-ui/icons/Receipt';
 
-const BottomNav = () => {
+const BottomNav = ({currPage}) => {
     const [isOrderExpanded, setIsOrderExpanded] = useState(false);
 
     const handleOrderClick = () => {
@@ -30,22 +30,22 @@ const BottomNav = () => {
                 <div className={`content ${isOrderExpanded ? 'expanded' : ''}`}>
                     
                 </div>
-            </div>
+            </div> 
 
             <div className="bottom-content">
-                <a href="/" className="link curr-link">
+                <a href="/" className="link">
                     <ListIcon/>
                     <div className="text">Menu</div>
                 </a>
-                <a href="user/orders" className="link">
+                <a href="/user/orders" className={currPage == "orders" ? "link curr-link" : "link"}>
                     <FastfoodIcon/>
                     <div className="text">Orders</div>
                 </a>
-                <a href="user/bills" className="link">
+                <a href="/user/bills" className="link">
                     <ReceiptIcon/>
                     <div className="text">Bills</div>
                 </a>
-                <a href="user/profile" className="link">
+                <a href="/user/profile" className="link">
                     <AccountCircleIcon/>
                     <div className="text">Profile</div>
                 </a>

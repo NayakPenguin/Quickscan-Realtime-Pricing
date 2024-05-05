@@ -9,7 +9,7 @@ import Brightness4Icon from '@material-ui/icons/Brightness4';
 import SearchIcon from '@material-ui/icons/Search';
 import PanToolIcon from '@material-ui/icons/PanTool';
 
-const MenuNav = () => {
+const MenuNav = ({showSearch}) => {
     const [getAssistance, setGetAssistance] = useState(false);
 
     return (
@@ -29,10 +29,15 @@ const MenuNav = () => {
                     </div>
                 </div>
             </div>
-            <div className="bottom">
-                <input type="text" placeholder="Search in Arsalan" />
-                <SearchIcon />
-            </div>
+            {
+                showSearch ? (
+                    <div className="bottom">
+                        <input type="text" placeholder="Search in Arsalan" />
+                        <SearchIcon />
+                    </div>
+                ) : (<></>)
+            }
+            
         </Container>
     )
 }

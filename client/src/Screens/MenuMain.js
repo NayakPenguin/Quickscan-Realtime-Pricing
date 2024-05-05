@@ -272,7 +272,7 @@ const MenuMain = () => {
 
   return (
     <Container ref={modalRefMenuMain}>
-      <MenuNav />
+      <MenuNav showSearch={true}/>
 
       <Categories>
         <div className="categoriesList">
@@ -420,7 +420,7 @@ const MenuMain = () => {
         }
       </div>
       {/* <OrderedList menuData={menuData} orderedItemCount={orderedItemCount} expanded={expanded} handleToggleExpand={handleToggleExpand} scrollToTopMenuMain={scrollToTopMenuMain} /> */}
-      <BottomNav menuData={menuData} orderedItemCount={orderedItemCount} expanded={expanded} handleToggleExpand={handleToggleExpand} scrollToTopMenuMain={scrollToTopMenuMain} />
+      <BottomNav showMakeOrder={true} menuData={menuData} orderedItemCount={orderedItemCount} expanded={expanded} handleToggleExpand={handleToggleExpand} scrollToTopMenuMain={scrollToTopMenuMain} />
     </Container>
   )
 }
