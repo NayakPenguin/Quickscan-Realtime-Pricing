@@ -9,8 +9,23 @@ import FastfoodIcon from '@material-ui/icons/Fastfood';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ReceiptIcon from '@material-ui/icons/Receipt';
 
-const BottomNav = ({currPage}) => {
+const BottomNav = ({ currPage, realTimeOrderedItemCount }) => {
     const [isOrderExpanded, setIsOrderExpanded] = useState(false);
+
+    const [orderedItemCount, setOrderedItemCount] = useState(() => {
+        const savedOrderedItemCount = localStorage.getItem('orderedItemCount');
+        return savedOrderedItemCount ? JSON.parse(savedOrderedItemCount).data : realTimeOrderedItemCount;
+    });
+
+    useEffect(() => {
+        console.log(orderedItemCount);
+    }, [orderedItemCount]);
+
+    useEffect(() => {
+        setOrderedItemCount(realTimeOrderedItemCount);
+    }, [realTimeOrderedItemCount]);
+
+    
 
     const handleOrderClick = () => {
         setIsOrderExpanded(!isOrderExpanded);
@@ -22,31 +37,31 @@ const BottomNav = ({currPage}) => {
 
             <div className="order-container">
                 <div className={`upper-layer-text ${isOrderExpanded ? 'expanded-layer-text' : ''}`} onClick={handleOrderClick}>
-                    Added 3 items for ₹192.78. 
+                    Added {Object.keys(orderedItemCount).length} items for ₹192.78.
                     {
                         isOrderExpanded ? <b>Click to Close</b> : <b>Click to Order</b>
                     }
                 </div>
                 <div className={`content ${isOrderExpanded ? 'expanded' : ''}`}>
-                    
+
                 </div>
-            </div> 
+            </div>
 
             <div className="bottom-content">
                 <a href="/restaurant/menu" className={currPage == "menu" ? "link curr-link" : "link"}>
-                    <ListIcon/>
+                    <ListIcon />
                     <div className="text">Menu</div>
                 </a>
                 <a href="/user/orders" className={currPage == "orders" ? "link curr-link" : "link"}>
-                    <FastfoodIcon/>
+                    <FastfoodIcon />
                     <div className="text">Orders</div>
                 </a>
                 <a href="/user/bills" className={currPage == "bills" ? "link curr-link" : "link"}>
-                    <ReceiptIcon/>
+                    <ReceiptIcon />
                     <div className="text">Bills</div>
                 </a>
                 <a href="/user/profile" className={currPage == "profile" ? "link curr-link" : "link"}>
-                    <AccountCircleIcon/>
+                    <AccountCircleIcon />
                     <div className="text">Profile</div>
                 </a>
             </div>

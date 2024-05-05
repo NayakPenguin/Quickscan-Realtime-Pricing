@@ -150,7 +150,24 @@ const MenuMain = () => {
     return true;
   };
 
-  const [orderedItemCount, setOrderedItemCount] = useState({});
+  const [orderedItemCount, setOrderedItemCount] = useState(() => {
+    const savedOrderedItemCount = localStorage.getItem('orderedItemCount');
+    return savedOrderedItemCount ? JSON.parse(savedOrderedItemCount).data : {};
+  });
+
+  useEffect(() => {
+    console.log(orderedItemCount);
+
+    const dataToStore = {
+        data: orderedItemCount,
+        timestamp: new Date().toISOString()
+    };
+    localStorage.setItem('orderedItemCount', JSON.stringify(dataToStore));
+}, [orderedItemCount]);
+
+  useEffect(() => {
+    console.log(orderedItemCount);
+  }, [orderedItemCount])
 
   const increaseCount2 = (itemId) => {
     if (isPossibleToIncreaseCount2(itemId)) {
@@ -423,7 +440,7 @@ const MenuMain = () => {
         }
       </div>
       {/* <OrderedList menuData={menuData} orderedItemCount={orderedItemCount} expanded={expanded} handleToggleExpand={handleToggleExpand} scrollToTopMenuMain={scrollToTopMenuMain} /> */}
-      <BottomNav currPage={"menu"} menuData={menuData} orderedItemCount={orderedItemCount} expanded={expanded} handleToggleExpand={handleToggleExpand} scrollToTopMenuMain={scrollToTopMenuMain} />
+      <BottomNav currPage={"menu"} menuData={menuData} realTimeOrderedItemCount={orderedItemCount} expanded={expanded} handleToggleExpand={handleToggleExpand} scrollToTopMenuMain={scrollToTopMenuMain} />
     </Container>
   )
 }
