@@ -7,7 +7,7 @@ import "../CustomerCSS.css";
 import ListIcon from '@material-ui/icons/List';
 import FastfoodIcon from '@material-ui/icons/Fastfood';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import MessageIcon from '@material-ui/icons/Message';
+import ReceiptIcon from '@material-ui/icons/Receipt';
 
 const BottomNav = () => {
     const [isOrderExpanded, setIsOrderExpanded] = useState(false);
@@ -37,15 +37,15 @@ const BottomNav = () => {
                     <ListIcon/>
                     <div className="text">Menu</div>
                 </a>
-                <a href="/" className="link">
+                <a href="user/orders" className="link">
                     <FastfoodIcon/>
                     <div className="text">Orders</div>
                 </a>
-                <a href="/" className="link">
-                    <MessageIcon/>
-                    <div className="text">Reviews</div>
+                <a href="user/bills" className="link">
+                    <ReceiptIcon/>
+                    <div className="text">Bills</div>
                 </a>
-                <a href="/" className="link">
+                <a href="user/profile" className="link">
                     <AccountCircleIcon/>
                     <div className="text">Profile</div>
                 </a>
