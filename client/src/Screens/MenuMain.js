@@ -21,9 +21,12 @@ const MenuMain = () => {
   const [menuDataObject, setMenuDataObject] = useState({}); // for displaying
   const [allCategories, setAllCategories] = useState([]);
 
-  const [restaurantId, setRestaurantId] = useState("BrdwyKol");
-  const menuCollectionRef = collection(db, `Menu${restaurantId}`);
-  const categoriesCollectionRef = collection(db, `Categories${restaurantId}`);
+  const [creatorShopId, setCreatorShopId] = useState(() => {
+    return localStorage.getItem('creatorShopId') || null;
+  });
+
+  const menuCollectionRef = collection(db, `Menu${creatorShopId}`);
+  const categoriesCollectionRef = collection(db, `Categories${creatorShopId}`);
 
   useEffect(() => {
     const unsubscribeMenu = onSnapshot(menuCollectionRef, (querySnapshot) => {
@@ -272,12 +275,12 @@ const MenuMain = () => {
 
   return (
     <Container ref={modalRefMenuMain}>
-      <MenuNav showSearch={true}/>
+      <MenuNav showSearch={true} />
 
       <Categories>
         <div className="categoriesList">
           {allCategories.map((category, categoryIndex) => (
-            <a  href={`#${category.id}`} className="list-item-2" key={category.id} onClick={() => scrollToCategory(category.id)}>
+            <a href={`#${category.id}`} className="list-item-2" key={category.id} onClick={() => scrollToCategory(category.id)}>
               {category.name}
             </a>
           ))}
