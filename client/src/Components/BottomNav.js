@@ -11,6 +11,17 @@ import ReceiptIcon from '@material-ui/icons/Receipt';
 
 const BottomNav = ({ currPage, realTimeOrderedItemCount }) => {
     const [isOrderExpanded, setIsOrderExpanded] = useState(false);
+    const [totalCount, setTotalCount] = useState(0);
+    const [totalPrice, setTotalPrice] = useState(0);
+    const [isBouncing, setBouncing] = useState(false);
+    const [orderedMenuState, setOrderedMenuState] = useState([]);
+    const [showPage, setShowPage] = useState(1);
+    const [allowPostPaid, setAllowPostPaid] = useState(true);
+    const [callWaiter, setCallWaiter] = useState(false);
+
+    const [creatorShopId, setCreatorShopId] = useState(() => {
+        return localStorage.getItem('creatorShopId') || null;
+    });
 
     const [orderedItemCount, setOrderedItemCount] = useState(() => {
         const savedOrderedItemCount = localStorage.getItem('orderedItemCount');
@@ -22,14 +33,225 @@ const BottomNav = ({ currPage, realTimeOrderedItemCount }) => {
     }, [orderedItemCount]);
 
     useEffect(() => {
-        if(realTimeOrderedItemCount != 'otherpage'){
+        if (realTimeOrderedItemCount != 'otherpage') {
             setOrderedItemCount(realTimeOrderedItemCount);
         }
     }, [realTimeOrderedItemCount]);
 
+
     const handleOrderClick = () => {
         setIsOrderExpanded(!isOrderExpanded);
     };
+
+    // ------------------ FROM OLD CODE ------------------
+
+    // const [ordersToday, setOrdersToday] = useState([]); // get this from localhost or something
+    // const [orderDone, setOrderDone] = useState(false);
+
+    // let orderedMenu = [];
+
+    // useEffect(() => {
+    //     orderedMenu = [];
+    //     let count = 0, price = 0;
+
+    //     console.log(orderedItemCount);
+
+    //     Object.keys(orderedItemCount).forEach((encodedValue) => {
+    //         // keyDecoder(encodedValue);
+    //         let itemPrice = 0;
+    //         const { itemIndex, detailsKeyArray } = keyDecoder(encodedValue);
+    //         console.log(itemIndex, detailsKeyArray);
+
+    //         const options = detailsKeyArray;
+
+    //         console.log(itemIndex, options);
+
+    //         const orderedItemCountValue = orderedItemCount[encodedValue];
+
+    //         console.log(itemIndex, options, orderedItemCountValue);
+
+    //         count += orderedItemCountValue;
+
+    //         const menuItem = menuData[itemIndex];
+
+    //         itemPrice += menuItem.price * orderedItemCountValue;
+
+    //         let tempOrder = {
+    //             count: orderedItemCountValue,
+    //             price: 0,  // Adjust this line based on your requirements
+    //             itemName: `${menuItem.name}`,
+    //             extraWithItem: "",
+    //         };
+
+    //         if (menuItem.details_options && menuItem.details_options.length > 0 && options.length > 0) {
+    //             options.forEach((option, idx) => {
+    //                 const optionIndex = option;  // Use option as index, assuming it's a valid index
+    //                 const optionValue = menuItem.details_options[idx].extra[optionIndex];
+
+    //                 console.log(optionValue);
+
+    //                 // Add option value to the total price
+    //                 itemPrice += optionValue * orderedItemCountValue;
+    //             });
+
+    //             const selectedOptionValues = options.map((option, idx) => menuItem.details_options[idx].options[option]);
+
+    //             console.log(selectedOptionValues);
+
+    //             // Combine item name and selected option values
+    //             const extraWithItem = options.map((option, idx) => {
+    //                 if (menuItem.details_options[idx] && menuItem.details_options[idx].options[option]) {
+    //                     return menuItem.details_options[idx].options[option];
+    //                 }
+    //                 return null; // or some default value if the option is not selected
+    //             }).filter(value => value !== null).join(', ');
+
+    //             tempOrder.extraWithItem = extraWithItem;
+    //         }
+
+    //         tempOrder.price = itemPrice;
+
+    //         orderedMenu.push(tempOrder);
+
+    //         price += itemPrice;
+    //     });
+
+    //     // Update total count and price
+    //     setTotalCount(count);
+    //     setTotalPrice(price);
+
+    //     console.log(orderedMenu);
+
+    //     setOrderedMenuState(orderedMenu);
+
+    //     if (count > 0 || price > 0) {
+    //         setBouncing(true);
+    //         setTimeout(() => setBouncing(false), 750);
+    //     }
+    // }, [orderedItemCount]);
+
+    // const keyDecoder = (key) => {
+    //     // console.log("MARK1 : ", key);
+    //     // const [itemId, ...detailsKeyArray] = key.split('-').map((value) => parseInt(value));
+
+    //     const splitArray = key.split('-');
+
+    //     console.log("splitArray:", splitArray);
+
+    //     const itemId = splitArray[0];
+    //     const itemIndex = menuData.findIndex(item => item.id === itemId);
+    //     let detailsKeyArray = [];
+
+    //     for (let i = 1; i < splitArray.length; i++) {
+    //         detailsKeyArray.push(parseInt(splitArray[i]));
+    //     }
+
+    //     console.log(itemId);
+    //     console.log(detailsKeyArray);
+
+    //     return { itemIndex, detailsKeyArray };
+    // };
+
+    // const modalRef = useRef(null);
+
+    // const scrollToTop = () => {
+    //     if (modalRef.current) {
+    //         modalRef.current.scrollTop = 0;
+    //     }
+    // };
+
+    // const [fillWidth, setFillWidth] = useState(0);
+    // const [showCancelOrder, setShowCancelOrder] = useState(false);
+
+    // const handleConfirmOrderClick = () => {
+    //     setShowCancelOrder(true);
+
+    //     const totalTime = 5000; // 5 seconds
+    //     const interval = 10; // Update every 10 milliseconds
+    //     const steps = totalTime / interval;
+
+    //     let step = 1;
+
+    //     const updateFillWidth = () => {
+    //         setFillWidth((step / steps) * 100);
+    //         step += 1;
+
+    //         if (step <= steps) {
+    //             setTimeout(updateFillWidth, interval);
+    //         }
+    //     };
+
+    //     updateFillWidth();
+
+    //     // After 5 seconds, perform setShowPage(3) or any other logic
+    //     setTimeout(() => {
+    //         setShowPage(3);
+    //         pushOrderToDB(orderedMenuState);
+    //     }, 5000);
+    // };
+
+    // const userDetails = {
+    //     name: "Atanu Nayak",
+    //     phone: "+91 93061 91179",
+    //     email: "nayak.primary@gmail.com",
+    // }
+
+    // const tableName = "T14-2F";
+
+    // const pushOrderToDB = async (orderedMenuState) => {
+    //     setOrderDone(false);
+    //     console.log("orderedMenuState : ", orderedMenuState);
+    //     const currentTime = new Date();
+    //     try {
+    //         const ordersCollectionRef = collection(db, `Orders${creatorShopId}`);
+    //         const newOrderItemDoc = await addDoc(ordersCollectionRef, {
+    //             orderDetails: orderedMenuState,
+    //             userDetails: userDetails,
+    //             tableName: tableName,
+    //             timeOfOrder: currentTime,
+    //             paymentCompleted: false,
+    //             canceledOrder: false,
+    //             totalPrice: totalPrice,
+    //         });
+
+    //         console.log('Order item added successfully with ID: ', newOrderItemDoc.id);
+
+    //         setOrderedMenuState([]);
+
+    //         // Find how many orders have timeOfOrder less than the current order
+    //         const orderQuery = query(ordersCollectionRef, where('timeOfOrder', '<', currentTime));
+    //         const orderSnapshot = await getDocs(orderQuery);
+    //         // console.log(orderSnapshot.docs);
+    //         const orderCount = orderSnapshot.size;
+
+    //         // Update the ordersToday state
+    //         setOrdersToday((prevOrdersToday) => [
+    //             ...prevOrdersToday,
+    //             {
+    //                 phone: userDetails.phone,
+    //                 orderId: newOrderItemDoc.id,
+    //                 orderCount: orderCount + 1,
+    //             }
+    //         ]);
+
+    //         const ordersNoCollectionRef = collection(db, `OrderNumbers${creatorShopId}`);
+            
+    //         const newOrderNoItemDoc = await addDoc(ordersNoCollectionRef, {
+    //             orderId: newOrderItemDoc.id,
+    //             orderCount: orderCount + 1,
+    //         });
+
+    //         console.log("newOrderNoItemDoc pushed!");
+            
+    //         setOrderDone(true);
+    //     } catch (error) {
+    //         console.error('Error adding menu item: ', error);
+    //     }
+
+    //     console.log("orderedMenuState : ", orderedMenuState);
+    // }
+
+
 
     return (
         <Container>
