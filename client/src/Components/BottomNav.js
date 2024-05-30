@@ -14,6 +14,9 @@ import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import DeleteIcon from '@material-ui/icons/Delete';
 
+// Firebase
+import { db } from "../firebase";
+import { collection, getDocs, addDoc, updateDoc, doc, query, where } from "firebase/firestore";
 
 const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
     const [isOrderExpanded, setIsOrderExpanded] = useState(false);
@@ -223,6 +226,7 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
 
 
     // ----------------- CONTROL 3 (Start) -----------------
+   
     const navigate = useNavigate(); 
 
     useEffect(() => {
@@ -238,6 +242,7 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
     // ----------------- CONTROL 3 (Complete) -----------------
 
 
+     // ----------------- CONTROL 4 (Start) -----------------
 
     const handleConfirmOrderClick = () => {
         setShowCancelOrder(true);
@@ -307,64 +312,58 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
     //     }, 5000);
     // };
 
-    // const userDetails = {
-    //     name: "Atanu Nayak",
-    //     phone: "+91 93061 91179",
-    //     email: "nayak.primary@gmail.com",
-    // }
+    const userDetails = {
+        name: "Atanu Nayak",
+        phone: "+91 93061 91179",
+        email: "nayak.primary@gmail.com",
+    }
 
-    // const tableName = "T14-2F";
+    const tableName = "T14-2F";
 
-    // const pushOrderToDB = async (orderedMenuState) => {
-    //     setOrderDone(false);
-    //     console.log("orderedMenuState : ", orderedMenuState);
-    //     const currentTime = new Date();
-    //     try {
-    //         const ordersCollectionRef = collection(db, `Orders${creatorShopId}`);
-    //         const newOrderItemDoc = await addDoc(ordersCollectionRef, {
-    //             orderDetails: orderedMenuState,
-    //             userDetails: userDetails,
-    //             tableName: tableName,
-    //             timeOfOrder: currentTime,
-    //             paymentCompleted: false,
-    //             canceledOrder: false,
-    //             totalPrice: totalPrice,
-    //         });
+    const pushOrderToDB = async (orderedMenuState) => {
+        setOrderDone(false);
+        console.log("orderedMenuState : ", orderedMenuState);
 
-    //         console.log('Order item added successfully with ID: ', newOrderItemDoc.id);
+        const currentTime = new Date();
+        try {
+            const ordersCollectionRef = collection(db, `Orders${creatorShopId}`);
+            
+            const newOrderItemDoc = await addDoc(ordersCollectionRef, {
+                orderDetails: orderedMenuState,
+                userDetails: userDetails,
+                tableName: tableName,
+                timeOfOrder: currentTime,
+                paymentCompleted: false,
+                canceledOrder: false,
+                totalPrice: totalPrice,
+            });
 
-    //         // Find how many orders have timeOfOrder less than the current order
-    //         const orderQuery = query(ordersCollectionRef, where('timeOfOrder', '<', currentTime));
-    //         const orderSnapshot = await getDocs(orderQuery);
-    //         // console.log(orderSnapshot.docs);
-    //         const orderCount = orderSnapshot.size;
+            console.log('Order item added successfully with ID: ', newOrderItemDoc.id);
 
-    //         // Update the ordersToday state
-    //         setOrdersToday((prevOrdersToday) => [
-    //             ...prevOrdersToday,
-    //             {
-    //                 phone: userDetails.phone,
-    //                 orderId: newOrderItemDoc.id,
-    //                 orderCount: orderCount + 1,
-    //             }
-    //         ]);
+            // Find how many orders have timeOfOrder less than the current order
+            const orderQuery = query(ordersCollectionRef, where('timeOfOrder', '<', currentTime));
+            const orderSnapshot = await getDocs(orderQuery);
+            // console.log(orderSnapshot.docs);
+            const orderCount = orderSnapshot.size;
 
-    //         const ordersNoCollectionRef = collection(db, `OrderNumbers${creatorShopId}`);
+            const ordersNoCollectionRef = collection(db, `OrderNumbers${creatorShopId}`);
 
-    //         const newOrderNoItemDoc = await addDoc(ordersNoCollectionRef, {
-    //             orderId: newOrderItemDoc.id,
-    //             orderCount: orderCount + 1,
-    //         });
+            const newOrderNoItemDoc = await addDoc(ordersNoCollectionRef, {
+                orderId: newOrderItemDoc.id,
+                orderCount: orderCount + 1,
+            });
 
-    //         console.log("newOrderNoItemDoc pushed!");
+            console.log(orderCount + 1);
 
-    //         setOrderDone(true);
-    //     } catch (error) {
-    //         console.error('Error adding menu item: ', error);
-    //     }
+            console.log("newOrderNoItemDoc pushed!");
 
-    //     console.log("orderedMenuState : ", orderedMenuState);
-    // }
+            setOrderDone(true);
+        } catch (error) {
+            console.error('Error adding menu item: ', error);
+        }
+
+        console.log("orderedMenuState : ", orderedMenuState);
+    }
 
 
 
