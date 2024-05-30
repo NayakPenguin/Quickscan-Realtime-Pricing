@@ -8,6 +8,8 @@ import ListIcon from '@material-ui/icons/List';
 import FastfoodIcon from '@material-ui/icons/Fastfood';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ReceiptIcon from '@material-ui/icons/Receipt';
+import CloseIcon from '@material-ui/icons/Close';
+import InfoIcon from '@material-ui/icons/Info';
 
 const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
     const [isOrderExpanded, setIsOrderExpanded] = useState(false);
@@ -18,6 +20,8 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
     const [showPage, setShowPage] = useState(1);
     const [allowPostPaid, setAllowPostPaid] = useState(true);
     const [callWaiter, setCallWaiter] = useState(false);
+    const [fillWidth, setFillWidth] = useState(0);
+    const [showCancelOrder, setShowCancelOrder] = useState(false);
 
     const [creatorShopId, setCreatorShopId] = useState(() => {
         return localStorage.getItem('creatorShopId') || null;
@@ -155,7 +159,7 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
 
 
     const handleConfirmOrderClick = () => {
-        setShowCancelOrder(true);
+        // setShowCancelOrder(true);
 
         const totalTime = 5000; // 5 seconds
         const interval = 10; // Update every 10 milliseconds
@@ -350,36 +354,6 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
                         ) :
                             showPage == 2 ? (
                                 <div className="middle">
-                                    <div className="back-btn center" onClick={() => setShowPage(1)}>
-                                        <ArrowBackIosIcon />
-                                        Edit Menu
-                                    </div>
-                                    <div className="order-placed">Payment</div>
-                                    <div className="order-detail-after-placed">
-                                        Table 14, Order No. 54
-                                    </div>
-                                    <div className="place-order center">
-                                        <a href={`tez://upi/pay?pa=ajha8931@oksbi@indus&pn=Nayak's%20Bistro&am=1.00&cu=INR&mc=4900&tn=Payment%20for%20Table%2014,%20Order%20No.%20:%2054`} className="payment-btn" onClick={() => setShowPage(4)}>Pay with UPI</a>
-                                        {
-                                            allowPostPaid == false ? <>or <div className="payment-btn" onClick={() => { setCallWaiter(true); setShowPage(4); }}><PanToolIcon />Call a Waiter</div></> : <></>
-                                        }
-                                    </div>
-                                    {
-                                        allowPostPaid ? (
-                                            <div className="pay-after center" onClick={() => setShowPage(3)}>
-                                                Or, Pay after Dining <ChevronRightIcon />
-                                            </div>
-                                        ) : (<div className="pay-after center">
-                                            <i>*You Need to Pay before dining.</i>
-                                        </div>)
-                                    }
-                                </div>
-                            ) : showPage == 3 ? (
-                                <div className="middle">
-                                    {/* <div className="back-btn center" onClick={() => setShowPage(2)}>
-                                    <ArrowBackIosIcon/>
-                                    Temp Back
-                                </div> */}
                                     <div className="done-img"><img src="https://i.gifer.com/7efs.gif" alt="" /></div>
                                     <div className="order-placed">Order Placed</div>
                                     <div className="order-detail-after-placed">
@@ -395,12 +369,12 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
                                         Download Bill
                                     </div>
                                 </div> */}
-                                    <div className="info-text-2">
+                                    {/* <div className="info-text-2">
                                         <InfoIcon />
                                         <i onClick={() => { scrollToTop(); expanded && showPage == 3 && scrollToTopMenuMain(); handleToggleExpand(); setShowPage(1); }}>Click this to go back to Menu Page</i>
                                         All the updates and bill will be sent on your <b>Whatsapp</b> Number, (<b>+91 9306191179</b>).
                                         — For any assistance during your dining experience, simply click the <b>top-right icon</b>.
-                                    </div>
+                                    </div> */}
                                 </div>
                             ) : (
                                 <div className="middle">
