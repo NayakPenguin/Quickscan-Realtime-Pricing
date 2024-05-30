@@ -267,19 +267,21 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
                 </div>
 
                 <div className={`content ${isOrderExpanded ? 'expanded' : ''}`}>
-                    {
-                        orderedMenuState.length > 0 ? 
-                        <div className="product-mapping">
-                            {orderedMenuState.map((item, index) => (
-                                <div key={index} className="item">
-                                    <p>Item Name: {item.itemName}</p>
-                                    <p>Count: {item.count}</p>
-                                    <p>Price: ${item.price.toFixed(2)}</p>
-                                    <p>Extras: {item.extraWithItem}</p>
-                                </div>
-                            ))}
-                        </div> : null
-                    }
+                    <div className="middle">
+                        {
+                            orderedMenuState.length > 0 ? 
+                            <div className="product-mapping">
+                                {orderedMenuState.map((item, index) => (
+                                    <div key={index} className="item">
+                                        <p>Item Name: {item.itemName}</p>
+                                        <p>Count: {item.count}</p>
+                                        <p>Price: ${item.price.toFixed(2)}</p>
+                                        <p>Extras: {item.extraWithItem}</p>
+                                    </div>
+                                ))}
+                            </div> : null
+                        }
+                    </div>
                 </div>
             </div>
 
@@ -370,6 +372,355 @@ const Container = styled.div`
             height: 450px;
             overflow-y: scroll;
             padding: 10px;
+
+            .middle{
+                position: relative;
+                width: 100%;
+                padding: 40px;
+
+                .done-img{
+                    display: flex;
+                    justify-content: center;
+
+                    img{
+                        height: 100px;
+                        /* border: 1px solid black; */
+                        margin-top: -20px;
+                    }
+                }
+
+                .table{
+                    font-size: 1.75rem;
+                    font-weight: 600;
+                    letter-spacing: 0.25rem;
+                    text-transform: uppercase;
+                    text-align: center;
+                    color: #474747;
+                    margin-bottom: 10px;
+                }
+
+                .order-placed{
+                    font-size: 1.75rem;
+                    font-weight: 600;
+                    letter-spacing: 0.25rem;
+                    text-transform: uppercase;
+                    text-align: center;
+                    /* color: #e5ae71; */
+                    margin-bottom: 10px;
+
+                    svg{
+                        /* fill: #e5ae71; */
+                    }
+                }
+
+                .order-detail-after-placed{
+                    font-size: 1rem;
+                    font-weight: 300;
+                    letter-spacing: 0.1rem;
+                    /* text-transform: uppercase; */
+                    text-align: center;
+                    color: #474747;
+                    margin-bottom: 40px;
+                }
+
+                .order-detail{
+                    font-size: 1rem;
+                    font-weight: 500;
+                    letter-spacing: 0.25rem;
+                    text-transform: uppercase;
+                    text-align: center;
+                    color: #474747;
+                    margin-bottom: 40px;
+                }
+
+                .order-item{
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 25px 0;
+                    border-bottom: 1px solid #dadada;
+
+                    .left{
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+
+                        .about-item{
+                            .item-name{
+                                font-size: 0.95rem;
+                                font-weight: 500;
+                                letter-spacing: 0.1rem;
+            
+                                span{
+                                    font-size: 0.85rem;
+                                    font-weight: 300;
+                                    letter-spacing: 0.1rem;
+                                }
+                            }
+                            .item-more{
+                                font-size: 0.8rem;
+                                font-weight: 300;
+                                letter-spacing: 0.03rem;
+                                margin-top: 5px;
+                            }
+                        }
+                        
+                        .item-count{
+                            margin: 0 15px 0 0;
+                            display: flex;
+                            align-items: center;
+                            
+                            svg{
+                                font-size: 0.8rem;
+                                letter-spacing: 0.1rem;
+                            }
+
+                            .val{
+                                font-size: 1rem;
+                                font-weight: 500;
+                                margin-right: 10px;
+                                letter-spacing: 0.1rem;
+                            }
+                        }
+                    }
+                
+                    .right{
+                        .price{
+                            font-size: 0.8rem;
+                            font-weight: 500;
+                            letter-spacing: 0.1rem;
+                            flex: 1;
+                            white-space: nowrap;
+                        }
+                    }
+                }
+
+                .total-price{
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 25px 0;
+                    border-bottom: 1px solid #dadada;
+
+                    .left{
+                        font-size: 0.95rem;
+                        font-weight: 600;
+                        letter-spacing: 0.1rem;
+                    }
+
+                    .right{
+                        font-size: 1rem;
+                        font-weight: 600;
+                        letter-spacing: 0.1rem;
+                    }
+                }
+
+                .place-order{
+                    display: flex;
+                    
+                    .payment-btn{
+                        color: #333;
+                        text-decoration: none;
+                        padding: 10px 20px;
+                        background-color: #ebf0df;
+                        font-size: 0.8rem;
+                        font-weight: 500;
+                        letter-spacing: 0.1rem;
+                        border-radius: 5px;
+                        white-space: nowrap;
+                        
+                        display: flex;
+                        align-items: center;
+
+                        svg{
+                            font-size: 1rem;
+                            margin: -3px 3px 0 0;
+                        }
+                    }
+
+                    .download-btn{
+                        color: #333;
+                        text-decoration: none;
+                        padding: 10px 20px;
+                        background-color: whitesmoke;
+                        font-size: 0.8rem;
+                        font-weight: 500;
+                        letter-spacing: 0.1rem;
+                        border-radius: 5px;
+                        margin-right: 10px;
+                        white-space: nowrap;
+                        margin-top: 25px;
+                    }
+                }
+
+                .cancel-order{
+                    width: 100%;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    /* margin-top: 20px; */
+                    
+                    .cancel-order-time-fill{
+                        flex: 1;
+                        background-color: whitesmoke;
+                        border-radius: 100px;
+                        height: 6px;
+                        overflow: hidden;
+
+                        .fill{
+                            width: 60%;
+                            background-color: orange;
+                            height: 100%;
+                        }
+                    }
+                    
+                    .cancel-btn{
+                        color: #fff;
+                        text-decoration: none;
+                        padding: 5px 10px;
+                        background-color: #f96a6a;
+                        font-size: 0.65rem;
+                        font-weight: 500;
+                        letter-spacing: 0.1rem;
+                        border-radius: 5px;
+                        margin-left: 10px;
+                        
+                        display: flex;
+                        align-items: center;
+                        text-align: center;
+
+                        svg{
+                            font-size: 1rem;
+                            margin: -3px 3px 0 0;
+                        }
+                    }
+                }
+
+                .info-text{
+                    margin: 40px auto;
+                    font-size: 0.85rem;
+                    font-weight: 200;
+
+                    svg{
+                        font-size: 1.25rem;
+                        margin-bottom: -3px;
+                        margin-right: 2px;
+                    }
+                    
+                    b{
+                        font-weight: 500;
+                        font-size: 0.75rem;
+                    }
+                    
+                    i{
+                        color: #153d85;
+                        margin-left: 5px;
+                        font-weight: 300;
+                        font-size: 0.75rem;
+                    }
+                }
+
+                .info-text-2{
+                    margin-top: 40px;
+                    margin-bottom: 10px;
+                    font-size: 0.8rem;
+                    font-weight: 200;
+
+                    svg{
+                        font-size: 1.25rem;
+                        margin-bottom: -3px;
+                        margin-right: 2px;
+                    }
+                    
+                    b{
+                        font-weight: 500;
+                        font-size: 0.75rem;
+                    }
+
+                    i{
+                        color: cornflowerblue;
+                        display: block;
+                        font-weight: 500;
+                        margin: 10px 0;
+                    }
+                }
+
+                .zigzag{
+                    position: relative;
+                    width: 100%;
+                    /* height: 700px; */
+                    background: #e9e8ec;
+                    /* background-color: white; */
+                }
+
+                .bill{
+                    height: 700px;
+                }
+
+                .zigzag::before{
+                    content: "";
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 5px;
+                    background: linear-gradient(135deg,#fff 5px,
+                    transparent 0%), linear-gradient(-135deg,#fff 5px,
+                    transparent 0%);
+                    background-size: 15px;
+                }
+                
+                .zigzag::after{
+                    content: "";
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 5px;
+                    background: linear-gradient(45deg,#fff 5px,
+                    transparent 0%), linear-gradient(-45deg,#fff 5px,
+                    transparent 0%);
+                    background-size: 15px;
+                }
+
+                .payment{
+                    padding: 20px;
+                    font-size: 0.8rem;
+                    margin-bottom: 10px;
+                    background-color: #c3eec3;
+                    font-weight: 400;
+                    
+                    b{
+                        display: block;
+                        font-weight: 400;
+                    }
+                }
+
+                .payment-btns{
+                }
+
+                .pay-after{
+                    margin-top: 25px;
+                    display: flex;
+                    align-items: center;
+                    font-size: 0.85rem;
+
+                    svg{
+                        font-size: 1rem;
+                    }
+                }
+
+                .back-btn{
+                    position: absolute;
+                    left: 20px;
+                    top: 20px;
+                    font-size: 0.85rem;
+                    
+                    svg{
+                        font-size: 1rem;
+                    }
+                }
+            }   
 
             .product-mapping{
                 display: flex;
