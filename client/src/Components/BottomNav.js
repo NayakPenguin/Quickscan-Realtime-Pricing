@@ -9,7 +9,7 @@ import FastfoodIcon from '@material-ui/icons/Fastfood';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ReceiptIcon from '@material-ui/icons/Receipt';
 
-const BottomNav = ({ currPage, realTimeOrderedItemCount }) => {
+const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
     const [isOrderExpanded, setIsOrderExpanded] = useState(false);
     const [totalCount, setTotalCount] = useState(0);
     const [totalPrice, setTotalPrice] = useState(0);
@@ -48,109 +48,111 @@ const BottomNav = ({ currPage, realTimeOrderedItemCount }) => {
     // const [ordersToday, setOrdersToday] = useState([]); // get this from localhost or something
     // const [orderDone, setOrderDone] = useState(false);
 
-    // let orderedMenu = [];
+    let orderedMenu = [];
 
-    // useEffect(() => {
-    //     orderedMenu = [];
-    //     let count = 0, price = 0;
+    useEffect(() => {
+        orderedMenu = [];
+        let count = 0, price = 0;
 
-    //     console.log(orderedItemCount);
+        console.log(orderedItemCount);
 
-    //     Object.keys(orderedItemCount).forEach((encodedValue) => {
-    //         // keyDecoder(encodedValue);
-    //         let itemPrice = 0;
-    //         const { itemIndex, detailsKeyArray } = keyDecoder(encodedValue);
-    //         console.log(itemIndex, detailsKeyArray);
+        Object.keys(orderedItemCount).forEach((encodedValue) => {
+            // keyDecoder(encodedValue);
+            let itemPrice = 0;
+            const { itemIndex, detailsKeyArray } = keyDecoder(encodedValue);
+            console.log(itemIndex, detailsKeyArray);
 
-    //         const options = detailsKeyArray;
+            const options = detailsKeyArray;
 
-    //         console.log(itemIndex, options);
+            console.log(menuData);
 
-    //         const orderedItemCountValue = orderedItemCount[encodedValue];
+            console.log(itemIndex, options);
 
-    //         console.log(itemIndex, options, orderedItemCountValue);
+            const orderedItemCountValue = orderedItemCount[encodedValue];
 
-    //         count += orderedItemCountValue;
+            console.log(itemIndex, options, orderedItemCountValue);
 
-    //         const menuItem = menuData[itemIndex];
+            count += orderedItemCountValue;
 
-    //         itemPrice += menuItem.price * orderedItemCountValue;
+            const menuItem = menuData[itemIndex];
 
-    //         let tempOrder = {
-    //             count: orderedItemCountValue,
-    //             price: 0,  // Adjust this line based on your requirements
-    //             itemName: `${menuItem.name}`,
-    //             extraWithItem: "",
-    //         };
+            itemPrice += menuItem.price * orderedItemCountValue;
 
-    //         if (menuItem.details_options && menuItem.details_options.length > 0 && options.length > 0) {
-    //             options.forEach((option, idx) => {
-    //                 const optionIndex = option;  // Use option as index, assuming it's a valid index
-    //                 const optionValue = menuItem.details_options[idx].extra[optionIndex];
+            let tempOrder = {
+                count: orderedItemCountValue,
+                price: 0,  // Adjust this line based on your requirements
+                itemName: `${menuItem.name}`,
+                extraWithItem: "",
+            };
 
-    //                 console.log(optionValue);
+            if (menuItem.details_options && menuItem.details_options.length > 0 && options.length > 0) {
+                options.forEach((option, idx) => {
+                    const optionIndex = option;  // Use option as index, assuming it's a valid index
+                    const optionValue = menuItem.details_options[idx].extra[optionIndex];
 
-    //                 // Add option value to the total price
-    //                 itemPrice += optionValue * orderedItemCountValue;
-    //             });
+                    console.log(optionValue);
 
-    //             const selectedOptionValues = options.map((option, idx) => menuItem.details_options[idx].options[option]);
+                    // Add option value to the total price
+                    itemPrice += optionValue * orderedItemCountValue;
+                });
 
-    //             console.log(selectedOptionValues);
+                const selectedOptionValues = options.map((option, idx) => menuItem.details_options[idx].options[option]);
 
-    //             // Combine item name and selected option values
-    //             const extraWithItem = options.map((option, idx) => {
-    //                 if (menuItem.details_options[idx] && menuItem.details_options[idx].options[option]) {
-    //                     return menuItem.details_options[idx].options[option];
-    //                 }
-    //                 return null; // or some default value if the option is not selected
-    //             }).filter(value => value !== null).join(', ');
+                console.log(selectedOptionValues);
 
-    //             tempOrder.extraWithItem = extraWithItem;
-    //         }
+                // Combine item name and selected option values
+                const extraWithItem = options.map((option, idx) => {
+                    if (menuItem.details_options[idx] && menuItem.details_options[idx].options[option]) {
+                        return menuItem.details_options[idx].options[option];
+                    }
+                    return null; // or some default value if the option is not selected
+                }).filter(value => value !== null).join(', ');
 
-    //         tempOrder.price = itemPrice;
+                tempOrder.extraWithItem = extraWithItem;
+            }
 
-    //         orderedMenu.push(tempOrder);
+            tempOrder.price = itemPrice;
 
-    //         price += itemPrice;
-    //     });
+            orderedMenu.push(tempOrder);
 
-    //     // Update total count and price
-    //     setTotalCount(count);
-    //     setTotalPrice(price);
+            price += itemPrice;
+        });
 
-    //     console.log(orderedMenu);
+        // Update total count and price
+        setTotalCount(count);
+        setTotalPrice(price);
 
-    //     setOrderedMenuState(orderedMenu);
+        console.log(orderedMenu);
 
-    //     if (count > 0 || price > 0) {
-    //         setBouncing(true);
-    //         setTimeout(() => setBouncing(false), 750);
-    //     }
-    // }, [orderedItemCount]);
+        setOrderedMenuState(orderedMenu);
 
-    // const keyDecoder = (key) => {
-    //     // console.log("MARK1 : ", key);
-    //     // const [itemId, ...detailsKeyArray] = key.split('-').map((value) => parseInt(value));
+        if (count > 0 || price > 0) {
+            setBouncing(true);
+            setTimeout(() => setBouncing(false), 750);
+        }
+    }, [orderedItemCount]);
 
-    //     const splitArray = key.split('-');
+    const keyDecoder = (key) => {
+        // console.log("MARK1 : ", key);
+        // const [itemId, ...detailsKeyArray] = key.split('-').map((value) => parseInt(value));
 
-    //     console.log("splitArray:", splitArray);
+        const splitArray = key.split('-');
 
-    //     const itemId = splitArray[0];
-    //     const itemIndex = menuData.findIndex(item => item.id === itemId);
-    //     let detailsKeyArray = [];
+        console.log("splitArray:", splitArray);
 
-    //     for (let i = 1; i < splitArray.length; i++) {
-    //         detailsKeyArray.push(parseInt(splitArray[i]));
-    //     }
+        const itemId = splitArray[0];
+        const itemIndex = menuData.findIndex(item => item.id === itemId);
+        let detailsKeyArray = [];
 
-    //     console.log(itemId);
-    //     console.log(detailsKeyArray);
+        for (let i = 1; i < splitArray.length; i++) {
+            detailsKeyArray.push(parseInt(splitArray[i]));
+        }
 
-    //     return { itemIndex, detailsKeyArray };
-    // };
+        console.log(itemId);
+        console.log(detailsKeyArray);
+
+        return { itemIndex, detailsKeyArray };
+    };
 
     // const modalRef = useRef(null);
 
