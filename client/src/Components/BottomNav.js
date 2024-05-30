@@ -36,6 +36,10 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
         return localStorage.getItem('creatorShopId') || null;
     });
 
+    const [scanId, setScanId] = useState(() => {
+        return localStorage.getItem('scanId') || null;
+    });
+
     const [orderedItemCount, setOrderedItemCount] = useState(() => {
         const savedOrderedItemCount = localStorage.getItem('orderedItemCount');
         return savedOrderedItemCount ? JSON.parse(savedOrderedItemCount).data : null;
