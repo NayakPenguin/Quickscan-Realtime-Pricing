@@ -27,6 +27,7 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
     const [fillWidth, setFillWidth] = useState(0);
     const [showCancelOrder, setShowCancelOrder] = useState(false);
     const [orderDone, setOrderDone] = useState(false);
+    const [finalOrderCount, setFinalOrderCount] = useState(-1);
 
     const [notifySections, setNotifySections] = useState(localStorage.getItem('notifyOrders') || false);
 
@@ -329,6 +330,7 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
             });
 
             console.log(orderCount + 1);
+            setFinalOrderCount(orderCount + 1);
 
             console.log("newOrderNoItemDoc pushed!");
 
@@ -415,7 +417,7 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
                                     <div className="done-img"><img src="https://i.gifer.com/7efs.gif" alt="" /></div>
                                     <div className="order-placed">Order Placed</div>
                                     <div className="order-detail-after-placed">
-                                        Table 14, Order No. ---
+                                        Table 14, Order No. {finalOrderCount}
                                     </div>
                                     <div className="zigzag bill">
                                         {orderedMenuState.map((item, index) => (
