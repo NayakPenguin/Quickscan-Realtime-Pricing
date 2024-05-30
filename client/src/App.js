@@ -17,9 +17,9 @@ const App = () => {
       <Routes>
         <Route path="/qrscan/:creatorShopId/:scanId" element={<PreMenu/>} />
         <Route path="/restaurant/menu" element={<MenuMain/>} />
-        <Route path="user/orders" element={<UserOrders/>} />
-        <Route path="user/bills" element={<UserBills/>} />
-        <Route path="user/profile" element={<UserProfile/>} />
+        <Route path="/user/orders" element={<UserOrders/>} />
+        <Route path="/user/bills" element={<UserBills/>} />
+        <Route path="/user/profile" element={<UserProfile/>} />
       </Routes>
     </div>
   )

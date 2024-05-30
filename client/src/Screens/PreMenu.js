@@ -33,8 +33,8 @@ const PreMenu = () => {
     const API_BASE_URL = "localhost:8000";
 
     useEffect(() => {
-        console.log(creatorShopId);
-        console.log(scanId);
+        // console.log(creatorShopId);
+        // console.log(scanId);
     }, [creatorShopId, scanId]);
 
     const handleOpenOTP = async () => {
