@@ -154,6 +154,33 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
     // ----------------- CONTROL 1 (Complete) -----------------
 
 
+    const handleConfirmOrderClick = () => {
+        setShowCancelOrder(true);
+
+        const totalTime = 5000; // 5 seconds
+        const interval = 10; // Update every 10 milliseconds
+        const steps = totalTime / interval;
+
+        let step = 1;
+
+        const updateFillWidth = () => {
+            setFillWidth((step / steps) * 100);
+            step += 1;
+
+            if (step <= steps) {
+                setTimeout(updateFillWidth, interval);
+            }
+        };
+
+        updateFillWidth();
+
+        // After 5 seconds, perform setShowPage(3) or any other logic
+        setTimeout(() => {
+            setShowPage(2);
+            // pushOrderToDB(orderedMenuState);
+        }, 5000);
+    };
+
 
     // const modalRef = useRef(null);
 
@@ -267,7 +294,152 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
                 </div>
 
                 <div className={`content ${isOrderExpanded ? 'expanded' : ''}`}>
-                    <div className="middle">
+                {
+                        showPage == 1 ? (
+                            <div className="middle">
+                                <div className="table">Table 14</div>
+                                <div className="order-detail">Order No. 54</div>
+                                {orderedMenuState.map((item, index) => (
+                                    <div className="order-item" key={index}>
+                                        <div className="left">
+                                            <div className="item-count">
+                                                <div className="val">{item.count}</div>
+                                                {/* Assuming you have a CloseIcon component */}
+                                                <CloseIcon />
+                                            </div>
+                                            <div className="about-item">
+                                                <div className="item-name">{item.itemName}</div>
+                                                <div className="item-more">{item.extraWithItem}</div>
+                                            </div>
+                                        </div>
+                                        <div className="right">
+                                            <div className="price">₹ {item.price.toFixed(2)}</div>
+                                        </div>
+                                    </div>
+                                ))}
+
+                                <div className="total-price">
+                                    <div className="left">Total Amount</div>
+                                    <div className="right">₹ {totalPrice.toFixed(2)}</div>
+                                </div>
+
+                                <div className="info-text">
+                                    <InfoIcon />
+                                    All the updates will be sent on your Whatsapp Number, (<b>+91 9306191179</b>).
+                                    <i>Change Number</i>
+                                </div>
+
+
+                                {!showCancelOrder && (
+                                    <div className="place-order">
+                                        <div className="payment-btn" onClick={handleConfirmOrderClick}>
+                                            Confirm Order
+                                        </div>
+                                    </div>
+                                )}
+
+                                {showCancelOrder && (
+                                    <div className="cancel-order">
+                                        <div className="cancel-order-time-fill">
+                                            <div className="fill" style={{ width: `${fillWidth}%` }}></div>
+                                        </div>
+                                        <div className="cancel-btn">Cancel</div>
+                                    </div>
+                                )}
+                            </div>
+                        ) :
+                            showPage == 2 ? (
+                                <div className="middle">
+                                    <div className="back-btn center" onClick={() => setShowPage(1)}>
+                                        <ArrowBackIosIcon />
+                                        Edit Menu
+                                    </div>
+                                    <div className="order-placed">Payment</div>
+                                    <div className="order-detail-after-placed">
+                                        Table 14, Order No. 54
+                                    </div>
+                                    <div className="place-order center">
+                                        <a href={`tez://upi/pay?pa=ajha8931@oksbi@indus&pn=Nayak's%20Bistro&am=1.00&cu=INR&mc=4900&tn=Payment%20for%20Table%2014,%20Order%20No.%20:%2054`} className="payment-btn" onClick={() => setShowPage(4)}>Pay with UPI</a>
+                                        {
+                                            allowPostPaid == false ? <>or <div className="payment-btn" onClick={() => { setCallWaiter(true); setShowPage(4); }}><PanToolIcon />Call a Waiter</div></> : <></>
+                                        }
+                                    </div>
+                                    {
+                                        allowPostPaid ? (
+                                            <div className="pay-after center" onClick={() => setShowPage(3)}>
+                                                Or, Pay after Dining <ChevronRightIcon />
+                                            </div>
+                                        ) : (<div className="pay-after center">
+                                            <i>*You Need to Pay before dining.</i>
+                                        </div>)
+                                    }
+                                </div>
+                            ) : showPage == 3 ? (
+                                <div className="middle">
+                                    {/* <div className="back-btn center" onClick={() => setShowPage(2)}>
+                                    <ArrowBackIosIcon/>
+                                    Temp Back
+                                </div> */}
+                                    <div className="done-img"><img src="https://i.gifer.com/7efs.gif" alt="" /></div>
+                                    <div className="order-placed">Order Placed</div>
+                                    <div className="order-detail-after-placed">
+                                        Table 14, Order No. {
+                                            orderDone ? (
+                                                <>{ordersToday[ordersToday.length - 1].orderCount}</>
+                                            ) : (<>...generating</>)
+                                        }
+                                    </div>
+                                    <div className="zigzag bill"></div>
+                                    {/* <div className="place-order center">
+                                    <div className="download-btn">
+                                        Download Bill
+                                    </div>
+                                </div> */}
+                                    <div className="info-text-2">
+                                        <InfoIcon />
+                                        <i onClick={() => { scrollToTop(); expanded && showPage == 3 && scrollToTopMenuMain(); handleToggleExpand(); setShowPage(1); }}>Click this to go back to Menu Page</i>
+                                        All the updates and bill will be sent on your <b>Whatsapp</b> Number, (<b>+91 9306191179</b>).
+                                        — For any assistance during your dining experience, simply click the <b>top-right icon</b>.
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="middle">
+                                    {/* <div className="back-btn center" onClick={() => setShowPage(2)}>
+                                    <ArrowBackIosIcon/>
+                                    Temp Back
+                                </div> */}
+                                    <div className="done-img"><img src="https://i.gifer.com/7efs.gif" alt="" /></div>
+                                    <div className="order-placed">Order Placed</div>
+                                    <div className="order-detail-after-placed">
+                                        Table 14, Order No. 54
+                                    </div>
+                                    <div className="zigzag payment">
+                                        {
+                                            !callWaiter ? <>If you've completed the payment, the restaurant management will manually verify it and send the payment confirmation status to your WhatsApp.</> :
+                                                <>
+                                                    Your waiter will be with you shortly; thank you for your patience.
+                                                </>
+                                        }
+
+
+                                        {/* <b>Since this is a prepaid dining experience, you need to pay first - if the payment is not completed the resturant might close the order.</b> */}
+                                    </div>
+                                    <div className="zigzag bill"></div>
+                                    {/* <div className="place-order center">
+                                    <div className="download-btn">
+                                        Download Bill
+                                    </div>
+                                </div> */}
+                                    <div className="info-text-2">
+                                        <InfoIcon />
+                                        <i onClick={() => { scrollToTop(); expanded && showPage == 3 && scrollToTopMenuMain(); handleToggleExpand(); setShowPage(1); }}>Click this to go back to Menu Page</i>
+                                        All the updates and bill will be sent on your <b>Whatsapp</b> Number, (<b>+91 9306191179</b>).
+                                        — For any assistance during your dining experience, simply click the <b>top-right icon</b>.
+                                    </div>
+                                </div>
+                            )
+                    }
+                    {/* <div className="middle">
                         {
                             orderedMenuState.length > 0 ? 
                             <div className="product-mapping">
@@ -281,7 +453,7 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
                                 ))}
                             </div> : null
                         }
-                    </div>
+                    </div> */}
                 </div>
             </div>
 
