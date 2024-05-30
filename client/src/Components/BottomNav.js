@@ -268,14 +268,14 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
 
                 <div className={`content ${isOrderExpanded ? 'expanded' : ''}`}>
                     {
-                        orderedMenu.length > 0 ? 
+                        orderedMenuState.length > 0 ? 
                         <div className="product-mapping">
-                            {orderedMenu.map((item, index) => (
+                            {orderedMenuState.map((item, index) => (
                                 <div key={index} className="item">
-                                <p>Item Name: {item.itemName}</p>
-                                <p>Count: {item.count}</p>
-                                <p>Price: ${item.price.toFixed(2)}</p>
-                                <p>Extras: {item.extraWithItem}</p>
+                                    <p>Item Name: {item.itemName}</p>
+                                    <p>Count: {item.count}</p>
+                                    <p>Price: ${item.price.toFixed(2)}</p>
+                                    <p>Extras: {item.extraWithItem}</p>
                                 </div>
                             ))}
                         </div> : null
@@ -367,7 +367,21 @@ const Container = styled.div`
 
         .expanded {
             display: block;
-            height: 550px;
+            height: 450px;
+            overflow-y: scroll;
+            padding: 10px;
+
+            .product-mapping{
+                display: flex;
+                flex-direction: column;
+
+                .item{
+                    margin-bottom: 10px;
+                    padding: 10px;
+                    background-color: #fff6f6;
+                    border-radius: 5px;
+                }
+            }
         }
     }
 
