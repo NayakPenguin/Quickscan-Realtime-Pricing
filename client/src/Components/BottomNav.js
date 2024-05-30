@@ -160,7 +160,7 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
 
 
     const handleConfirmOrderClick = () => {
-        // setShowCancelOrder(true);
+        setShowCancelOrder(true);
 
         const totalTime = 5000; // 5 seconds
         const interval = 10; // Update every 10 milliseconds
@@ -268,14 +268,14 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
     //         ]);
 
     //         const ordersNoCollectionRef = collection(db, `OrderNumbers${creatorShopId}`);
-            
+
     //         const newOrderNoItemDoc = await addDoc(ordersNoCollectionRef, {
     //             orderId: newOrderItemDoc.id,
     //             orderCount: orderCount + 1,
     //         });
 
     //         console.log("newOrderNoItemDoc pushed!");
-            
+
     //         setOrderDone(true);
     //     } catch (error) {
     //         console.error('Error adding menu item: ', error);
@@ -299,7 +299,7 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
                 </div>
 
                 <div className={`content ${isOrderExpanded ? 'expanded' : ''}`}>
-                {
+                    {
                         showPage == 1 ? (
                             <div className="middle">
                                 <div className="table">Table 14</div>
@@ -328,29 +328,24 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
                                     <div className="right">₹ {totalPrice.toFixed(2)}</div>
                                 </div>
 
-                                <div className="info-text">
+                                {/* <div className="info-text">
                                     <InfoIcon />
                                     All the updates will be sent on your Whatsapp Number, (<b>+91 9306191179</b>).
                                     <i>Change Number</i>
-                                </div>
+                                </div> */}
 
-
-                                {!showCancelOrder && (
-                                    <div className="place-order">
-                                        <div className="payment-btn" onClick={handleConfirmOrderClick}>
-                                            Confirm Order
-                                        </div>
-                                    </div>
-                                )}
-
-                                {showCancelOrder && (
+                                {showCancelOrder ? (
                                     <div className="cancel-order">
                                         <div className="cancel-order-time-fill">
                                             <div className="fill" style={{ width: `${fillWidth}%` }}></div>
                                         </div>
                                         <div className="cancel-btn">Cancel</div>
                                     </div>
-                                )}
+                                ) : <div className="place-order">
+                                    <div className="payment-btn" onClick={handleConfirmOrderClick}>
+                                        Confirm Order
+                                    </div>
+                                </div>}
                             </div>
                         ) :
                             showPage == 2 ? (
@@ -410,21 +405,6 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
                                 </div>
                             )
                     }
-                    {/* <div className="middle">
-                        {
-                            orderedMenuState.length > 0 ? 
-                            <div className="product-mapping">
-                                {orderedMenuState.map((item, index) => (
-                                    <div key={index} className="item">
-                                        <p>Item Name: {item.itemName}</p>
-                                        <p>Count: {item.count}</p>
-                                        <p>Price: ${item.price.toFixed(2)}</p>
-                                        <p>Extras: {item.extraWithItem}</p>
-                                    </div>
-                                ))}
-                            </div> : null
-                        }
-                    </div> */}
                 </div>
             </div>
 
