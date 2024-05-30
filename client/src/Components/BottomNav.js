@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-
+import { useNavigate } from 'react-router-dom';
 import "../CustomerCSS.css";
 
 // Material Ui Icons
@@ -20,13 +20,14 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
     const [totalCount, setTotalCount] = useState(0);
     const [totalPrice, setTotalPrice] = useState(0);
     const [orderedMenuState, setOrderedMenuState] = useState([])
-    const [isBouncing, setBouncing] = useState(false);
     const [showPage, setShowPage] = useState(1);
-    const [allowPostPaid, setAllowPostPaid] = useState(true);
-    const [callWaiter, setCallWaiter] = useState(false);
     const [fillWidth, setFillWidth] = useState(0);
     const [showCancelOrder, setShowCancelOrder] = useState(false);
     const [orderDone, setOrderDone] = useState(false);
+
+    const [notifySections, setNotifySections] = useState(localStorage.getItem('notifyOrders') || false);
+
+    console.log(notifySections);
 
     const [creatorShopId, setCreatorShopId] = useState(() => {
         return localStorage.getItem('creatorShopId') || null;
@@ -46,6 +47,12 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
             updateLocalStorageOrderedItemCount(orderedItemCount);
         }
     }, [orderedItemCount]);
+
+    useEffect(() => {
+        if(notifySections){
+            localStorage.setItem('notifyOrders', true);
+        }
+    }, [notifySections])
 
     const updateLocalStorageOrderedItemCount = (orderedItemCount) => {
         const updatedOrderedItemCount = {
@@ -216,14 +223,16 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
 
 
     // ----------------- CONTROL 3 (Start) -----------------
+    const navigate = useNavigate(); 
 
     useEffect(() => {
         if(isOrderExpanded == false && orderDone == true){
             console.log("isOrderExpanded == false && orderDone == true");
             localStorage.removeItem('orderedItemCount');
             setOrderedItemCount({});
+            window.location.reload();
         }
-    }, [isOrderExpanded, orderDone]);
+    }, [isOrderExpanded, orderDone, navigate]);
 
 
     // ----------------- CONTROL 3 (Complete) -----------------
@@ -263,7 +272,7 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
     
             console.log(updatedOrderedItemCount);
             localStorage.setItem('orderedItemCount', JSON.stringify(updatedOrderedItemCount));
-
+            setNotifySections(true);
             // pushOrderToDB(orderedMenuState);
         }, 5000);
     };
@@ -512,14 +521,13 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
                     <div className="text">
                         Orders
                     </div>
-                    <div className="update-notify"></div>    
+                    { notifySections ? <div className="update-notify"></div>  : null }
                 </a>
                 <a href="/user/bills" className={currPage == "bills" ? "link curr-link" : "link"}>
                     <ReceiptIcon />
                     <div className="text">
                         Bills
                     </div>
-                    <div className="update-notify"></div>    
                 </a>
                 <a href="/user/profile" className={currPage == "profile" ? "link curr-link" : "link"}>
                     <AccountCircleIcon />
