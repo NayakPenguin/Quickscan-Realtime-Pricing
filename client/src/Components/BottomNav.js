@@ -14,7 +14,6 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
     const [totalCount, setTotalCount] = useState(0);
     const [totalPrice, setTotalPrice] = useState(0);
     const [isBouncing, setBouncing] = useState(false);
-    const [orderedMenuState, setOrderedMenuState] = useState([]);
     const [showPage, setShowPage] = useState(1);
     const [allowPostPaid, setAllowPostPaid] = useState(true);
     const [callWaiter, setCallWaiter] = useState(false);
@@ -38,15 +37,16 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
         }
     }, [realTimeOrderedItemCount]);
 
+    // useEffect(() => {
+    //     console.log(menuData);
+    // }, [menuData])
+
 
     const handleOrderClick = () => {
         setIsOrderExpanded(!isOrderExpanded);
     };
 
-    // ------------------ FROM OLD CODE ------------------
-
-    // const [ordersToday, setOrdersToday] = useState([]); // get this from localhost or something
-    // const [orderDone, setOrderDone] = useState(false);
+    // ----------------- CONTROL 1 (Start) -----------------
 
     let orderedMenu = [];
 
@@ -123,13 +123,6 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
         setTotalPrice(price);
 
         console.log(orderedMenu);
-
-        setOrderedMenuState(orderedMenu);
-
-        if (count > 0 || price > 0) {
-            setBouncing(true);
-            setTimeout(() => setBouncing(false), 750);
-        }
     }, [orderedItemCount]);
 
     const keyDecoder = (key) => {
@@ -153,6 +146,12 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
 
         return { itemIndex, detailsKeyArray };
     };
+
+
+
+    // ----------------- CONTROL 1 (Complete) -----------------
+
+
 
     // const modalRef = useRef(null);
 
@@ -218,8 +217,6 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
 
     //         console.log('Order item added successfully with ID: ', newOrderItemDoc.id);
 
-    //         setOrderedMenuState([]);
-
     //         // Find how many orders have timeOfOrder less than the current order
     //         const orderQuery = query(ordersCollectionRef, where('timeOfOrder', '<', currentTime));
     //         const orderSnapshot = await getDocs(orderQuery);
@@ -261,13 +258,14 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
 
             <div className="order-container">
                 <div className={`upper-layer-text ${isOrderExpanded ? 'expanded-layer-text' : ''}`} onClick={handleOrderClick}>
-                    Added {Object.keys(orderedItemCount).length} items for ₹192.78.
+                    Added {totalCount} items for ₹{totalPrice.toFixed(2)}.
                     {
                         isOrderExpanded ? <b>Click to Close</b> : <b>Click to Order</b>
                     }
                 </div>
-                <div className={`content ${isOrderExpanded ? 'expanded' : ''}`}>
 
+                <div className={`content ${isOrderExpanded ? 'expanded' : ''}`}>
+                    hello
                 </div>
             </div>
 
@@ -350,9 +348,11 @@ const Container = styled.div`
             background-color: white;
             border-bottom: 1px solid rgb(233, 229, 229);
             transition: height 0.25s ease-in-out;
+            display: none;
         }
 
         .expanded {
+            display: block;
             height: 550px;
         }
     }
