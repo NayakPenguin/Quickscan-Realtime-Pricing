@@ -160,7 +160,8 @@ const MenuMain = () => {
 
     const dataToStore = {
         data: orderedItemCount,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        orderCompleted: false,
     };
     localStorage.setItem('orderedItemCount', JSON.stringify(dataToStore));
 }, [orderedItemCount]);

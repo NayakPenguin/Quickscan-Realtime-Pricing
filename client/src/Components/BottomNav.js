@@ -37,6 +37,27 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
         return savedOrderedItemCount ? JSON.parse(savedOrderedItemCount).data : null;
     });
 
+    const isInitialMount = useRef(true);
+
+    useEffect(() => {
+        if (isInitialMount.current) {
+            isInitialMount.current = false;
+        } else {
+            updateLocalStorageOrderedItemCount(orderedItemCount);
+        }
+    }, [orderedItemCount]);
+
+    const updateLocalStorageOrderedItemCount = (orderedItemCount) => {
+        const updatedOrderedItemCount = {
+            data: orderedItemCount,
+            timestamp: new Date().toISOString(),
+            orderCompleted: false,
+        };
+
+        console.log(updatedOrderedItemCount);
+        localStorage.setItem('orderedItemCount', JSON.stringify(updatedOrderedItemCount));
+    };
+
     useEffect(() => {
         console.log(orderedItemCount);
     }, [orderedItemCount]);
@@ -66,6 +87,8 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
 
         Object.keys(orderedItemCount).forEach((encodedValue) => {
             // keyDecoder(encodedValue);
+            console.log("encodedValue : ", encodedValue);
+
             let itemPrice = 0;
             const { itemIndex, detailsKeyArray } = keyDecoder(encodedValue);
             console.log(itemIndex, detailsKeyArray);
@@ -91,6 +114,7 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
                 price: 0,  // Adjust this line based on your requirements
                 itemName: `${menuItem.name}`,
                 extraWithItem: "",
+                encodedValue: encodedValue,
             };
 
             if (menuItem.details_options && menuItem.details_options.length > 0 && options.length > 0) {
@@ -156,9 +180,54 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
         return { itemIndex, detailsKeyArray };
     };
 
-
-
     // ----------------- CONTROL 1 (Complete) -----------------
+
+
+
+
+    //  ----------------- CONTROL 2 (Start) -----------------
+
+    const increaseCount = (encodedValue) => {
+        setOrderedItemCount(prev => {
+            const newCount = (prev[encodedValue] || 0) + 1;
+            return { ...prev, [encodedValue]: newCount };
+        });
+    };
+
+    const decreaseCount = (encodedValue) => {
+        setOrderedItemCount(prev => {
+            const newCount = (prev[encodedValue] || 1) - 1;
+            if (newCount < 1) return prev;
+            return { ...prev, [encodedValue]: newCount};
+        });
+    };
+
+    const deleteItem = (encodedValue) => {
+        setOrderedItemCount(prev => {
+            const { [encodedValue]: _, ...rest } = prev;
+            return rest;
+        });
+    };
+
+    // ----------------- CONTROL 2 (Complete) -----------------
+
+
+
+
+
+    // ----------------- CONTROL 3 (Start) -----------------
+
+    useEffect(() => {
+        if(isOrderExpanded == false && orderDone == true){
+            console.log("isOrderExpanded == false && orderDone == true");
+            localStorage.removeItem('orderedItemCount');
+            setOrderedItemCount({});
+        }
+    }, [isOrderExpanded, orderDone]);
+
+
+    // ----------------- CONTROL 3 (Complete) -----------------
+
 
 
     const handleConfirmOrderClick = () => {
@@ -184,17 +253,19 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
         // After 5 seconds, perform setShowPage(3) or any other logic
         setTimeout(() => {
             setShowPage(2);
+            setOrderDone(true);
+
+            const updatedOrderedItemCount = {
+                data: orderedItemCount,
+                timestamp: new Date().toISOString(),
+                orderCompleted: true,
+            };
+    
+            console.log(updatedOrderedItemCount);
+            localStorage.setItem('orderedItemCount', JSON.stringify(updatedOrderedItemCount));
+
             // pushOrderToDB(orderedMenuState);
         }, 5000);
-    };
-
-
-    const modalRef = useRef(null);
-
-    const scrollToTop = () => {
-        if (modalRef.current) {
-            modalRef.current.scrollTop = 0;
-        }
     };
 
     // const [fillWidth, setFillWidth] = useState(0);
@@ -309,8 +380,8 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
                                 {orderedMenuState.map((item, index) => (
                                     <div className="order-item" key={index}>
                                         <div className="update-count">
-                                            <ArrowDropUpIcon style={{"fill" : "orange"}}/>
-                                            <ArrowDropDownIcon style={{"fill" : "red"}}/>
+                                            <ArrowDropUpIcon style={{ fill: 'orange' }} onClick={() => increaseCount(item.encodedValue)} />
+                                            <ArrowDropDownIcon style={{ fill: 'red' }} onClick={() => decreaseCount(item.encodedValue)} />
                                         </div>
                                         <div className="left">
                                             <div className="item-count">
@@ -326,8 +397,8 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
                                         <div className="right">
                                             <div className="price">₹ {item.price.toFixed(2)}</div>
                                         </div>
-                                        <div className="remove-item">
-                                            <DeleteIcon/>
+                                        <div className="remove-item" onClick={() => deleteItem(item.encodedValue)}>
+                                            <DeleteIcon />
                                         </div>
                                     </div>
                                 ))}
@@ -438,11 +509,17 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
                 </a>
                 <a href="/user/orders" className={currPage == "orders" ? "link curr-link" : "link"}>
                     <FastfoodIcon />
-                    <div className="text">Orders</div>
+                    <div className="text">
+                        Orders
+                    </div>
+                    <div className="update-notify"></div>    
                 </a>
                 <a href="/user/bills" className={currPage == "bills" ? "link curr-link" : "link"}>
                     <ReceiptIcon />
-                    <div className="text">Bills</div>
+                    <div className="text">
+                        Bills
+                    </div>
+                    <div className="update-notify"></div>    
                 </a>
                 <a href="/user/profile" className={currPage == "profile" ? "link curr-link" : "link"}>
                     <AccountCircleIcon />
@@ -998,6 +1075,7 @@ const Container = styled.div`
         justify-content: space-between;
     
         .link {
+            position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -1018,6 +1096,15 @@ const Container = styled.div`
                 text-decoration: none;
                 color: #babab9;
                 font-weight: 500;
+                position: relative;
+                
+            }
+            
+            .update-notify{
+                height: 5px;
+                aspect-ratio: 1/1;
+                border-radius: 100px;
+                background-color: orange;
             }
         }
     
