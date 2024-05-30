@@ -4,10 +4,13 @@ import MenuNav from "../Components/MenuNav";
 import OrderedList from "../Components/OrderedList";
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import InfoIcon from '@material-ui/icons/Info';
+import { useNavigate } from 'react-router-dom';
 
 import { db } from "../firebase";
 import { collection, onSnapshot, getDocs } from "firebase/firestore";
 import BottomNav from "../Components/BottomNav";
+
+import { isAuthenticated } from '../Controllers/IsAuthenticated';
 
 const MenuMain = () => {
   const [isVegSelected, setVegSelected] = useState(true);
@@ -28,7 +31,14 @@ const MenuMain = () => {
   const menuCollectionRef = collection(db, `Menu${creatorShopId}`);
   const categoriesCollectionRef = collection(db, `Categories${creatorShopId}`);
 
+  const navigate = useNavigate(); 
+  
   useEffect(() => {
+    console.log("isAuthenticated : ", isAuthenticated());
+    if(isAuthenticated() == false){
+      navigate('/qrscan/');
+    }
+
     const unsubscribeMenu = onSnapshot(menuCollectionRef, (querySnapshot) => {
       const updatedData = querySnapshot.docs.map((doc) => ({
         ...doc.data(),

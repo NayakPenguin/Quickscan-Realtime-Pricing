@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from "styled-components";
 import axios from 'axios'
 
-import { isAuthenticated } from '../Controllers/IsAuthenticated'
+import { isAuthenticated } from '../Controllers/IsAuthenticated';
 
 const PreMenu = () => {
     const [name, setName] = useState("ATANU NAYAK");
@@ -23,7 +23,7 @@ const PreMenu = () => {
             localStorage.setItem('creatorShopId', creatorShopId);
             localStorage.setItem('scanId', scanId);
 
-            if(isAuthenticated){
+            if(isAuthenticated() == true){
                 navigate("/restaurant/menu");
             }
         }
@@ -87,6 +87,8 @@ const PreMenu = () => {
             
             if (success) {
                 localStorage.setItem('token', token);
+                localStorage.setItem('name',  name.trim());
+                localStorage.setItem('mobile', mobile.replace(/\s/g, ''));
                 console.log(message);
                 navigate("/restaurant/menu");
             } else {
