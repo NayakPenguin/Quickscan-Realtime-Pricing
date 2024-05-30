@@ -282,49 +282,20 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
             console.log(updatedOrderedItemCount);
             localStorage.setItem('orderedItemCount', JSON.stringify(updatedOrderedItemCount));
             setNotifySections(true);
-            // pushOrderToDB(orderedMenuState);
+            pushOrderToFirebase(orderedMenuState);
         }, 5000);
     };
 
-    // const [fillWidth, setFillWidth] = useState(0);
-    // const [showCancelOrder, setShowCancelOrder] = useState(false);
-
-    // const handleConfirmOrderClick = () => {
-    //     setShowCancelOrder(true);
-
-    //     const totalTime = 5000; // 5 seconds
-    //     const interval = 10; // Update every 10 milliseconds
-    //     const steps = totalTime / interval;
-
-    //     let step = 1;
-
-    //     const updateFillWidth = () => {
-    //         setFillWidth((step / steps) * 100);
-    //         step += 1;
-
-    //         if (step <= steps) {
-    //             setTimeout(updateFillWidth, interval);
-    //         }
-    //     };
-
-    //     updateFillWidth();
-
-    //     // After 5 seconds, perform setShowPage(3) or any other logic
-    //     setTimeout(() => {
-    //         setShowPage(3);
-    //         pushOrderToDB(orderedMenuState);
-    //     }, 5000);
-    // };
 
     const userDetails = {
-        name: "Atanu Nayak",
-        phone: "+91 93061 91179",
-        email: "nayak.primary@gmail.com",
+        name: localStorage.getItem('name'),
+        phone: localStorage.getItem('mobile'),
+        email: "not-taking-currently-from-user",
     }
 
-    const tableName = "T14-2F";
+    const tableName = localStorage.getItem('scanId');
 
-    const pushOrderToDB = async (orderedMenuState) => {
+    const pushOrderToFirebase = async (orderedMenuState) => {
         setOrderDone(false);
         console.log("orderedMenuState : ", orderedMenuState);
 
@@ -387,8 +358,8 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
                     {
                         showPage == 1 ? (
                             <div className="middle">
-                                <div className="table">Table 14</div>
-                                <div className="order-detail">Order No. 54</div>
+                                <div className="table">Table {scanId}</div>
+                                {/* <div className="order-detail"></div> */}
                                 {orderedMenuState.map((item, index) => (
                                     <div className="order-item" key={index}>
                                         <div className="update-count">
