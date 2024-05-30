@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 
 import "../CustomerCSS.css";
@@ -22,6 +22,7 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
     const [callWaiter, setCallWaiter] = useState(false);
     const [fillWidth, setFillWidth] = useState(0);
     const [showCancelOrder, setShowCancelOrder] = useState(false);
+    const [orderDone, setOrderDone] = useState(false);
 
     const [creatorShopId, setCreatorShopId] = useState(() => {
         return localStorage.getItem('creatorShopId') || null;
@@ -186,13 +187,13 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
     };
 
 
-    // const modalRef = useRef(null);
+    const modalRef = useRef(null);
 
-    // const scrollToTop = () => {
-    //     if (modalRef.current) {
-    //         modalRef.current.scrollTop = 0;
-    //     }
-    // };
+    const scrollToTop = () => {
+        if (modalRef.current) {
+            modalRef.current.scrollTop = 0;
+        }
+    };
 
     // const [fillWidth, setFillWidth] = useState(0);
     // const [showCancelOrder, setShowCancelOrder] = useState(false);
@@ -293,7 +294,7 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
                 <div className={`upper-layer-text ${isOrderExpanded ? 'expanded-layer-text' : ''}`} onClick={handleOrderClick}>
                     Added {totalCount} items for ₹{totalPrice.toFixed(2)}.
                     {
-                        isOrderExpanded ? <b>Click to Close</b> : <b>Click to Order</b>
+                        isOrderExpanded ? <b>Click to Close</b> : <b>Show Order</b>
                     }
                 </div>
 
@@ -357,11 +358,7 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
                                     <div className="done-img"><img src="https://i.gifer.com/7efs.gif" alt="" /></div>
                                     <div className="order-placed">Order Placed</div>
                                     <div className="order-detail-after-placed">
-                                        Table 14, Order No. {
-                                            orderDone ? (
-                                                <>{ordersToday[ordersToday.length - 1].orderCount}</>
-                                            ) : (<>...generating</>)
-                                        }
+                                        Table 14, Order No. ---
                                     </div>
                                     <div className="zigzag bill"></div>
                                     {/* <div className="place-order center">
@@ -404,12 +401,12 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
                                         Download Bill
                                     </div>
                                 </div> */}
-                                    <div className="info-text-2">
+                                    {/* <div className="info-text-2">
                                         <InfoIcon />
                                         <i onClick={() => { scrollToTop(); expanded && showPage == 3 && scrollToTopMenuMain(); handleToggleExpand(); setShowPage(1); }}>Click this to go back to Menu Page</i>
                                         All the updates and bill will be sent on your <b>Whatsapp</b> Number, (<b>+91 9306191179</b>).
                                         — For any assistance during your dining experience, simply click the <b>top-right icon</b>.
-                                    </div>
+                                    </div> */}
                                 </div>
                             )
                     }
