@@ -10,6 +10,10 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ReceiptIcon from '@material-ui/icons/Receipt';
 import CloseIcon from '@material-ui/icons/Close';
 import InfoIcon from '@material-ui/icons/Info';
+import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import DeleteIcon from '@material-ui/icons/Delete';
+
 
 const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
     const [isOrderExpanded, setIsOrderExpanded] = useState(false);
@@ -38,9 +42,7 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
     }, [orderedItemCount]);
 
     useEffect(() => {
-        if (realTimeOrderedItemCount != 'otherpage') {
-            setOrderedItemCount(realTimeOrderedItemCount);
-        }
+        setOrderedItemCount(realTimeOrderedItemCount);
     }, [realTimeOrderedItemCount]);
 
     // useEffect(() => {
@@ -306,6 +308,10 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
                                 <div className="order-detail">Order No. 54</div>
                                 {orderedMenuState.map((item, index) => (
                                     <div className="order-item" key={index}>
+                                        <div className="update-count">
+                                            <ArrowDropUpIcon style={{"fill" : "orange"}}/>
+                                            <ArrowDropDownIcon style={{"fill" : "red"}}/>
+                                        </div>
                                         <div className="left">
                                             <div className="item-count">
                                                 <div className="val">{item.count}</div>
@@ -320,6 +326,9 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
                                         <div className="right">
                                             <div className="price">₹ {item.price.toFixed(2)}</div>
                                         </div>
+                                        <div className="remove-item">
+                                            <DeleteIcon/>
+                                        </div>
                                     </div>
                                 ))}
 
@@ -328,11 +337,10 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
                                     <div className="right">₹ {totalPrice.toFixed(2)}</div>
                                 </div>
 
-                                {/* <div className="info-text">
+                                <div className="info-text">
                                     <InfoIcon />
-                                    All the updates will be sent on your Whatsapp Number, (<b>+91 9306191179</b>).
-                                    <i>Change Number</i>
-                                </div> */}
+                                    After you click on "Confirm Order" your order status will appear in the orders section.
+                                </div>
 
                                 {showCancelOrder ? (
                                     <div className="cancel-order">
@@ -355,7 +363,31 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
                                     <div className="order-detail-after-placed">
                                         Table 14, Order No. ---
                                     </div>
-                                    <div className="zigzag bill"></div>
+                                    <div className="zigzag bill">
+                                        {orderedMenuState.map((item, index) => (
+                                            <div className="order-item" key={index}>
+                                                <div className="left">
+                                                    <div className="item-count">
+                                                        <div className="val">{item.count}</div>
+                                                        {/* Assuming you have a CloseIcon component */}
+                                                        <CloseIcon />
+                                                    </div>
+                                                    <div className="about-item">
+                                                        <div className="item-name">{item.itemName}</div>
+                                                        <div className="item-more">{item.extraWithItem}</div>
+                                                    </div>
+                                                </div>
+                                                <div className="right">
+                                                    <div className="price">₹ {item.price.toFixed(2)}</div>
+                                                </div>
+                                            </div>
+                                        ))}
+
+                                        <div className="total-price">
+                                            <div className="left">Total Amount</div>
+                                            <div className="right">₹ {totalPrice.toFixed(2)}</div>
+                                        </div>
+                                    </div>
                                     {/* <div className="place-order center">
                                     <div className="download-btn">
                                         Download Bill
@@ -379,18 +411,9 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
                                     <div className="order-detail-after-placed">
                                         Table 14, Order No. 54
                                     </div>
-                                    <div className="zigzag payment">
-                                        {
-                                            !callWaiter ? <>If you've completed the payment, the restaurant management will manually verify it and send the payment confirmation status to your WhatsApp.</> :
-                                                <>
-                                                    Your waiter will be with you shortly; thank you for your patience.
-                                                </>
-                                        }
+                                    <div className="zigzag bill">
 
-
-                                        {/* <b>Since this is a prepaid dining experience, you need to pay first - if the payment is not completed the resturant might close the order.</b> */}
                                     </div>
-                                    <div className="zigzag bill"></div>
                                     {/* <div className="place-order center">
                                     <div className="download-btn">
                                         Download Bill
@@ -499,7 +522,7 @@ const Container = styled.div`
             .middle{
                 position: relative;
                 width: 100%;
-                padding: 40px;
+                padding: 40px 20px;
 
                 .done-img{
                     display: flex;
@@ -560,8 +583,45 @@ const Container = styled.div`
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
-                    padding: 25px 0;
+                    padding: 25px;
                     border-bottom: 1px solid #dadada;
+                    position: relative;
+
+                    .update-count{
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        align-items: center;
+                        position: absolute;
+
+                        left: -5px;
+
+                        svg{
+                            font-size: 1.75rem;
+                            margin: -5px 0;
+                            padding: 0;
+                        }
+                    }
+
+                    .remove-item{
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        align-items: center;
+                        position: absolute;
+
+                        right: -20px;
+                        
+                        height: 25px;
+                        width: 25px;
+                        border-radius: 50%;
+                        background-color: #ffd0d0;
+
+                        svg{
+                            font-size: 1.25rem;
+                            padding: 0;
+                        }
+                    }
 
                     .left{
                         display: flex;
@@ -569,6 +629,8 @@ const Container = styled.div`
                         align-items: center;
 
                         .about-item{
+                            margin-right: 10px;
+
                             .item-name{
                                 font-size: 0.95rem;
                                 font-weight: 500;
@@ -772,12 +834,76 @@ const Container = styled.div`
                     position: relative;
                     width: 100%;
                     /* height: 700px; */
-                    background: #e9e8ec;
+                    background: #f2f2f2;
                     /* background-color: white; */
                 }
 
                 .bill{
-                    height: 700px;
+                    padding: 30px;
+
+                    .order-item{
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        padding: 25px 0;
+                        border-bottom: 1px solid #dadada;
+
+                        .left{
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+
+                            .about-item{
+                                margin-right: 10px;
+
+                                .item-name{
+                                    font-size: 0.95rem;
+                                    font-weight: 500;
+                                    letter-spacing: 0.1rem;
+                
+                                    span{
+                                        font-size: 0.85rem;
+                                        font-weight: 300;
+                                        letter-spacing: 0.1rem;
+                                    }
+                                }
+                                .item-more{
+                                    font-size: 0.8rem;
+                                    font-weight: 300;
+                                    letter-spacing: 0.03rem;
+                                    margin-top: 5px;
+                                }
+                            }
+                            
+                            .item-count{
+                                margin: 0 15px 0 0;
+                                display: flex;
+                                align-items: center;
+                                
+                                svg{
+                                    font-size: 0.8rem;
+                                    letter-spacing: 0.1rem;
+                                }
+
+                                .val{
+                                    font-size: 1rem;
+                                    font-weight: 500;
+                                    margin-right: 10px;
+                                    letter-spacing: 0.1rem;
+                                }
+                            }
+                        }
+                    
+                        .right{
+                            .price{
+                                font-size: 0.8rem;
+                                font-weight: 500;
+                                letter-spacing: 0.1rem;
+                                flex: 1;
+                                white-space: nowrap;
+                            }
+                        }
+                    }
                 }
 
                 .zigzag::before{
