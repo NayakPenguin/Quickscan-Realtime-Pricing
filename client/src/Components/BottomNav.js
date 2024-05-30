@@ -13,6 +13,7 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
     const [isOrderExpanded, setIsOrderExpanded] = useState(false);
     const [totalCount, setTotalCount] = useState(0);
     const [totalPrice, setTotalPrice] = useState(0);
+    const [orderedMenuState, setOrderedMenuState] = useState([])
     const [isBouncing, setBouncing] = useState(false);
     const [showPage, setShowPage] = useState(1);
     const [allowPostPaid, setAllowPostPaid] = useState(true);
@@ -123,6 +124,7 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
         setTotalPrice(price);
 
         console.log(orderedMenu);
+        setOrderedMenuState(orderedMenu);
     }, [orderedItemCount]);
 
     const keyDecoder = (key) => {
@@ -265,7 +267,19 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
                 </div>
 
                 <div className={`content ${isOrderExpanded ? 'expanded' : ''}`}>
-                    hello
+                    {
+                        orderedMenu.length > 0 ? 
+                        <div className="product-mapping">
+                            {orderedMenu.map((item, index) => (
+                                <div key={index} className="item">
+                                <p>Item Name: {item.itemName}</p>
+                                <p>Count: {item.count}</p>
+                                <p>Price: ${item.price.toFixed(2)}</p>
+                                <p>Extras: {item.extraWithItem}</p>
+                                </div>
+                            ))}
+                        </div> : null
+                    }
                 </div>
             </div>
 
