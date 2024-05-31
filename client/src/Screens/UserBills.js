@@ -54,6 +54,84 @@ const AllBills = [
         itemName: 'Pasta',
         extraWithItem: 'Olives, Extra Sauce',
         price: 200.00
+      },
+      {
+        count: 4,
+        itemName: 'Pasta',
+        extraWithItem: 'Olives, Extra Sauce',
+        price: 200.00
+      },
+      {
+        count: 4,
+        itemName: 'Pasta',
+        extraWithItem: 'Olives, Extra Sauce',
+        price: 200.00
+      },
+      {
+        count: 4,
+        itemName: 'Pasta',
+        extraWithItem: 'Olives, Extra Sauce',
+        price: 200.00
+      },
+      {
+        count: 4,
+        itemName: 'Pasta',
+        extraWithItem: 'Olives, Extra Sauce',
+        price: 200.00
+      },
+      {
+        count: 4,
+        itemName: 'Pasta',
+        extraWithItem: 'Olives, Extra Sauce',
+        price: 200.00
+      },
+      {
+        count: 4,
+        itemName: 'Pasta',
+        extraWithItem: 'Olives, Extra Sauce',
+        price: 200.00
+      },
+      {
+        count: 4,
+        itemName: 'Pasta',
+        extraWithItem: 'Olives, Extra Sauce',
+        price: 200.00
+      },
+      {
+        count: 4,
+        itemName: 'Pasta',
+        extraWithItem: 'Olives, Extra Sauce',
+        price: 200.00
+      },
+      {
+        count: 4,
+        itemName: 'Pasta',
+        extraWithItem: 'Olives, Extra Sauce',
+        price: 200.00
+      },
+      {
+        count: 4,
+        itemName: 'Pasta',
+        extraWithItem: 'Olives, Extra Sauce',
+        price: 200.00
+      },
+      {
+        count: 4,
+        itemName: 'Pasta',
+        extraWithItem: 'Olives, Extra Sauce',
+        price: 200.00
+      },
+      {
+        count: 4,
+        itemName: 'Pasta',
+        extraWithItem: 'Olives, Extra Sauce',
+        price: 200.00
+      },
+      {
+        count: 4,
+        itemName: 'Pasta',
+        extraWithItem: 'Olives, Extra Sauce',
+        price: 200.00
       }
     ]
   }
@@ -65,12 +143,19 @@ const calculateTotalPrice = (order) => {
 
 const downloadPDF = (bill) => {
   const input = document.getElementById(`bill-${bill.restaurantName.replace(/\s+/g, '-')}`);
-  html2canvas(input)
+  input.classList.add('pdf-content');
+
+  html2canvas(input, { scrollX: -window.scrollX, scrollY: -window.scrollY, scale: 2 })
     .then((canvas) => {
       const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF();
-      pdf.addImage(imgData, 'PNG', 0, 0);
+      const pdf = new jsPDF({
+        orientation: 'p',
+        unit: 'px',
+        format: [canvas.width, canvas.height]  // Custom format for full content
+      });
+      pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
       pdf.save(`${bill.restaurantName}-${bill.OrderId}-bill.pdf`);
+      input.classList.remove('pdf-content');
     });
 };
 
@@ -206,6 +291,14 @@ const Container = styled.div`
             font-size: 1rem;
           }
         }
+    }
+
+    .pdf-content {
+      background-color: white !important;
+    }
+
+    .pdf-content .download-button {
+      display: none !important;
     }
 
     .bill{

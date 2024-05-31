@@ -13,6 +13,10 @@ import InfoIcon from '@material-ui/icons/Info';
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import DeleteIcon from '@material-ui/icons/Delete';
+import GetAppIcon from '@material-ui/icons/GetApp';
+
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 // Firebase
 import { db } from "../firebase";
@@ -245,13 +249,15 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
 
     // ----------------- CONTROL 4 (Start) -----------------
 
+    const timeoutRef = useRef(null);
+    const intervalRef = useRef(null);
+
     const handleConfirmOrderClick = () => {
         setShowCancelOrder(true);
 
         const totalTime = 5000; // 5 seconds
         const interval = 10; // Update every 10 milliseconds
         const steps = totalTime / interval;
-
         let step = 1;
 
         const updateFillWidth = () => {
@@ -259,14 +265,13 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
             step += 1;
 
             if (step <= steps) {
-                setTimeout(updateFillWidth, interval);
+                intervalRef.current = setTimeout(updateFillWidth, interval);
             }
         };
 
         updateFillWidth();
 
-        // After 5 seconds, perform setShowPage(3) or any other logic
-        setTimeout(() => {
+        timeoutRef.current = setTimeout(() => {
             setShowPage(2);
 
             const updatedOrderedItemCount = {
@@ -279,6 +284,15 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
             localStorage.setItem('orderedItemCount', JSON.stringify(updatedOrderedItemCount));
             pushOrderToFirebase(orderedMenuState);
         }, 5000);
+    };
+
+    const handleCancelClick = () => {
+        setShowCancelOrder(false);
+        setFillWidth(0);
+
+        // Clear the interval and timeout
+        if (intervalRef.current) clearTimeout(intervalRef.current);
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
 
 
@@ -336,7 +350,20 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
         console.log("orderedMenuState : ", orderedMenuState);
     }
 
-
+    const downloadPDF = () => {
+        const input = document.getElementById("curr-bill");
+        html2canvas(input, { scrollX: -window.scrollX, scrollY: -window.scrollY, scale: 2 })
+            .then((canvas) => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF({
+                    orientation: 'p',
+                    unit: 'px',
+                    format: [canvas.width, canvas.height]
+                });
+                pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+                pdf.save(`{RestaurantName}-bill.pdf`);
+            });
+    };
 
     return (
         <Container>
@@ -397,7 +424,7 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
                                         <div className="cancel-order-time-fill">
                                             <div className="fill" style={{ width: `${fillWidth}%` }}></div>
                                         </div>
-                                        <div className="cancel-btn">Cancel</div>
+                                        <div className="cancel-btn" onClick={() => handleCancelClick()}>Cancel</div>
                                     </div>
                                 ) : <div className="place-order">
                                     {
@@ -418,7 +445,16 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
                                     <div className="order-detail-after-placed">
                                         Table 14, Order No. {finalOrderCount}
                                     </div>
-                                    <div className="zigzag bill">
+                                    <div className="zigzag bill" id="curr-bill">
+                                        <div className="download-button" onClick={() => downloadPDF()}>
+                                            <div className="text">Download PDF</div>
+                                            <GetAppIcon />
+                                        </div>
+                                        <div className="restaurant-details">
+                                            <h2 className="restaurant-name">Restaurant Date</h2>
+                                            <p className="date">1st Apr 2024</p>
+                                            <div className="order-id"><b>Order Id : </b>#A92hfF12hif001</div>
+                                        </div>
                                         {orderedMenuState.map((item, index) => (
                                             <div className="order-item" key={index}>
                                                 <div className="left">
@@ -898,8 +934,56 @@ const Container = styled.div`
                     position: relative;
                     width: 100%;
                     /* height: 700px; */
-                    background: #f2f2f2;
-                    /* background-color: white; */
+                    background: #f1f1f1;
+
+                    .restaurant-details{
+                        margin: auto;
+                        display: flex;
+                        flex-direction: column; 
+                        align-items: center;
+                        justify-content: center;
+                        margin-bottom: 20px;
+
+                        .restaurant-name{
+                            font-size: 1.25rem;
+                            font-weight: 500;
+                        }
+                        
+                        .date{
+                            font-size: 0.85rem;
+                        }
+                    
+                        .order-id{
+                            font-style: italic;
+                            font-weight: 200;
+                            font-size: 0.85rem;
+                            
+                            b{
+                                font-weight: 500;
+                                font-style: normal;
+                            }
+                        }
+                    }
+
+                    .download-button{
+                        position: absolute;
+                        display: flex;
+                        align-items: center;
+                        font-size: 0.75rem;
+                        height: 30px;
+                        border-radius: 100px;
+                        background-color: white;
+                        border: 1px solid #e0dddd;
+                        box-shadow: rgba(0, 0, 0, 0.05) 1px 1px 10px 0px;
+                        padding: 0 10px;
+                        
+                        right: 0px;
+                        top: -5px;
+
+                        svg{
+                            font-size: 1rem;
+                        }
+                    }
                 }
 
                 .bill{

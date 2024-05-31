@@ -9,12 +9,14 @@ import MenuMain from "./Screens/MenuMain";
 import UserOrders from "./Screens/UserOrders";
 import UserBills from "./Screens/UserBills";
 import UserProfile from "./Screens/UserProfile";
+import LandingPage from "./Screens/LandingPage";
 
 const App = () => {
   const navigate = useNavigate();
   return (
     <div>
       <Routes>
+        <Route path="/" element={<LandingPage/>} />
         <Route path="/qrscan/" element={<PreMenu/>} />
         <Route path="/qrscan/:creatorShopId/:scanId" element={<PreMenu/>} />
         <Route path="/restaurant/menu" element={<MenuMain/>} />
