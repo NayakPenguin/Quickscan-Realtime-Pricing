@@ -7,8 +7,8 @@ import axios from 'axios'
 import { isAuthenticated } from '../Controllers/IsAuthenticated';
 
 const PreMenu = () => {
-    const [name, setName] = useState("ATANU NAYAK");
-    const [mobile, setMobile] = useState("9306191179");
+    const [name, setName] = useState("");
+    const [mobile, setMobile] = useState("");
     const [email, setEmail] = useState("");
     const [showOTPBox, setShowOTPBox] = useState(false);
     const [loading, setLoading] = useState(false);
