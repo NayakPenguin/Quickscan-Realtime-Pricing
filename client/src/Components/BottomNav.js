@@ -29,9 +29,7 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
     const [orderDone, setOrderDone] = useState(false);
     const [finalOrderCount, setFinalOrderCount] = useState(-1);
 
-    const [notifySections, setNotifySections] = useState(localStorage.getItem('notifyOrders') || false);
-
-    console.log(notifySections);
+    const [notifySections, setNotifySections] = useState(false);
 
     const [creatorShopId, setCreatorShopId] = useState(() => {
         return localStorage.getItem('creatorShopId') || null;
@@ -55,12 +53,6 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
             updateLocalStorageOrderedItemCount(orderedItemCount);
         }
     }, [orderedItemCount]);
-
-    useEffect(() => {
-        if(notifySections){
-            localStorage.setItem('notifyOrders', true);
-        }
-    }, [notifySections])
 
     const updateLocalStorageOrderedItemCount = (orderedItemCount) => {
         const updatedOrderedItemCount = {
@@ -235,11 +227,15 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
     const navigate = useNavigate(); 
 
     useEffect(() => {
-        if(isOrderExpanded == false && orderDone == true){
-            console.log("isOrderExpanded == false && orderDone == true");
+        if(orderDone == true){
             localStorage.removeItem('orderedItemCount');
-            setOrderedItemCount({});
-            window.location.reload();
+            setNotifySections(true);
+            
+            if(isOrderExpanded == false){
+                window.location.reload();
+                setOrderedItemCount({});
+                setOrderDone(false);
+            }
         }
     }, [isOrderExpanded, orderDone, navigate]);
 
@@ -272,7 +268,6 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
         // After 5 seconds, perform setShowPage(3) or any other logic
         setTimeout(() => {
             setShowPage(2);
-            setOrderDone(true);
 
             const updatedOrderedItemCount = {
                 data: orderedItemCount,
@@ -282,7 +277,6 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
     
             console.log(updatedOrderedItemCount);
             localStorage.setItem('orderedItemCount', JSON.stringify(updatedOrderedItemCount));
-            setNotifySections(true);
             pushOrderToFirebase(orderedMenuState);
         }, 5000);
     };
@@ -493,11 +487,11 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
                     <div className="text">Menu</div>
                 </a>
                 <a href="/user/orders" className={currPage == "orders" ? "link curr-link" : "link"}>
-                    <FastfoodIcon />
-                    <div className="text">
+                    <FastfoodIcon className={notifySections == true ? "notify-color" : ""}/>
+                    <div className={notifySections == true ? "notify-color text" : "text"}>
                         Orders
                     </div>
-                    { notifySections ? <div className="update-notify"></div>  : null }
+                    { notifySections == true && <div className="update-notify"></div> }
                 </a>
                 <a href="/user/bills" className={currPage == "bills" ? "link curr-link" : "link"}>
                     <ReceiptIcon />
@@ -1089,6 +1083,11 @@ const Container = styled.div`
                 aspect-ratio: 1/1;
                 border-radius: 100px;
                 background-color: orange;
+            }
+
+            .notify-color{
+                color: orange;
+                fill: orange;
             }
         }
     

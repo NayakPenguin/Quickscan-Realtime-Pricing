@@ -4,6 +4,7 @@ import MenuNav from "../Components/MenuNav";
 import OrderedList from "../Components/OrderedList";
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import InfoIcon from '@material-ui/icons/Info';
+import SearchIcon from '@material-ui/icons/Search';
 import { useNavigate } from 'react-router-dom';
 
 import { db } from "../firebase";
@@ -31,11 +32,11 @@ const MenuMain = () => {
   const menuCollectionRef = collection(db, `Menu${creatorShopId}`);
   const categoriesCollectionRef = collection(db, `Categories${creatorShopId}`);
 
-  const navigate = useNavigate(); 
-  
+  const navigate = useNavigate();
+
   useEffect(() => {
     console.log("isAuthenticated : ", isAuthenticated());
-    if(isAuthenticated() == false){
+    if (isAuthenticated() == false) {
       navigate('/qrscan/');
     }
 
@@ -169,12 +170,12 @@ const MenuMain = () => {
     console.log(orderedItemCount);
 
     const dataToStore = {
-        data: orderedItemCount,
-        timestamp: new Date().toISOString(),
-        orderCompleted: false,
+      data: orderedItemCount,
+      timestamp: new Date().toISOString(),
+      orderCompleted: false,
     };
     localStorage.setItem('orderedItemCount', JSON.stringify(dataToStore));
-}, [orderedItemCount]);
+  }, [orderedItemCount]);
 
   useEffect(() => {
     console.log(orderedItemCount);
@@ -299,16 +300,32 @@ const MenuMain = () => {
     const elementRect = element.getBoundingClientRect().top;
     const elementPosition = elementRect - bodyRect;
     const offsetPosition = elementPosition + offset;
-  
+
     window.scrollTo({
       top: offsetPosition,
       behavior: 'smooth'
     });
   }
 
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
   return (
     <Container ref={modalRefMenuMain}>
-      <MenuNav showSearch={true} />
+      <MenuNav />
+
+      <div className="search">
+        <input
+          type="text"
+          placeholder="Search in Menu"
+          value={searchQuery}
+          onChange={handleSearchChange}
+        />
+        <SearchIcon />
+      </div>
 
       <Categories>
         <div className="categoriesList">
@@ -371,86 +388,178 @@ const MenuMain = () => {
 
         {
           allCategories && allCategories.map((category, categoryIndex) => (
-            <div className="category-container">
+            <div className="category-container" key={categoryIndex}>
               <div className="hidden-scroll-helper" id={category.id}></div>
-              <h3 className="category-heading" key={categoryIndex}>{category.name}</h3>
+              <h3 className="category-heading">{category.name}</h3>
               {menuDataObject[`${category.name}`] && menuDataObject[`${category.name}`].map((item, index) => (
-                <div key={item.id} className={item.allow_visibility == true ? "dish-container" : "dish-container no-display"}>
-                  <div className="const" onClick={item.unavailable == false ? () => handleToggleDetails(item.id) : null}>
-                    <div className="left">
-                      <div className="extra-info">
-                        <div className="veg-nonveg-sym">
-                          <img
-                            src={
-                              item.type === "Veg"
-                                ? "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Veg_symbol.svg/1200px-Veg_symbol.svg.png"
-                                : "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Non_veg_symbol.svg/2048px-Non_veg_symbol.svg.png"
-                            }
-                            alt=""
-                          />
-                        </div>
-                        <div className="item-tags">
-                          {item.tag.length != 0 ? <div className="tag">{item.tag}</div> : null}
-                          {item.unavailable == true ? <div className="unavailable-tag tag">Currently Unavailable</div> : null}
-                        </div>
-                      </div>
-                      <div className="name">{item.name}</div>
-                      <div className="price">₹{item.price.toFixed(2)}</div>
-                    </div>
-                    <div className="right">
-                      {
-                        expandedDishes.includes(item.id) ?
-                          (
-                            <div className="close-btn">
-                              <ExpandLessIcon />
-                            </div>
-                          ) : (
-                            item.unavailable == true ? (
-                              <div className="cant-add-btn noselect">
-                                Order
+                <>
+                  {item.name.toLowerCase().includes(searchQuery.toLowerCase()) && (
+                    <div key={item.id} className={item.allow_visibility ? "" : "no-display"}>
+                      <>
+                        {
+                          item.type === "Veg" && isVegSelected === true ? (
+                            <div key={item.id} className={item.allow_visibility == true ? "dish-container" : "dish-container no-display"}>
+                              <div className="const" onClick={item.unavailable == false ? () => handleToggleDetails(item.id) : null}>
+                                <div className="left">
+                                  <div className="extra-info">
+                                    <div className="veg-nonveg-sym">
+                                      <img
+                                        src={
+                                          item.type === "Veg"
+                                            ? "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Veg_symbol.svg/1200px-Veg_symbol.svg.png"
+                                            : "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Non_veg_symbol.svg/2048px-Non_veg_symbol.svg.png"
+                                        }
+                                        alt=""
+                                      />
+                                    </div>
+                                    <div className="item-tags">
+                                      {item.tag.length != 0 ? <div className="tag">{item.tag}</div> : null}
+                                      {item.unavailable == true ? <div className="unavailable-tag tag">Currently Unavailable</div> : null}
+                                    </div>
+                                  </div>
+                                  <div className="name">{item.name}</div>
+                                  <div className="price">₹{item.price.toFixed(2)}</div>
+                                </div>
+                                <div className="right">
+                                  {
+                                    expandedDishes.includes(item.id) ?
+                                      (
+                                        <div className="close-btn">
+                                          <ExpandLessIcon />
+                                        </div>
+                                      ) : (
+                                        item.unavailable == true ? (
+                                          <div className="cant-add-btn noselect">
+                                            Order
+                                          </div>
+                                        ) : (
+                                          <div className="add-btn">
+                                            Order
+                                          </div>
+                                        )
+                                      )
+                                  }
+                                </div>
                               </div>
-                            ) : (
-                              <div className="add-btn">
-                                Order
-                              </div>
-                            )
-                          )
-                      }
-                    </div>
-                  </div>
 
-                  <div className={`${expandedDishes.includes(item.id) ? "details expanded" : "details"}`}>
-                    {item.details.map((detail, index) => (
-                      <div className="detail" key={index}>
-                        <div className="detail-title">{detail}</div>
-                        {item.details_options.length > 0 && item.details_options[index] && (
-                          <>
-                            {item.details_options[index].options.length > 0 && item.details_options[index].options.map((option, optionIndex) => (
-                              <div className="detail-option" key={optionIndex}>
-                                <input
-                                  type="radio"
-                                  id={`${item.id}-${index}-${optionIndex}`}
-                                  name={`${item.id}-${index}`}
-                                  value={option}
-                                  onChange={() => handleOptionChange2(item.id, index, optionIndex)}
-                                />
-                                <label htmlFor={`${item.id}-${index}-${optionIndex}`}>{option} - ₹{(item.details_options[index].extra[optionIndex]).toFixed(2)}</label>
+                              <div className={`${expandedDishes.includes(item.id) ? "details expanded" : "details"}`}>
+                                {item.details.map((detail, index) => (
+                                  <div className="detail" key={index}>
+                                    <div className="detail-title">{detail}</div>
+                                    {item.details_options.length > 0 && item.details_options[index] && (
+                                      <>
+                                        {item.details_options[index].options.length > 0 && item.details_options[index].options.map((option, optionIndex) => (
+                                          <div className="detail-option" key={optionIndex}>
+                                            <input
+                                              type="radio"
+                                              id={`${item.id}-${index}-${optionIndex}`}
+                                              name={`${item.id}-${index}`}
+                                              value={option}
+                                              onChange={() => handleOptionChange2(item.id, index, optionIndex)}
+                                            />
+                                            <label htmlFor={`${item.id}-${index}-${optionIndex}`}>{option} - ₹{(item.details_options[index].extra[optionIndex]).toFixed(2)}</label>
+                                          </div>
+                                        ))}
+                                      </>
+                                    )}
+                                  </div>
+                                ))}
+                                <div className="detail no-border">
+                                  <div className="detail-title">Order Count</div>
+                                  <div className="controller">
+                                    <div className="btn dec" onClick={() => decreaseCount2(item.id)}>-</div>
+                                    <div className="count">{getCurrentCount(item.id)}</div>
+                                    <div className="btn inc" onClick={() => increaseCount2(item.id)}>+</div>
+                                  </div>
+                                </div>
                               </div>
-                            ))}
+                            </div>
+                          ) : <>
+                            {item.type != "Veg" && isNonVegSelected === true ? (
+                              <div key={item.id} className={item.allow_visibility == true ? "dish-container" : "dish-container no-display"}>
+                                <div className="const" onClick={item.unavailable == false ? () => handleToggleDetails(item.id) : null}>
+                                  <div className="left">
+                                    <div className="extra-info">
+                                      <div className="veg-nonveg-sym">
+                                        <img
+                                          src={
+                                            item.type === "Veg"
+                                              ? "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Veg_symbol.svg/1200px-Veg_symbol.svg.png"
+                                              : "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Non_veg_symbol.svg/2048px-Non_veg_symbol.svg.png"
+                                          }
+                                          alt=""
+                                        />
+                                      </div>
+                                      <div className="item-tags">
+                                        {item.tag.length != 0 ? <div className="tag">{item.tag}</div> : null}
+                                        {item.unavailable == true ? <div className="unavailable-tag tag">Currently Unavailable</div> : null}
+                                      </div>
+                                    </div>
+                                    <div className="name">{item.name}</div>
+                                    <div className="price">₹{item.price.toFixed(2)}</div>
+                                  </div>
+                                  <div className="right">
+                                    {
+                                      expandedDishes.includes(item.id) ?
+                                        (
+                                          <div className="close-btn">
+                                            <ExpandLessIcon />
+                                          </div>
+                                        ) : (
+                                          item.unavailable == true ? (
+                                            <div className="cant-add-btn noselect">
+                                              Order
+                                            </div>
+                                          ) : (
+                                            <div className="add-btn">
+                                              Order
+                                            </div>
+                                          )
+                                        )
+                                    }
+                                  </div>
+                                </div>
+
+                                <div className={`${expandedDishes.includes(item.id) ? "details expanded" : "details"}`}>
+                                  {item.details.map((detail, index) => (
+                                    <div className="detail" key={index}>
+                                      <div className="detail-title">{detail}</div>
+                                      {item.details_options.length > 0 && item.details_options[index] && (
+                                        <>
+                                          {item.details_options[index].options.length > 0 && item.details_options[index].options.map((option, optionIndex) => (
+                                            <div className="detail-option" key={optionIndex}>
+                                              <input
+                                                type="radio"
+                                                id={`${item.id}-${index}-${optionIndex}`}
+                                                name={`${item.id}-${index}`}
+                                                value={option}
+                                                onChange={() => handleOptionChange2(item.id, index, optionIndex)}
+                                              />
+                                              <label htmlFor={`${item.id}-${index}-${optionIndex}`}>{option} - ₹{(item.details_options[index].extra[optionIndex]).toFixed(2)}</label>
+                                            </div>
+                                          ))}
+                                        </>
+                                      )}
+                                    </div>
+                                  ))}
+                                  <div className="detail no-border">
+                                    <div className="detail-title">Order Count</div>
+                                    <div className="controller">
+                                      <div className="btn dec" onClick={() => decreaseCount2(item.id)}>-</div>
+                                      <div className="count">{getCurrentCount(item.id)}</div>
+                                      <div className="btn inc" onClick={() => increaseCount2(item.id)}>+</div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            ) : null
+                            }
                           </>
-                        )}
-                      </div>
-                    ))}
-                    <div className="detail no-border">
-                      <div className="detail-title">Order Count</div>
-                      <div className="controller">
-                        <div className="btn dec" onClick={() => decreaseCount2(item.id)}>-</div>
-                        <div className="count">{getCurrentCount(item.id)}</div>
-                        <div className="btn inc" onClick={() => increaseCount2(item.id)}>+</div>
-                      </div>
+                        }
+                      </>
                     </div>
-                  </div>
-                </div>
+                  )}
+                </>
               ))}
             </div>
           ))
@@ -475,6 +584,35 @@ const Container = styled.div`
   padding: 135px 0 84px 0;
   background-color: #fffaf145;
   overflow-y: scroll;
+
+  .search{
+    position: fixed;
+    top: 80px;
+    width: 100vw;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 10px;
+    z-index: 100;
+    border-bottom: 1px solid rgb(233, 229, 229);
+    background-color: rgba(255, 255, 255, 1);
+    box-shadow: rgba(0, 0, 0, 0.05) 1px 1px 10px 0px;
+
+    input{
+        flex: 1;
+        height: 100%;
+        border-radius: 100px;
+        border: 1px solid #d6cfcf;
+        /* border: none; */
+        background-color: #fff6f6;
+
+        margin-right: 10px;
+        padding: 0 15px;
+        font-size: 0.8rem;
+        font-weight: 300;
+    }
+}
 
   .noselect {
     -webkit-touch-callout: none; /* iOS Safari */

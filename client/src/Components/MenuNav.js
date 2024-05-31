@@ -9,7 +9,7 @@ import Brightness4Icon from '@material-ui/icons/Brightness4';
 import SearchIcon from '@material-ui/icons/Search';
 import PanToolIcon from '@material-ui/icons/PanTool';
 
-const MenuNav = ({showSearch}) => {
+const MenuNav = () => {
     const [getAssistance, setGetAssistance] = useState(false);
 
     return (
@@ -23,21 +23,12 @@ const MenuNav = ({showSearch}) => {
                         <TranslateIcon />
                         <div className="text">English</div>
                     </div>
-                    <div className={getAssistance ? "btn clicked-btn" : "btn"}onClick={() => setGetAssistance(!getAssistance)}>
+                    <div className={getAssistance ? "btn clicked-btn" : "btn"}onClick={() => setGetAssistance(true)}>
                         <PanToolIcon />
                         {/* <div className="text">Call Waiter</div> */}
                     </div>
                 </div>
             </div>
-            {
-                showSearch ? (
-                    <div className="bottom">
-                        <input type="text" placeholder="Search in Arsalan" />
-                        <SearchIcon />
-                    </div>
-                ) : (<></>)
-            }
-            
         </Container>
     )
 }
@@ -100,27 +91,5 @@ const Container = styled.div`
                 background-color: #ffce74;
             }
         }   
-    }
-
-    .bottom{
-        height: 60px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 10px 10px;
-
-        input{
-            flex: 1;
-            height: 100%;
-            border-radius: 100px;
-            border: 1px solid #d6cfcf;
-            /* border: none; */
-            background-color: #fff6f6;
-
-            margin-right: 10px;
-            padding: 0 15px;
-            font-size: 0.8rem;
-            font-weight: 300;
-        }
     }
 `

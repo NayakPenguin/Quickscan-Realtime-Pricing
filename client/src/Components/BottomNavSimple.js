@@ -12,18 +12,6 @@ import CloseIcon from '@material-ui/icons/Close';
 import InfoIcon from '@material-ui/icons/Info';
 
 const BottomNavSimple = ({currPage}) => {
-    const [isOrderExpanded, setIsOrderExpanded] = useState(false);
-    const [totalCount, setTotalCount] = useState(0);
-    const [totalPrice, setTotalPrice] = useState(0);
-    const [orderedMenuState, setOrderedMenuState] = useState([])
-    const [isBouncing, setBouncing] = useState(false);
-    const [showPage, setShowPage] = useState(1);
-    const [allowPostPaid, setAllowPostPaid] = useState(true);
-    const [callWaiter, setCallWaiter] = useState(false);
-    const [fillWidth, setFillWidth] = useState(0);
-    const [showCancelOrder, setShowCancelOrder] = useState(false);
-    const [orderDone, setOrderDone] = useState(false);
-
     return (
         <Container>
             <div className="bottom-content">
@@ -33,7 +21,10 @@ const BottomNavSimple = ({currPage}) => {
                 </a>
                 <a href="/user/orders" className={currPage == "orders" ? "link curr-link" : "link"}>
                     <FastfoodIcon />
-                    <div className="text">Orders</div>
+                    <div className="text">
+                        Orders
+                    </div>
+                    {/* <div className="update-notify"></div> */}
                 </a>
                 <a href="/user/bills" className={currPage == "bills" ? "link curr-link" : "link"}>
                     <ReceiptIcon />
@@ -70,9 +61,9 @@ const Container = styled.div`
         display: flex;  
         align-items: flex-start;
         justify-content: space-between;
-        border-top: 1px solid rgb(233, 229, 229);
     
         .link {
+            position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -93,6 +84,15 @@ const Container = styled.div`
                 text-decoration: none;
                 color: #babab9;
                 font-weight: 500;
+                position: relative;
+                
+            }
+            
+            .update-notify{
+                height: 5px;
+                aspect-ratio: 1/1;
+                border-radius: 100px;
+                background-color: orange;
             }
         }
     
