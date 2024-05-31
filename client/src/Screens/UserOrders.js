@@ -15,7 +15,10 @@ const UserOrders = () => {
               <div className="order-count">25</div>
               <div className="order-info">
                 1st Apr, 2024
-                <b>₹ 892.00</b>
+                <a href="/show-live-menu" className="restaurant-name">
+                  Broadway Kolkata
+                </a>
+                <b className="amount">₹ 892.00</b>
               </div>
             </div>
             <div className="items">
@@ -44,8 +47,44 @@ const UserOrders = () => {
             <div className="top">
               <div className="order-count">24</div>
               <div className="order-info">
-                23rd Feb, 2024
-                <b>₹ 324.00</b>
+                1st Apr, 2024
+                <a href="/show-live-menu" className="restaurant-name">
+                  Broadway Kolkata
+                </a>
+                <b className="amount">₹ 892.00</b>
+              </div>
+            </div>
+            <div className="items">
+              <div className="item">
+                <div className="item-count">
+                    <div className="val">2</div>
+                    <CloseIcon />
+                </div>
+                <div className="about-item">
+                    <div className="item-name">Chicken Biryani</div>
+                    <div className="item-more">Kofta Graved</div>
+                </div>
+              </div>
+              <div className="item">
+                <div className="item-count">
+                    <div className="val">4</div>
+                    <CloseIcon />
+                </div>
+                <div className="about-item">
+                    <div className="item-name">Chicken Biryani</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="order-item">
+            <div className="top">
+              <div className="order-count">23</div>
+              <div className="order-info">
+                1st Apr, 2024
+                <a href="/show-live-menu" className="restaurant-name">
+                  Broadway Kolkata
+                </a>
+                <b className="amount">₹ 892.00</b>
               </div>
             </div>
             <div className="items">
@@ -112,7 +151,6 @@ const Container = styled.div`
         display: flex;
         align-items: center;
         padding-bottom: 10px;
-        margin-bottom: 10px;
 
         .order-count{
           height: 50px;
@@ -128,21 +166,31 @@ const Container = styled.div`
         }
 
         .order-info{
+          width: 100%;
           display: flex;
-          /* flex-direction: column; */
+          flex-direction: column;
 
           font-size: 0.85rem;
-          align-items: center;
+          align-items: flex-end;
 
-          b{
+          .restaurant-name{
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-decoration: none;
+          }
+          
+          .amount{
+            font-size: 0.8rem;
             font-weight: 600;
             margin-left: 10px;
-            padding: 5px 10px;
-            background-color: #e5e5e5;
+            padding: 3.5px 10px;
+            background-color: #e8d4ac;
             border-radius: 100px;
+            margin-top: 10px;
           }
         }
       }
+      
   
       .item{
         display: flex;

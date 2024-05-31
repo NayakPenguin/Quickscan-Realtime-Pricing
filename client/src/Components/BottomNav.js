@@ -395,7 +395,7 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
 
                                 <div className="info-text">
                                     <InfoIcon />
-                                    After you click on "Confirm Order" your order status will appear in the orders section.
+                                    Under GST, restaurants are subject to a 5% GST rate, so <b>a basic standard tax will be added in this amount</b>.
                                 </div>
 
                                 {showCancelOrder ? (
@@ -854,8 +854,8 @@ const Container = styled.div`
                     }
                     
                     b{
-                        font-weight: 500;
-                        font-size: 0.75rem;
+                        font-weight: 400;
+                        /* font-size: 0.75rem; */
                     }
                     
                     i{
