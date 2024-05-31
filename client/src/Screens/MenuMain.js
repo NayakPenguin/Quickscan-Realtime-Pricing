@@ -292,14 +292,19 @@ const MenuMain = () => {
     }
   };
 
-  const scrollToCategory = (categoryId) => {
+  function scrollToCategory(categoryId) {
     const element = document.getElementById(categoryId);
-    if (element) {
-      const offset = 10; // Adjust this value as needed
-      const topPos = element.getBoundingClientRect().top + window.scrollY - offset;
-      window.scrollTo({ top: topPos, behavior: 'smooth' });
-    }
-  };
+    const offset = 400;
+    const bodyRect = document.body.getBoundingClientRect().top;
+    const elementRect = element.getBoundingClientRect().top;
+    const elementPosition = elementRect - bodyRect;
+    const offsetPosition = elementPosition + offset;
+  
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth'
+    });
+  }
 
   return (
     <Container ref={modalRefMenuMain}>
@@ -367,7 +372,8 @@ const MenuMain = () => {
         {
           allCategories && allCategories.map((category, categoryIndex) => (
             <div className="category-container">
-              <h3 className="category-heading" key={categoryIndex} id={category.id}>{category.name}</h3>
+              <div className="hidden-scroll-helper" id={category.id}></div>
+              <h3 className="category-heading" key={categoryIndex}>{category.name}</h3>
               {menuDataObject[`${category.name}`] && menuDataObject[`${category.name}`].map((item, index) => (
                 <div key={item.id} className={item.allow_visibility == true ? "dish-container" : "dish-container no-display"}>
                   <div className="const" onClick={item.unavailable == false ? () => handleToggleDetails(item.id) : null}>
@@ -537,7 +543,13 @@ const Container = styled.div`
     }
 
     .category-container{
+      position: relative;
       margin: 40px 15px;
+
+      .hidden-scroll-helper{
+        position: absolute;
+        top: -155px;
+      }
 
       .category-heading{
         font-weight: 600;

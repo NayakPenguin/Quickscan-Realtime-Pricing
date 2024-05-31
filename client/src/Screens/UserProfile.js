@@ -39,6 +39,14 @@ const Container = styled.div`
   background-color: #fffaf145;
   overflow-y: scroll;
 
+  &::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for Chrome, Safari, and Opera */
+  }
+
+  scrollbar-width: thin; /* For Firefox */
+  -ms-overflow-style: none;
+
+
   .category-heading{
     font-weight: 600;
     font-size: 1.15rem;
