@@ -205,7 +205,7 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
         setOrderedItemCount(prev => {
             const newCount = (prev[encodedValue] || 1) - 1;
             if (newCount < 1) return prev;
-            return { ...prev, [encodedValue]: newCount};
+            return { ...prev, [encodedValue]: newCount };
         });
     };
 
@@ -223,15 +223,15 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
 
 
     // ----------------- CONTROL 3 (Start) -----------------
-   
-    const navigate = useNavigate(); 
+
+    const navigate = useNavigate();
 
     useEffect(() => {
-        if(orderDone == true){
+        if (orderDone == true) {
             localStorage.removeItem('orderedItemCount');
             setNotifySections(true);
-            
-            if(isOrderExpanded == false){
+
+            if (isOrderExpanded == false) {
                 window.location.reload();
                 setOrderedItemCount({});
                 setOrderDone(false);
@@ -243,7 +243,7 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
     // ----------------- CONTROL 3 (Complete) -----------------
 
 
-     // ----------------- CONTROL 4 (Start) -----------------
+    // ----------------- CONTROL 4 (Start) -----------------
 
     const handleConfirmOrderClick = () => {
         setShowCancelOrder(true);
@@ -274,7 +274,7 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
                 timestamp: new Date().toISOString(),
                 orderCompleted: true,
             };
-    
+
             console.log(updatedOrderedItemCount);
             localStorage.setItem('orderedItemCount', JSON.stringify(updatedOrderedItemCount));
             pushOrderToFirebase(orderedMenuState);
@@ -297,7 +297,7 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
         const currentTime = new Date();
         try {
             const ordersCollectionRef = collection(db, `Orders${creatorShopId}`);
-            
+
             const newOrderItemDoc = await addDoc(ordersCollectionRef, {
                 orderDetails: orderedMenuState,
                 userDetails: userDetails,
@@ -400,9 +400,14 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
                                         <div className="cancel-btn">Cancel</div>
                                     </div>
                                 ) : <div className="place-order">
-                                    <div className="payment-btn" onClick={handleConfirmOrderClick}>
-                                        Confirm Order
-                                    </div>
+                                    {
+                                        totalPrice > 0 ? <div className="payment-btn" onClick={handleConfirmOrderClick}>
+                                            Confirm Order
+                                        </div> : <div className="fake payment-btn">
+                                            Confirm Order
+                                        </div>
+                                    }
+
                                 </div>}
                             </div>
                         ) :
@@ -487,11 +492,11 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
                     <div className="text">Menu</div>
                 </a>
                 <a href="/user/orders" className={currPage == "orders" ? "link curr-link" : "link"}>
-                    <FastfoodIcon className={notifySections == true ? "notify-color" : ""}/>
+                    <FastfoodIcon className={notifySections == true ? "notify-color" : ""} />
                     <div className={notifySections == true ? "notify-color text" : "text"}>
                         Orders
                     </div>
-                    { notifySections == true && <div className="update-notify"></div> }
+                    {notifySections == true && <div className="update-notify"></div>}
                 </a>
                 <a href="/user/bills" className={currPage == "bills" ? "link curr-link" : "link"}>
                     <ReceiptIcon />
@@ -776,6 +781,10 @@ const Container = styled.div`
                             font-size: 1rem;
                             margin: -3px 3px 0 0;
                         }
+                    }
+
+                    .fake{
+                        background-color: #fbf8f8;
                     }
 
                     .download-btn{

@@ -4,11 +4,14 @@ import MenuNav from "../Components/MenuNav";
 import BottomNavSimple from "../Components/BottomNavSimple";
 import CloseIcon from '@material-ui/icons/Close';
 import GetAppIcon from '@material-ui/icons/GetApp';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const AllBills = [
   {
     restaurantName : "Restaurant 1", 
     billDate : "1st Apr 2024",
+    OrderId : "#sCSExTyOEZoErJkoyJ2R",
     Order : [
       {
         count: 2,
@@ -33,6 +36,7 @@ const AllBills = [
   {
     restaurantName : "Restaurant 2", 
     billDate : "21st Feb 2024",
+    OrderId : "#AdSExTyOEZoErJkoyJ89",
     Order : [
       {
         count: 6,
@@ -59,6 +63,17 @@ const calculateTotalPrice = (order) => {
   return order.reduce((total, item) => total + (item.price * item.count), 0);
 };
 
+const downloadPDF = (bill) => {
+  const input = document.getElementById(`bill-${bill.restaurantName.replace(/\s+/g, '-')}`);
+  html2canvas(input)
+    .then((canvas) => {
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF();
+      pdf.addImage(imgData, 'PNG', 0, 0);
+      pdf.save(`${bill.restaurantName}-${bill.OrderId}-bill.pdf`);
+    });
+};
+
 const UserBills = () => {
   return (
     <Container>
@@ -66,15 +81,15 @@ const UserBills = () => {
       <h3 className="category-heading">Your Bills</h3>
       <div className="content">
         {AllBills.map((bill, index) => (
-          <div className="zigzag bill" key={index}>
-            <div className="download-button">
+          <div className="zigzag bill" key={index} id={`bill-${bill.restaurantName.replace(/\s+/g, '-')}`}>
+            <div className="download-button" onClick={() => downloadPDF(bill)}>
               <div className="text">Download PDF</div>
-              <GetAppIcon/>
+              <GetAppIcon />
             </div>
             <div className="restaurant-details">
               <h2 className="restaurant-name">{bill.restaurantName}</h2>
               <p className="date">{bill.billDate}</p>
-              <div className="order-id"><b>Order Id : </b>#sCSExTyOEZoErJkoyJ2R</div>
+              <div className="order-id"><b>Order Id : </b>{bill.OrderId}</div>
             </div>
             {bill.Order.map((item, index) => (
               <div className="order-item" key={index}>
