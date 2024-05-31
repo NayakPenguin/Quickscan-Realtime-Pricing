@@ -8,6 +8,7 @@ const UserOrders = () => {
   return (
     <Container>
         <MenuNav showSearch={false}/>
+        <h3 className="category-heading">Your Orders</h3>
         <div className="content">
           <div className="order-item">
             <div className="top">
@@ -87,14 +88,24 @@ const Container = styled.div`
   background-color: #fffaf145;
   overflow-y: scroll;
 
+  .category-heading{
+    font-weight: 600;
+    font-size: 1.15rem;
+    color: #434343;
+    margin-left: 10px;
+    margin-bottom: 10px;
+  }
+
   .content{
     padding: 0 10px;
 
     .order-item{
       padding: 10px;
-      background-color: whitesmoke;
-      border: 1px solid #e0d8d8;
+      border: 1px solid #e0dddd;
+      overflow: hidden;
       border-radius: 10px;
+      box-shadow: rgba(0, 0, 0, 0.05) 1px 1px 10px 0px;
+      background-color: #fff;
       margin-bottom: 10px;
       
       .top{
@@ -184,5 +195,4 @@ const Container = styled.div`
     }
 
   }
-
 `

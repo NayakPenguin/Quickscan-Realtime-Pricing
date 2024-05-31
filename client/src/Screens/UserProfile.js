@@ -7,6 +7,7 @@ const UserProfile = () => {
   return (
     <Container>
         <MenuNav showSearch={false}/>
+        <h3 className="category-heading">Your Profile</h3>
         <div className="content">
           <div className="user">
             <img className="profile-image" src="https://media.tenor.com/xTBnFraEFd4AAAAj/food-hungry.gif" alt="" />
@@ -38,6 +39,14 @@ const Container = styled.div`
   background-color: #fffaf145;
   overflow-y: scroll;
 
+  .category-heading{
+    font-weight: 600;
+    font-size: 1.15rem;
+    color: #434343;
+    margin-left: 10px;
+    margin-bottom: 10px;
+  }
+
   .content{
     padding: 0 10px;
 
@@ -45,7 +54,12 @@ const Container = styled.div`
       display: flex;
       align-items: center;
       padding: 10px;
-      background-color: whitesmoke;
+      border: 1px solid #e0dddd;
+      overflow: hidden;
+      border-radius: 10px;
+      box-shadow: rgba(0, 0, 0, 0.05) 1px 1px 10px 0px;
+      background-color: #fff;
+      margin-bottom: 10px;
 
       .profile-image{
         height: 100px;
