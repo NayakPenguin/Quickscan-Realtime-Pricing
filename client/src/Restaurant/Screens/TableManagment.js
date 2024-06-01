@@ -61,6 +61,7 @@ const TableManagment = () => {
   const onChange = (sourceId, sourceIndex, targetIndex, targetId) => {
     const newTables = swap(allTables, sourceIndex, targetIndex);
     setAllTables(newTables);
+    
     const newOrder = newTables.map(item => item.id);
     localStorage.setItem('tableOrder', JSON.stringify(newOrder));
   };

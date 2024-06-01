@@ -48,30 +48,25 @@ const MenuStatusControl = () => {
     const [showCategoryOptions, setShowCategoryOptions] = useState(null);
 
     useEffect(() => {
+        const categoriesCollectionRef = collection(db, `Categories${creatorShopId}`);
+        const menuCollectionRef = collection(db, `Menu${creatorShopId}`);
+
         const getCategoriesAndMenu = async () => {
             try {
                 const data1 = await getDocs(categoriesCollectionRef);
                 const filteredData1 = data1.docs.map((doc) => ({
                     ...doc.data(),
                     id: doc.id,
-                }))
+                }));
                 const sortedData1 = filteredData1.sort((a, b) => a.orderIndex - b.orderIndex);
                 setAllCategories(sortedData1);
-                setCurrSelectedCategory(sortedData1[0].name);
-                console.log(sortedData1[0].name);
-                console.log(sortedData1);
-                // setAllCategories(filteredData);
+                setCurrSelectedCategory(sortedData1[0]?.name || '');
 
                 const data = await getDocs(menuCollectionRef);
                 const filteredData = data.docs.map((doc) => ({
                     ...doc.data(),
                     id: doc.id,
-                }))
-
-                console.log(filteredData);
-                setAllItems(filteredData);
-
-                // seperate the main menu 
+                }));
                 const categoryMap = filteredData.reduce((acc, item) => {
                     const { category, ...rest } = item;
                     if (!acc[category]) {
@@ -81,22 +76,20 @@ const MenuStatusControl = () => {
                     return acc;
                 }, {});
 
-                // Sort the array of items for the current category based on index_order
                 Object.keys(categoryMap).forEach(category => {
                     categoryMap[category].sort((a, b) => a.index_order - b.index_order);
                 });
 
                 setMenuDataObject(categoryMap);
-                console.log(categoryMap);
             } catch (error) {
                 console.log(error);
             }
-        }
+        };
 
         getCategoriesAndMenu();
     }, [db, creatorShopId]);
 
-    const onChange = (sourceId, sourceIndex, targetIndex) => {
+    const onChange = async (sourceId, sourceIndex, targetIndex) => {
         const nextState = swap(allCategories, sourceIndex, targetIndex);
         setAllCategories(nextState);
 
@@ -106,7 +99,6 @@ const MenuStatusControl = () => {
             await updateDoc(categoryDocRef, { orderIndex: index });
         });
     };
-
 
     const handleAddCategory = async () => {
         try {
@@ -357,9 +349,9 @@ const MenuStatusControl = () => {
                         <GridDropZone
                             id="categories"
                             boxesPerRow={1}
-                            rowHeight={70}
+                            rowHeight={60}
                         >
-                            {allCategories.map((category, index) => (
+                            {allCategories.map((category) => (
                                 <GridItem key={category.id}>
                                     <div className={`category ${category.name === currSelectedCategory ? 'selected' : ''}`} onClick={() => setCurrSelectedCategory(category.name)}>
                                         <div className="strip"></div>
@@ -656,6 +648,7 @@ const Container = styled.div`
         .categories-container{
             display: flex;
             flex-direction: column;
+
 
             .category{
                 width: 100%;
