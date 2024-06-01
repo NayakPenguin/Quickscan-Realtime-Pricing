@@ -2,13 +2,15 @@ import React from "react";
 import styled from "styled-components";
 
 const LeftMenu = ({ pageID }) => {
+  const creatorShopId = "BrdwyKol";
+
   const menuItems = [
-    { name: "Table Management", id: "table-management", url: "xyz/table-management" },
-    { name: "Orders", id: "orders", url: "xyz/orders" },
-    { name: "Menu Status Control", id: "menu-status-control", url: "xyz/menu-status-control" },
-    { name: "KOT Updates", id: "kot-updates", url: "xyz/kot-updates" },
+    { name: "Table Management", id: "table-management", url: "table-management" },
+    { name: "Orders", id: "orders", url: "orders" },
+    { name: "Menu Status Control", id: "menu-status-control", url: "menu-status-control" },
+    { name: "KOT Updates", id: "kot-updates", url: "kot-updates" },
     // { name: "Analytics", id: "analytics", url: "analytics" },
-    { name: "Customers", id: "customers", url: "xyz/customers" },
+    { name: "Customers", id: "customers", url: "customers" },
   ];
 
   return (
@@ -18,7 +20,7 @@ const LeftMenu = ({ pageID }) => {
       </div>
       <div className="middle">
         {menuItems.map((item, index) => (
-          <a key={index} href={`/restaurant/${item.url}`} className={item.id === pageID ? "selected" : ""}>
+          <a key={index} href={`/restaurant/${creatorShopId}/${item.url}`} className={item.id === pageID ? "selected" : ""}>
             {item.name}
           </a>
         ))}
