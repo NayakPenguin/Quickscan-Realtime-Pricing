@@ -62,7 +62,7 @@ const MenuStatusControl = () => {
                 }));
                 const sortedData1 = filteredData1.sort((a, b) => a.orderIndex - b.orderIndex);
                 setAllCategories(sortedData1);
-                if(currSelectedCategory == "No-Category") setCurrSelectedCategory(sortedData1[0]?.name || '');
+                if (currSelectedCategory == "No-Category") setCurrSelectedCategory(sortedData1[0]?.name || '');
 
                 const data = await getDocs(menuCollectionRef);
                 const filteredData = data.docs.map((doc) => ({
@@ -281,6 +281,20 @@ const MenuStatusControl = () => {
         }
     };
 
+    const handleSwap = async (sourceId, sourceIndex, targetIndex) => {
+        const nextState = swap(menuDataObject[currSelectedCategory], sourceIndex, targetIndex);
+        setMenuDataObject({
+            ...menuDataObject,
+            [currSelectedCategory]: nextState,
+        });
+
+        // Update Firestore with the new order
+        nextState.forEach(async (item, index) => {
+            const itemDocRef = doc(db, `Menu${creatorShopId}`, item.id);
+            await updateDoc(itemDocRef, { index_order: index });
+        });
+    };
+
     // -----------------------------------------------------------------------------
 
     // Handle With EXTRA-CARE might exceed firebase limit if called again and again!
@@ -382,7 +396,7 @@ const MenuStatusControl = () => {
                 <div className="top-layer">
                     <div className="select" onClick={() => setIsVeg(!isVeg)}>
                         {
-                            isVeg ? <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Veg_symbol.svg/1200px-Veg_symbol.svg.png" alt="" />  : <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Non_veg_symbol.svg/2048px-Non_veg_symbol.svg.png" alt="" />
+                            isVeg ? <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Veg_symbol.svg/1200px-Veg_symbol.svg.png" alt="" /> : <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Non_veg_symbol.svg/2048px-Non_veg_symbol.svg.png" alt="" />
                         }
                         <FlipCameraAndroidIcon />
                     </div>
@@ -411,111 +425,57 @@ const MenuStatusControl = () => {
                 </div>
 
                 <div className="food-list">
-                    {menuDataObject[currSelectedCategory] != undefined && menuDataObject[currSelectedCategory].map((item, index) => (
-                        <div className="food-container" key={item.id}>
-                            <div className="fc-top-layer">
-                                <div className="left">
-                                    <DragIndicatorIcon />
-                                    <div className="main-info">
-                                        <div className="name">{item.name}</div>
-                                        <div className="one-row">
-                                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Non_veg_symbol.svg/2048px-Non_veg_symbol.svg.png" alt="" />
-                                            <div className="price">₹ {item.price}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="right">
-                                    <div className="control-btns">
-                                        <div className={`btn add-tag ${item.tag == "" ? "" : "color-tag"}`} onClick={() => handleTagButtonClick(item.id)}>
-                                            {item.tag == "" ? "Add Tag" : item.tag}
-                                            <ArrowDropDownIcon />
-                                            {showTagOptions == true && selectedItemId !== null && selectedItemId === item.id && (
-                                                <div className="show-tag-options">
-                                                    {tagOptions.map((tag, index) => (
-                                                        <span
-                                                            key={index}
-                                                            onClick={() => handleTagSelection(item.id, tag)}
-                                                        >
-                                                            {tag}
-                                                        </span>
-                                                    ))}
+                    <GridContextProvider onChange={handleSwap}>
+                        <GridDropZone id="items" boxesPerRow={1} rowHeight={100}>
+                            {menuDataObject[currSelectedCategory] != undefined && menuDataObject[currSelectedCategory].map((item, index) => (
+                                <GridItem key={item.id}>
+                                    <div className="food-container">
+                                        <div className="fc-top-layer">
+                                            <div className="left">
+                                                <DragIndicatorIcon />
+                                                <div className="main-info">
+                                                    <div className="name">{item.name}</div>
+                                                    <div className="one-row">
+                                                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Non_veg_symbol.svg/2048px-Non_veg_symbol.svg.png" alt="" />
+                                                        <div className="price">₹ {item.price}</div>
+                                                    </div>
                                                 </div>
-                                            )}
+                                            </div>
+                                            <div className="right">
+                                                <div className="control-btns">
+                                                    <div className={`btn add-tag ${item.tag == "" ? "" : "color-tag"}`} onClick={() => handleTagButtonClick(item.id)}>
+                                                        {item.tag == "" ? "Add Tag" : item.tag}
+                                                        <ArrowDropDownIcon />
+                                                        {showTagOptions == true && selectedItemId !== null && selectedItemId === item.id && (
+                                                            <div className="show-tag-options">
+                                                                {tagOptions.map((tag, index) => (
+                                                                    <span
+                                                                        key={index}
+                                                                        onClick={() => handleTagSelection(item.id, tag)}
+                                                                    >
+                                                                        {tag}
+                                                                    </span>
+                                                                ))}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                    <div className={`btn circle ${item.allow_visibility ? "" : "color-tag"}`}
+                                                        onClick={() => handleVisibilityToggle(item.id)}>
+                                                        <VisibilityOffIcon />
+                                                    </div>
+                                                    <div className={`btn circle ${item.unavailable ? "color-tag" : ""}`}
+                                                        onClick={() => handleUnavailabilityToggle(item.id)}>
+                                                        <RestoreIcon />
+                                                    </div>
+                                                </div>
+                                                <MoreVertIcon />
+                                            </div>
                                         </div>
-                                        <div className={`btn circle ${item.allow_visibility ? "" : "color-tag"}`}
-                                            onClick={() => handleVisibilityToggle(item.id)}>
-                                            <VisibilityOffIcon />
-                                        </div>
-                                        <div className={`btn circle ${item.unavailable ? "color-tag" : ""}`}
-                                            onClick={() => handleUnavailabilityToggle(item.id)}>
-                                            <RestoreIcon />
-                                        </div>
                                     </div>
-                                    <MoreVertIcon />
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                    {/* <div className="food-container">
-                        <div className="fc-top-layer">
-                            <div className="left">
-                                <DragIndicatorIcon />
-                                <div className="name">Chicken Alfredo Pasta</div>
-                            </div>
-                            <div className="right">
-                                <div className="price">₹ 12.00</div>
-                                <MoreVertIcon />
-                            </div>
-                        </div>
-                        <div className="bottom">
-                            <div className="bottom-top-layer">
-                                <h4>Customization</h4>
-                                <div className="add-customization">
-                                    <input
-                                        type="text"
-                                        placeholder="Enter Customization Title"
-                                        value={newCategory}
-                                        onChange={(e) => setNewCategory(e.target.value)}
-                                    />
-                                    <button onClick={handleAddCategory}>Add</button>
-                                </div>
-                            </div>
-                            <div className="boxes">
-                                <div className="box">
-                                    <div className="box-title">
-                                        <ArrowRightIcon/>
-                                        Size
-                                    </div>
-                                    <div className="box-list">
-                                        <div>Small - <span>0.00</span></div>
-                                        <div>Medium - <span>10.00</span> </div>
-                                        <div>Large - <span>12.00</span> </div>
-                                    </div>
-                                </div>
-                                <div className="box">
-                                    <div className="box-title">
-                                        <ArrowRightIcon/>
-                                        Cheeze
-                                    </div>
-                                    <div className="box-list">
-                                        <div>No - <span>0.00</span></div>
-                                        <div>Extra - <span>10.00</span> </div>
-                                    </div>
-                                </div>
-                                <div className="box">
-                                    <div className="box-title">
-                                        <ArrowRightIcon/>
-                                        Pieces
-                                    </div>
-                                    <div className="box-list">
-                                        <div>4 - <span>0.00</span></div>
-                                        <div>6 - <span>10.00</span> </div>
-                                        <div>12 - <span>12.00</span> </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div> */}
+                                </GridItem>
+                            ))}
+                        </GridDropZone>
+                    </GridContextProvider>
                 </div>
             </div>
 
@@ -837,6 +797,7 @@ const Container = styled.div`
                 width: 100%;
                 margin-bottom: 10px;
                 background-color: #fff;
+                /* background-color: black; */
                 /* border-radius: 5px; */
                 position: relative;
                 /* overflow: hidden; */
