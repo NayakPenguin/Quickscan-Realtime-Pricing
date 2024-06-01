@@ -5,7 +5,7 @@ import Navbar from "../Components/Navbar";
 import AddIcon from '@material-ui/icons/Add';
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import EditIcon from '@material-ui/icons/Edit';
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
 import {
   GridContextProvider,

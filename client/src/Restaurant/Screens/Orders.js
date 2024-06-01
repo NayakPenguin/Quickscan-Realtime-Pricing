@@ -4,6 +4,7 @@ import Navbar from "../Components/Navbar";
 import LeftMenu from "../Components/LeftMenu";
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import { db } from "../../firebase";
 import { collection, onSnapshot, getDocs, addDoc, updateDoc, doc } from "firebase/firestore";
@@ -20,10 +21,11 @@ const Orders = () => {
     const [totalPrice, setTotalPrice] = useState(0);
     const [isKOT, setIsKOT] = useState(false);
 
-    const [restaurantId, setRestaurantId] = useState("BrdwyKol");
+    const params = useParams();
+    const { creatorShopId } = useParams();
 
-    const ordersCollectionRef = collection(db, `Orders${restaurantId}`);
-    const ordersNoCollectionRef = collection(db, `OrderNumbers${restaurantId}`);
+    const ordersCollectionRef = collection(db, `Orders${creatorShopId}`);
+    const ordersNoCollectionRef = collection(db, `OrderNumbers${creatorShopId}`);
 
     useEffect(() => {
         const getOrderNos = async () => {
@@ -119,10 +121,10 @@ const Orders = () => {
                                 <div className="order-no">Order: {idOrderCountMap[order.id]}</div>
                                 <div className="order-top-btns">
                                     {/* <div className="btn edit-btn"><EditIcon /></div> */}
-                                    <div className="btn cancel-btn">
+                                    {/* <div className="btn cancel-btn">
                                         Cancel Order
                                         <DeleteForeverIcon />
-                                    </div>
+                                    </div> */}
                                 </div>
                                 <div className="main-info">
                                     <div className="info">
