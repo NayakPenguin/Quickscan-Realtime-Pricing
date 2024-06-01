@@ -33,8 +33,8 @@ const App = () => {
 
         <Route path="/restaurant/:creatorShopId/table-management" element={<TableManagment />} />
         <Route path="/restaurant/:creatorShopId/orders" element={<Orders />} />
-        <Route path="/restaurant/:restaurantId/menu-status-control" element={<MenuStatusControl />} />
-        <Route path="/restaurant/:restaurantId/kot-updates" element={<KotUpdates />} />
+        <Route path="/restaurant/:creatorShopId/menu-status-control" element={<MenuStatusControl />} />
+        <Route path="/restaurant/:creatorShopId/kot-updates" element={<KotUpdates />} />
       </Routes>
     </div>
   )

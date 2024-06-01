@@ -16,9 +16,12 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import RestoreIcon from '@material-ui/icons/Restore';
+import DeleteIcon from '@material-ui/icons/Delete';
+
+import { useParams, useNavigate } from 'react-router-dom';
 
 import { db } from "../../firebase";
-import { collection, getDocs, addDoc, updateDoc, doc, getDoc } from "firebase/firestore";
+import { collection, getDocs, addDoc, updateDoc, doc, getDoc, deleteDoc } from "firebase/firestore";
 
 const MenuStatusControl = () => {
     const [pageID, setPageID] = useState("menu-status-control");
@@ -26,18 +29,22 @@ const MenuStatusControl = () => {
     const [newMenuItemName, setNewMenuItemName] = useState('');
     const [newMenuItemPrice, setNewMenuItemPrice] = useState('');
 
-    const [currSelectedCategory, setCurrSelectedCategory] = useState('');
+    const [currSelectedCategory, setCurrSelectedCategory] = useState('No-Category');
 
     const [allItems, setAllItems] = useState([]);
     const [allCategories, setAllCategories] = useState([]);
     const [menuDataObject, setMenuDataObject] = useState({});
 
-    const [restaurantId, setRestaurantId] = useState("BrdwyKol");
-    const menuCollectionRef = collection(db, `Menu${restaurantId}`);
-    const categoriesCollectionRef = collection(db, `Categories${restaurantId}`);
+
+    const params = useParams();
+    const { creatorShopId } = useParams();
+
+    const menuCollectionRef = collection(db, `Menu${creatorShopId}`);
+    const categoriesCollectionRef = collection(db, `Categories${creatorShopId}`);
 
     const [showTagOptions, setShowTagOptions] = useState(false);
     const [selectedItemId, setSelectedItemId] = useState(null);
+    const [showCategoryOptions, setShowCategoryOptions] = useState(null);
 
     useEffect(() => {
         const getCategoriesAndMenu = async () => {
@@ -90,7 +97,7 @@ const MenuStatusControl = () => {
 
     const handleAddCategory = async () => {
         try {
-            const categoriesCollectionRef = collection(db, 'Categories');
+            const categoriesCollectionRef = collection(db, `Categories${creatorShopId}`);
             const newCategoryDoc = await addDoc(categoriesCollectionRef, {
                 name: newCategory,
             });
@@ -101,6 +108,19 @@ const MenuStatusControl = () => {
             setAllCategories(prevCategories => [{ id: newCategoryDoc.id, name: newCategory }, ...prevCategories]);
         } catch (error) {
             console.error('Error adding category: ', error);
+        }
+    };
+
+    const handleDeleteCategory = async (categoryId) => {
+        try {
+            const categoryDocRef = doc(db, `Categories${creatorShopId}`, categoryId);
+            await deleteDoc(categoryDocRef);
+
+            console.log('Category deleted successfully with ID: ', categoryId);
+
+            setAllCategories(prevCategories => prevCategories.filter(category => category.id !== categoryId));
+        } catch (error) {
+            console.error('Error deleting category: ', error);
         }
     };
 
@@ -161,7 +181,7 @@ const MenuStatusControl = () => {
     const updateTag = async (itemId, selectedTag) => {
         console.log(itemId, selectedTag);
         try {
-            const itemRef = doc(db, `Menu${restaurantId}`, itemId);
+            const itemRef = doc(db, `Menu${creatorShopId}`, itemId);
             await updateDoc(itemRef, { tag: selectedTag });
             // Optionally, you can update the local state to reflect the change immediately
             setMenuDataObject((prevMenuDataObject) => {
@@ -193,7 +213,7 @@ const MenuStatusControl = () => {
 
     const handleVisibilityToggle = async (itemId) => {
         try {
-            const itemRef = doc(db, `Menu${restaurantId}`, itemId);
+            const itemRef = doc(db, `Menu${creatorShopId}`, itemId);
     
             // Get the current item's data from the database
             const currentItemSnapshot = await getDoc(itemRef);
@@ -224,7 +244,7 @@ const MenuStatusControl = () => {
 
     const handleUnavailabilityToggle = async (itemId) => {
         try {
-            const itemRef = doc(db, `Menu${restaurantId}`, itemId);
+            const itemRef = doc(db, `Menu${creatorShopId}`, itemId);
     
             // Get the current item's data from the database
             const currentItemSnapshot = await getDoc(itemRef);
@@ -258,7 +278,7 @@ const MenuStatusControl = () => {
     // Handle With EXTRA-CARE might exceed firebase limit if called again and again!
     const handleAddAllMenuItem = async () => {
         try {
-            const menuCollectionRef = collection(db, `Menu${restaurantId}`);
+            const menuCollectionRef = collection(db, `Menu${creatorShopId}`);
 
             // Iterate through each menu item and add it to the 'Menu' collection
             for (const menuItem of menuData) {
@@ -273,7 +293,7 @@ const MenuStatusControl = () => {
 
     const handleAddAllCategoryItem = async () => {
         try {
-            const categoriesCollectionRef = collection(db, `Categories${restaurantId}`);
+            const categoriesCollectionRef = collection(db, `Categories${creatorShopId}`);
 
             // Iterate through each menu item and add it to the 'Menu' collection
             for (const categoryItem of menuCategoryData) {
@@ -292,17 +312,17 @@ const MenuStatusControl = () => {
         <Container>
             <LeftMenu pageID={pageID} />
             <Navbar />
-            <div className="publish-changes">
+            {/* <div className="publish-changes">
                 Enter Items with Customizations
                 <ChevronRightIcon />
-            </div>
+            </div> */}
             {/* <h1>Create or Update Menu</h1> */}
             <div className="categories">
-                <div className="bulk-input">
+                {/* <div className="bulk-input">
                     <h3>Bulk Import <a href="/">Click here!</a></h3>
                     <p>Quickly add multiple food and categories to the list by uploading
                         an Excel file. Streamline your food management process with ease. </p>
-                </div>
+                </div> */}
                 <div className="add-categories">
                     <h2>Categories</h2>
                 </div>
@@ -327,8 +347,8 @@ const MenuStatusControl = () => {
                                 <DragIndicatorIcon />
                                 <div className="name">{category.name}</div>
                             </div>
-                            <div className="right">
-                                <MoreVertIcon />
+                            <div className="right" onClick={() => handleDeleteCategory(category.id)}>
+                                <DeleteIcon />
                             </div>
                         </div>
                     ))}
@@ -643,6 +663,7 @@ const Container = styled.div`
                     svg{
                         font-size: 1rem;
                         margin-right: 5px;
+                        cursor: grab;
                     }
                     
                     .name{
@@ -652,6 +673,7 @@ const Container = styled.div`
                 }
 
                 .right{
+                    cursor: pointer;
                     display: flex;
                     align-items: center;
                     svg{
@@ -661,7 +683,7 @@ const Container = styled.div`
 
                 &:hover{
                     transition-duration: 250ms;
-                    cursor: pointer;
+                    /* cursor: pointer; */
                     box-shadow: rgba(0, 0, 0, 0.05) 1px 1px 10px 0px;
                 }
             }
