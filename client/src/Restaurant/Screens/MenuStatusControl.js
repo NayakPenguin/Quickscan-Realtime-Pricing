@@ -17,6 +17,7 @@ import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import RestoreIcon from '@material-ui/icons/Restore';
 import DeleteIcon from '@material-ui/icons/Delete';
+import FlipCameraAndroidIcon from '@material-ui/icons/FlipCameraAndroid';
 
 import { GridContextProvider, GridDropZone, GridItem, swap } from 'react-grid-dnd';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -29,6 +30,7 @@ const MenuStatusControl = () => {
     const [newCategory, setNewCategory] = useState('');
     const [newMenuItemName, setNewMenuItemName] = useState('');
     const [newMenuItemPrice, setNewMenuItemPrice] = useState('');
+    const [isVeg, setIsVeg] = useState(true);
 
     const [currSelectedCategory, setCurrSelectedCategory] = useState('No-Category');
 
@@ -60,7 +62,7 @@ const MenuStatusControl = () => {
                 }));
                 const sortedData1 = filteredData1.sort((a, b) => a.orderIndex - b.orderIndex);
                 setAllCategories(sortedData1);
-                setCurrSelectedCategory(sortedData1[0]?.name || '');
+                if(currSelectedCategory == "No-Category") setCurrSelectedCategory(sortedData1[0]?.name || '');
 
                 const data = await getDocs(menuCollectionRef);
                 const filteredData = data.docs.map((doc) => ({
@@ -87,7 +89,7 @@ const MenuStatusControl = () => {
         };
 
         getCategoriesAndMenu();
-    }, [db, creatorShopId]);
+    }, [db, creatorShopId, allItems]);
 
     const onChange = async (sourceId, sourceIndex, targetIndex) => {
         const nextState = swap(allCategories, sourceIndex, targetIndex);
@@ -131,10 +133,10 @@ const MenuStatusControl = () => {
 
     const handleAddMenuItem = async () => {
         try {
-            const menuCollectionRef = collection(db, 'Menu');
+            const menuCollectionRef = collection(db, `Menu${creatorShopId}`);
             const newMenuItemDoc = await addDoc(menuCollectionRef, {
                 index_order: allItems.length + 1,
-                type: "Veg",
+                type: `${isVeg ? "Veg" : "Non-Veg"}`,
                 name: newMenuItemName,
                 allow_visibility: true,
                 unavailable: false,
@@ -144,6 +146,7 @@ const MenuStatusControl = () => {
                 ordered: "",
                 details: [],
                 details_options: [],
+                category: currSelectedCategory,
             });
 
             console.log('Menu item added successfully with ID: ', newMenuItemDoc.id);
@@ -377,13 +380,15 @@ const MenuStatusControl = () => {
                     </h1>
                 </div>
                 <div className="top-layer">
-                    <div className="select veg-or-non">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Non_veg_symbol.svg/2048px-Non_veg_symbol.svg.png" alt="" />
-                        <ExpandMoreIcon />
+                    <div className="select" onClick={() => setIsVeg(!isVeg)}>
+                        {
+                            isVeg ? <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Veg_symbol.svg/1200px-Veg_symbol.svg.png" alt="" />  : <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Non_veg_symbol.svg/2048px-Non_veg_symbol.svg.png" alt="" />
+                        }
+                        <FlipCameraAndroidIcon />
                     </div>
                     <div className="select choose-cat">
                         {currSelectedCategory}
-                        <ExpandMoreIcon />
+                        {/* <ExpandMoreIcon /> */}
                     </div>
                     <input
                         type="text"
@@ -401,7 +406,7 @@ const MenuStatusControl = () => {
                 </div>
 
                 <div className="search-bar">
-                    <input type="text" placeholder="Search Foot Iteam Here" />
+                    <input type="text" placeholder="Search Food Iteam Here" />
                     <div className="search-btn"><SearchIcon /></div>
                 </div>
 
@@ -747,6 +752,7 @@ const Container = styled.div`
             }
 
             .select{
+                cursor: pointer;
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
