@@ -5,7 +5,7 @@ import Navbar from "../Components/Navbar";
 import AddIcon from '@material-ui/icons/Add';
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import EditIcon from '@material-ui/icons/Edit';
-import { useParams,useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { jwtDecode } from "jwt-decode";
 import {
   GridContextProvider,
@@ -29,8 +29,8 @@ const isTokenExpired = (decodedToken) => {
 }
 
 const TableManagment = () => {
-  const [pageID, setPageID] = useState("table-management");
-  const params = useParams()
+  const pageID = "table-management";
+  const params = useParams();
   const [boxesPerRow, setBoxesPerRow] = useState(calculateBoxesPerRow());
   const navigate = useNavigate();
 
@@ -53,10 +53,17 @@ const TableManagment = () => {
     setNonOccupied(!isNonOccupied);
   };
 
-  function onChange(sourceId, sourceIndex, targetIndex) {
-    const nextState = swap(allTables, sourceIndex, targetIndex);
-    setAllTables(nextState);
-  } 
+  // function onChange(sourceId, sourceIndex, targetIndex) {
+  //   const nextState = swap(allTables, sourceIndex, targetIndex);
+  //   setAllTables(nextState);
+  // }
+
+  const onChange = (sourceId, sourceIndex, targetIndex, targetId) => {
+    const newTables = swap(allTables, sourceIndex, targetIndex);
+    setAllTables(newTables);
+    const newOrder = newTables.map(item => item.id);
+    localStorage.setItem('tableOrder', JSON.stringify(newOrder));
+  };
 
   useEffect(() => {
     function handleResize() {
@@ -102,7 +109,7 @@ const TableManagment = () => {
         phone: "",
         email: "",
       },
-      sessionStartTime : null
+      sessionStartTime: null
     },
     {
       id: 2, restaurantId: 2, tableNo: "T-02", capacity: 4, order: 0, status: "occ",
@@ -111,7 +118,7 @@ const TableManagment = () => {
         phone: "",
         email: "",
       },
-      sessionStartTime : null
+      sessionStartTime: null
     },
     {
       id: 3, restaurantId: 3, tableNo: "T-03", capacity: 4, order: 0, status: "occ",
@@ -120,7 +127,7 @@ const TableManagment = () => {
         phone: "",
         email: "",
       },
-      sessionStartTime : null
+      sessionStartTime: null
     },
     {
       id: 4, restaurantId: 4, tableNo: "T-04", capacity: 4, order: 0, status: "free",
@@ -129,7 +136,7 @@ const TableManagment = () => {
         phone: "",
         email: "",
       },
-      sessionStartTime : null
+      sessionStartTime: null
     },
     {
       id: 5, restaurantId: 5, tableNo: "T-05", capacity: 4, order: 0, status: "free",
@@ -138,7 +145,7 @@ const TableManagment = () => {
         phone: "",
         email: "",
       },
-      sessionStartTime : null
+      sessionStartTime: null
     },
     {
       id: 6, restaurantId: 6, tableNo: "T-06", capacity: 4, order: 0, status: "free",
@@ -147,7 +154,7 @@ const TableManagment = () => {
         phone: "",
         email: "",
       },
-      sessionStartTime : null
+      sessionStartTime: null
     },
     {
       id: 7, restaurantId: 7, tableNo: "T-07", capacity: 4, order: 0, status: "free",
@@ -156,7 +163,7 @@ const TableManagment = () => {
         phone: "",
         email: "",
       },
-      sessionStartTime : null
+      sessionStartTime: null
     },
     {
       id: 8, restaurantId: 8, tableNo: "T-08", capacity: 4, order: 0, status: "free",
@@ -165,7 +172,7 @@ const TableManagment = () => {
         phone: "",
         email: "",
       },
-      sessionStartTime : null
+      sessionStartTime: null
     },
     {
       id: 9, restaurantId: 9, tableNo: "T-09", capacity: 4, order: 0, status: "free",
@@ -174,7 +181,7 @@ const TableManagment = () => {
         phone: "",
         email: "",
       },
-      sessionStartTime : null
+      sessionStartTime: null
     },
     {
       id: 10, restaurantId: 10, tableNo: "T-10", capacity: 4, order: 0, status: "free",
@@ -183,7 +190,7 @@ const TableManagment = () => {
         phone: "",
         email: "",
       },
-      sessionStartTime : null
+      sessionStartTime: null
     },
   ]);
 
@@ -204,11 +211,11 @@ const TableManagment = () => {
 
   // -----------------------------------------------------------------------------
   const [allTables, setAllTables] = useState([]);
-  
+
   useEffect(() => {
     const tablesCollectionRef = collection(db, `Tables${creatorShopId}`);
     console.log(`Tables${creatorShopId}`);
-    // Fetch initial data
+
     const fetchData = async () => {
       try {
         const data = await getDocs(tablesCollectionRef);
@@ -216,8 +223,22 @@ const TableManagment = () => {
           ...doc.data(),
           id: doc.id,
         }));
-        console.log(initialData);
-        // setAllTables(initialData);
+
+        // Remove duplicates
+        const uniqueData = Array.from(new Set(initialData.map(a => a.id)))
+          .map(id => {
+            return initialData.find(a => a.id === id);
+          });
+
+        // Load order from localStorage if available
+        const savedOrder = JSON.parse(localStorage.getItem('tableOrder'));
+        if (savedOrder) {
+          const orderedTables = savedOrder.map(id => uniqueData.find(table => table.id === id)).filter(Boolean);
+          const newTables = uniqueData.filter(table => !savedOrder.includes(table.id));
+          setAllTables([...orderedTables, ...newTables]);
+        } else {
+          setAllTables(uniqueData);
+        }
       } catch (error) {
         console.error('Error fetching initial data:', error);
       }
@@ -225,33 +246,41 @@ const TableManagment = () => {
 
     fetchData();
 
-    // Set up real-time listener for updates
     const unsubscribe = onSnapshot(tablesCollectionRef, (snapshot) => {
-      snapshot.docChanges().forEach((change) => {
-        const tableData = {
-          ...change.doc.data(),
-          id: change.doc.id,
-        };
+      setAllTables(prevData => {
+        let newData = [...prevData];
 
-        if (change.type === 'added') {
-          setAllTables((prevData) => [...prevData, tableData]);
-        } else if (change.type === 'modified') {
-          setAllTables((prevData) =>
-            prevData.map((item) => (item.id === tableData.id ? tableData : item))
-          );
-        } else if (change.type === 'removed') {
-          setAllTables((prevData) =>
-            prevData.filter((item) => item.id !== tableData.id)
-          );
+        snapshot.docChanges().forEach((change) => {
+          const tableData = {
+            ...change.doc.data(),
+            id: change.doc.id,
+          };
+
+          if (change.type === 'added' && !prevData.find(item => item.id === tableData.id)) {
+            newData.push(tableData);
+          } else if (change.type === 'modified') {
+            newData = newData.map((item) => (item.id === tableData.id ? tableData : item));
+          } else if (change.type === 'removed') {
+            newData = newData.filter((item) => item.id !== tableData.id);
+          }
+        });
+
+        // Update the order with the new table data
+        const savedOrder = JSON.parse(localStorage.getItem('tableOrder'));
+        if (savedOrder) {
+          const orderedTables = savedOrder.map(id => newData.find(table => table.id === id)).filter(Boolean);
+          const newTables = newData.filter(table => !savedOrder.includes(table.id));
+          return [...orderedTables, ...newTables];
+        } else {
+          return newData;
         }
       });
     });
 
-    // Clean up the listener when the component unmounts
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, [db, creatorShopId]);
 
   useEffect(() => {
     console.log(allTables);
@@ -378,27 +407,27 @@ const TableManagment = () => {
   const [elapsedTimes, setElapsedTimes] = useState({});
 
   function calculateTimeDifference(sessionStartTime) {
-    if(sessionStartTime == null) {
+    if (sessionStartTime == null) {
       return "Invalid";
     }
 
     // Convert Firebase Timestamp to JavaScript Date
     const startTime = new Date(sessionStartTime.seconds * 1000 + sessionStartTime.nanoseconds / 1e6);
-  
+
     // Get current time
     const currentTime = new Date();
-  
+
     // Calculate time difference in milliseconds
     const timeDifference = currentTime - startTime;
-  
+
     // Convert time difference to HH:MM:SS format
     const hours = Math.floor(timeDifference / (1000 * 60 * 60));
     const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
-  
+
     // Format the result
     const formattedDifference = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-  
+
     return formattedDifference;
   }
 
@@ -424,7 +453,7 @@ const TableManagment = () => {
     return () => clearInterval(intervalId);
   }, [allTables]);  // Ensure the effect runs when the allTables array changes
 
-  
+
 
   return (
     <Container>
@@ -434,7 +463,7 @@ const TableManagment = () => {
       {showQR ? <QRCodeModal setShowQR={setShowQR} qrTableNo={qrTableNo} /> : null}
 
       <h1>Table Managment</h1>
-      
+
       {/* <button onClick={() => handlePushBulkDataToFirebase()}>Push Bulk Data</button>  */}
 
       <div className="edit-container">
