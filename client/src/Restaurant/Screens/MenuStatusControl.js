@@ -18,6 +18,7 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import RestoreIcon from '@material-ui/icons/Restore';
 import DeleteIcon from '@material-ui/icons/Delete';
 
+import { GridContextProvider, GridDropZone, GridItem, swap } from 'react-grid-dnd';
 import { useParams, useNavigate } from 'react-router-dom';
 
 import { db } from "../../firebase";
@@ -74,7 +75,7 @@ const MenuStatusControl = () => {
                 const categoryMap = filteredData.reduce((acc, item) => {
                     const { category, ...rest } = item;
                     if (!acc[category]) {
-                    acc[category] = [];
+                        acc[category] = [];
                     }
                     acc[category].push(rest);
                     return acc;
@@ -93,7 +94,19 @@ const MenuStatusControl = () => {
         }
 
         getCategoriesAndMenu();
-    }, []);
+    }, [db, creatorShopId]);
+
+    const onChange = (sourceId, sourceIndex, targetIndex) => {
+        const nextState = swap(allCategories, sourceIndex, targetIndex);
+        setAllCategories(nextState);
+
+        // Update Firestore order
+        nextState.forEach(async (category, index) => {
+            const categoryDocRef = doc(db, `Categories${creatorShopId}`, category.id);
+            await updateDoc(categoryDocRef, { orderIndex: index });
+        });
+    };
+
 
     const handleAddCategory = async () => {
         try {
@@ -214,23 +227,23 @@ const MenuStatusControl = () => {
     const handleVisibilityToggle = async (itemId) => {
         try {
             const itemRef = doc(db, `Menu${creatorShopId}`, itemId);
-    
+
             // Get the current item's data from the database
             const currentItemSnapshot = await getDoc(itemRef);
             const currentItemData = currentItemSnapshot.data();
-            
+
             if (currentItemData) {
                 const currentVisibility = currentItemData.allow_visibility;
-    
+
                 // Toggle the "unavailability" property for the item in the database
                 await updateDoc(itemRef, { allow_visibility: !currentVisibility });
-    
+
                 setMenuDataObject((prevMenuDataObject) => {
                     // Make sure currSelectedCategory is a valid index or key
                     const updatedItems = prevMenuDataObject[currSelectedCategory].map((item) =>
                         item.id === itemId ? { ...item, allow_visibility: !currentVisibility } : item
                     );
-    
+
                     return {
                         ...prevMenuDataObject,
                         [currSelectedCategory]: updatedItems,
@@ -245,23 +258,23 @@ const MenuStatusControl = () => {
     const handleUnavailabilityToggle = async (itemId) => {
         try {
             const itemRef = doc(db, `Menu${creatorShopId}`, itemId);
-    
+
             // Get the current item's data from the database
             const currentItemSnapshot = await getDoc(itemRef);
             const currentItemData = currentItemSnapshot.data();
-            
+
             if (currentItemData) {
                 const currentUnavailability = currentItemData.unavailable;
-    
+
                 // Toggle the "unavailability" property for the item in the database
                 await updateDoc(itemRef, { unavailable: !currentUnavailability });
-    
+
                 setMenuDataObject((prevMenuDataObject) => {
                     // Make sure currSelectedCategory is a valid index or key
                     const updatedItems = prevMenuDataObject[currSelectedCategory].map((item) =>
                         item.id === itemId ? { ...item, unavailable: !currentUnavailability } : item
                     );
-    
+
                     return {
                         ...prevMenuDataObject,
                         [currSelectedCategory]: updatedItems,
@@ -339,24 +352,34 @@ const MenuStatusControl = () => {
                     <button onClick={handleAddCategory}>Add</button>
                 </div>
 
-                <div className="categories-container">
-                    {allCategories.length > 0 && allCategories.map((category, index) => (
-                        <div className={`category ${category.name == currSelectedCategory ? 'selected' : ''}`} key={category.id} onClick={() => setCurrSelectedCategory(category.name)}>
-                            <div className="strip"></div>
-                            <div className="left">
-                                <DragIndicatorIcon />
-                                <div className="name">{category.name}</div>
-                            </div>
-                            <div className="right" onClick={() => handleDeleteCategory(category.id)}>
-                                <DeleteIcon />
-                            </div>
-                        </div>
-                    ))}
-                </div>
+                <GridContextProvider onChange={onChange}>
+                    <div className="categories-container">
+                        <GridDropZone
+                            id="categories"
+                            boxesPerRow={1}
+                            rowHeight={70}
+                        >
+                            {allCategories.map((category, index) => (
+                                <GridItem key={category.id}>
+                                    <div className={`category ${category.name === currSelectedCategory ? 'selected' : ''}`} onClick={() => setCurrSelectedCategory(category.name)}>
+                                        <div className="strip"></div>
+                                        <div className="left">
+                                            <DragIndicatorIcon />
+                                            <div className="name">{category.name}</div>
+                                        </div>
+                                        <div className="right" onClick={() => handleDeleteCategory(category.id)}>
+                                            <DeleteIcon />
+                                        </div>
+                                    </div>
+                                </GridItem>
+                            ))}
+                        </GridDropZone>
+                    </div>
+                </GridContextProvider>
             </div>
             <div className="edit-food">
                 <div className="top-layer">
-                    <h1> 
+                    <h1>
                         <span>Category {">"} </span>
                         {currSelectedCategory}
                     </h1>
