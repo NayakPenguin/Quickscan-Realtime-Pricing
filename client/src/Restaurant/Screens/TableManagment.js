@@ -33,7 +33,67 @@ const TableManagment = () => {
   const params = useParams()
   const [boxesPerRow, setBoxesPerRow] = useState(calculateBoxesPerRow());
   const navigate = useNavigate();
-  
+
+  const { creatorShopId } = useParams();
+
+  const [showQR, setShowQR] = useState(false);
+  const [qrTableNo, setQrTableNo] = useState("");
+
+  const [isOccupied, setOccupied] = useState(true);
+  const [isNonOccupied, setNonOccupied] = useState(true);
+
+  const [tableIdentifier, setTableIdentifier] = useState('');
+  const [tableCapacity, setTableCapacity] = useState('');
+
+  const handleOccupiedCheckboxChange = () => {
+    setOccupied(!isOccupied);
+  };
+
+  const handleNonOccupiedCheckboxChange = () => {
+    setNonOccupied(!isNonOccupied);
+  };
+
+  function onChange(sourceId, sourceIndex, targetIndex) {
+    const nextState = swap(allTables, sourceIndex, targetIndex);
+    setAllTables(nextState);
+  } 
+
+  useEffect(() => {
+    function handleResize() {
+      setBoxesPerRow(calculateBoxesPerRow());
+    }
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  function calculateBoxesPerRow() {
+    // Adjust this logic based on your requirements
+    const windowWidth = window.innerWidth;
+    if (windowWidth >= 1380) {
+      return 4;
+    } else if (windowWidth >= 1100) {
+      return 3;
+    } else if (windowWidth >= 600) {
+      return 2;
+    } else {
+      return 1;
+    }
+  }
+
+  const handleOpenQRCode = (tableNo) => {
+    setShowQR(true);
+    setQrTableNo(tableNo);
+  }
+
+
+  // -----------------------------------------------------------------------------
+
+
+  // Handle With EXTRA-CARE might exceed firebase limit if called again and again!
   const [items, setItems] = useState([
     {
       id: 1, restaurantId: 1, tableNo: "T-01", capacity: 4, order: 0, status: "occ",
@@ -127,69 +187,9 @@ const TableManagment = () => {
     },
   ]);
 
-  const [restaurantId, setRestaurantId] = useState("BrdwyKol");
-
-  const [showQR, setShowQR] = useState(false);
-  const [qrTableNo, setQrTableNo] = useState("");
-
-  const [isOccupied, setOccupied] = useState(true);
-  const [isNonOccupied, setNonOccupied] = useState(true);
-
-  const [tableIdentifier, setTableIdentifier] = useState('');
-  const [tableCapacity, setTableCapacity] = useState('');
-
-  const handleOccupiedCheckboxChange = () => {
-    setOccupied(!isOccupied);
-  };
-
-  const handleNonOccupiedCheckboxChange = () => {
-    setNonOccupied(!isNonOccupied);
-  };
-
-  function onChange(sourceId, sourceIndex, targetIndex) {
-    const nextState = swap(allTables, sourceIndex, targetIndex);
-    setAllTables(nextState);
-  } 
-  
-  useEffect(() => {
-    function handleResize() {
-      setBoxesPerRow(calculateBoxesPerRow());
-    }
-
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-
-  function calculateBoxesPerRow() {
-    // Adjust this logic based on your requirements
-    const windowWidth = window.innerWidth;
-    if (windowWidth >= 1380) {
-      return 4;
-    } else if (windowWidth >= 1100) {
-      return 3;
-    } else if (windowWidth >= 600) {
-      return 2;
-    } else {
-      return 1;
-    }
-  }
-
-  const handleOpenQRCode = (tableNo) => {
-    setShowQR(true);
-    setQrTableNo(tableNo);
-  }
-
-
-  // -----------------------------------------------------------------------------
-
-
-  // Handle With EXTRA-CARE might exceed firebase limit if called again and again!
   const handlePushBulkDataToFirebase = async () => {
     try {
-      const tablesCollectionRef = collection(db, `Tables${restaurantId}`);
+      const tablesCollectionRef = collection(db, `Tables${creatorShopId}`);
 
       // Iterate through each menu item and add it to the 'Menu' collection
       for (const item of items) {
@@ -202,15 +202,12 @@ const TableManagment = () => {
     }
   }
 
-
   // -----------------------------------------------------------------------------
   const [allTables, setAllTables] = useState([]);
-
-  const tablesCollectionRef = collection(db, `Tables${restaurantId}`);
   
   useEffect(() => {
-    const tablesCollectionRef = collection(db, `Tables${restaurantId}`);
-
+    const tablesCollectionRef = collection(db, `Tables${creatorShopId}`);
+    console.log(`Tables${creatorShopId}`);
     // Fetch initial data
     const fetchData = async () => {
       try {
@@ -281,7 +278,7 @@ const TableManagment = () => {
       const tableCustomerInfo = customerInfoMap[tableId];
 
       if (tableCustomerInfo) {
-        const tableRef = doc(db, `Tables${restaurantId}`, tableId);
+        const tableRef = doc(db, `Tables${creatorShopId}`, tableId);
 
         await updateDoc(tableRef, {
           status: "occ",
@@ -309,7 +306,7 @@ const TableManagment = () => {
 
   const handleFreeSession = async (tableId) => {
     try {
-      const tableRef = doc(db, `Tables${restaurantId}`, tableId);
+      const tableRef = doc(db, `Tables${creatorShopId}`, tableId);
 
       await updateDoc(tableRef, {
         status: "free",
@@ -329,11 +326,10 @@ const TableManagment = () => {
 
   const handleCreateTable = async () => {
     try {
-      const tablesCollectionRef = collection(db, `Tables${restaurantId}`);
+      const tablesCollectionRef = collection(db, `Tables${creatorShopId}`);
 
       // Add a new table to the 'Tables' collection
       const newItemDoc = await addDoc(tablesCollectionRef, {
-        restaurantId: 2,
         tableNo: tableIdentifier,
         capacity: tableCapacity,
         order: 0,
@@ -357,7 +353,7 @@ const TableManagment = () => {
 
   const handleEditTable = async () => {
     try {
-      const tablesCollectionRef = collection(db, `Tables${restaurantId}`);
+      const tablesCollectionRef = collection(db, `Tables${creatorShopId}`);
 
       // Get the table document by identifier
       const querySnapshot = await getDocs(
