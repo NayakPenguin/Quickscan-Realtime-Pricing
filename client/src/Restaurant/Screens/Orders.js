@@ -11,7 +11,7 @@ import { collection, onSnapshot, getDocs, addDoc, updateDoc, doc } from "firebas
 import KOTBillModal from "../Components/KOTBillModal";
 
 const Orders = () => {
-    const [pageID, setPageID] = useState("orders");
+    const pageID = "orders";
 
     const [allOrders, setAllOrders] = useState([]);
     const [idOrderCountMap, setIdOrderCountMap] = useState({});
@@ -19,7 +19,6 @@ const Orders = () => {
     const [showKOTBillModal, setShowKOTBillModal] = useState(false);
     const [orderDetails, setOrderDetails] = useState({})
     const [totalPrice, setTotalPrice] = useState(0);
-    const [isKOT, setIsKOT] = useState(false);
 
     const params = useParams();
     const { creatorShopId } = useParams();
@@ -30,7 +29,6 @@ const Orders = () => {
     useEffect(() => {
         const getOrderNos = async () => {
             try {
-                // Use onSnapshot to listen for real-time updates
                 const unsubscribe = onSnapshot(ordersNoCollectionRef, (snapshot) => {
                     const idOrderCountMapLocal = {};
 
@@ -43,7 +41,6 @@ const Orders = () => {
                     setIdOrderCountMap(idOrderCountMapLocal);
                 });
 
-                // Clean up the subscription when the component unmounts
                 return () => unsubscribe();
             } catch (error) {
                 console.log(error);
@@ -54,17 +51,18 @@ const Orders = () => {
             await getOrderNos();
 
             try {
-                // Use onSnapshot to listen for real-time updates
-                const unsubscribe = onSnapshot(ordersCollectionRef, (snapshot) => {
+                const unsubscribe = onSnapshot(ordersCollectionRef, async (snapshot) => {
                     const updatedData = snapshot.docs.map((doc) => ({
                         ...doc.data(),
                         id: doc.id,
                     }));
-                    console.log(updatedData);
-                    setAllOrders(updatedData);
+
+                    const sortedData = await processOrders(updatedData);
+
+                    console.log(sortedData);
+                    setAllOrders(sortedData);
                 });
 
-                // Clean up the subscription when the component unmounts
                 return () => unsubscribe();
             } catch (error) {
                 console.log(error);
@@ -74,23 +72,54 @@ const Orders = () => {
         getOrders();
     }, []);
 
-    const handleCheckboxChange = async (index) => {
-        try {
-            const orderToUpdate = allOrders[index];
-            const updatedOrders = [...allOrders];
+    const processOrders = async (orders) => {
+        // Sort the data based on timeOfOrder
+        const sortedOrders = orders.sort((a, b) => new Date(a.timeOfOrder.seconds * 1000) - new Date(b.timeOfOrder.seconds * 1000)); // FIFO
 
-            // Toggle the paymentCompleted property
-            orderToUpdate.paymentCompleted = !orderToUpdate.paymentCompleted;
+        // Log the timeOfOrder for each order
+        sortedOrders.forEach(order => {
+            console.log(`Order ID: ${order.id}, Time of Order: ${order.timeOfOrder.toDate()}`);
+        });
 
-            setAllOrders(updatedOrders);
+        return sortedOrders;
+    };
 
-            // Update the Firebase database
-            await updateDoc(doc(db, 'Orders', orderToUpdate.id), {
-                paymentCompleted: orderToUpdate.paymentCompleted,
+    useEffect(() => {
+        const pending = allOrders
+            .filter(order => !order.orderReady)
+            .sort((a, b) => new Date(a.timeOfOrder.seconds * 1000) - new Date(b.timeOfOrder.seconds * 1000)); // FIFO
+
+        const completed = allOrders
+            .filter(order => order.orderReady)
+            .sort((a, b) => new Date(b.timeOfOrder.seconds * 1000) - new Date(a.timeOfOrder.seconds * 1000)); // LIFO
+
+        console.log("NOW UPDATED : ", pending);
+        setPendingOrders(pending);
+        setCompletedOrders(completed);
+    }, [allOrders]);
+
+    const [pendingOrders, setPendingOrders] = useState([]);
+    const [completedOrders, setCompletedOrders] = useState([]);
+
+    const handleCheckboxChange = async (orderId) => {
+        // Find the order to be updated
+        setAllOrders((prevOrders) => {
+            const updatedOrders = prevOrders.map((order) => {
+                if (order.id === orderId) {
+                    const updatedOrder = { ...order, paymentCompleted: !order.paymentCompleted };
+
+                    // Update Firestore
+                    const orderRef = doc(db, `Orders${creatorShopId}`, orderId);
+                    updateDoc(orderRef, { paymentCompleted: updatedOrder.paymentCompleted });
+                    console.log("doc updated");
+
+                    return updatedOrder;
+                }
+                return order;
             });
-        } catch (error) {
-            console.log(error);
-        }
+
+            return updatedOrders;
+        });
     };
 
     const handleKotClick = (order) => {
@@ -138,7 +167,7 @@ const Orders = () => {
                                             <input
                                                 type="checkbox"
                                                 checked={order.paymentCompleted}
-                                                onChange={() => handleCheckboxChange(index)}
+                                                onChange={() => handleCheckboxChange(order.id)}
                                             />
                                             Payment Completed
                                         </label>
@@ -172,7 +201,7 @@ const Orders = () => {
                                             <input
                                                 type="checkbox"
                                                 checked={order.paymentCompleted}
-                                                onChange={() => handleCheckboxChange(index)}
+                                                onChange={() => handleCheckboxChange(order.id)}
                                             />
                                             Payment Completed
                                         </label>
