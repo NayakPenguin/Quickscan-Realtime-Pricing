@@ -29,58 +29,72 @@ const KotUpdates = () => {
             try {
                 const unsubscribe = onSnapshot(ordersNoCollectionRef, (snapshot) => {
                     const idOrderCountMapLocal = {};
-    
+
                     snapshot.docs.forEach((doc) => {
                         const { orderId, orderCount } = doc.data();
                         idOrderCountMapLocal[orderId] = orderCount;
                     });
-    
+
                     console.log(idOrderCountMapLocal);
                     setIdOrderCountMap(idOrderCountMapLocal);
                 });
-    
+
                 return () => unsubscribe();
             } catch (error) {
                 console.log(error);
             }
         };
-    
+
         const getOrders = async () => {
             await getOrderNos();
-    
+
             try {
-                const unsubscribe = onSnapshot(ordersCollectionRef, (snapshot) => {
+                const unsubscribe = onSnapshot(ordersCollectionRef, async (snapshot) => {
                     const updatedData = snapshot.docs.map((doc) => ({
                         ...doc.data(),
                         id: doc.id,
                     }));
-    
-                    updatedData.sort((a, b) => idOrderCountMap[a.id] - idOrderCountMap[b.id]);
-    
-                    console.log(updatedData);
-                    setAllOrders(updatedData);
-    
-                    const pending = updatedData
-                        .filter(order => !order.orderReady)
-                        .sort((a, b) => new Date(a.time) - new Date(b.time)); // FIFO
-    
-                    const completed = updatedData
-                        .filter(order => order.orderReady)
-                        .sort((a, b) => new Date(b.time) - new Date(a.time)); // LIFO
-    
-                    setPendingOrders(pending);
-                    setCompletedOrders(completed);
+
+                    const sortedData = await processOrders(updatedData);
+
+                    console.log(sortedData);
+                    setAllOrders(sortedData);
                 });
-    
+
                 return () => unsubscribe();
             } catch (error) {
                 console.log(error);
             }
         };
-    
+
         getOrders();
-        console.log("IsRecursive");
     }, []);
+
+    const processOrders = async (orders) => {
+        // Sort the data based on timeOfOrder
+        const sortedOrders = orders.sort((a, b) => new Date(a.timeOfOrder.seconds * 1000) - new Date(b.timeOfOrder.seconds * 1000)); // FIFO
+
+        // Log the timeOfOrder for each order
+        sortedOrders.forEach(order => {
+            console.log(`Order ID: ${order.id}, Time of Order: ${order.timeOfOrder.toDate()}`);
+        });
+
+        return sortedOrders;
+    };
+
+    useEffect(() => {
+        const pending = allOrders
+            .filter(order => !order.orderReady)
+            .sort((a, b) => new Date(a.timeOfOrder.seconds * 1000) - new Date(b.timeOfOrder.seconds * 1000)); // FIFO
+
+        const completed = allOrders
+            .filter(order => order.orderReady)
+            .sort((a, b) => new Date(b.timeOfOrder.seconds * 1000) - new Date(a.timeOfOrder.seconds * 1000)); // LIFO
+
+        console.log("NOW UPDATED");
+        setPendingOrders(pending);
+        setCompletedOrders(completed);
+    }, [allOrders]);
 
     const handleOrderReadyToggle = async (orderId) => {
         // Find the order to be updated
@@ -88,28 +102,16 @@ const KotUpdates = () => {
             const updatedOrders = prevOrders.map((order) => {
                 if (order.id === orderId) {
                     const updatedOrder = { ...order, orderReady: !order.orderReady };
-    
+
                     // Update Firestore
                     const orderRef = doc(db, `Orders${creatorShopId}`, orderId);
                     updateDoc(orderRef, { orderReady: updatedOrder.orderReady });
-    
+
                     return updatedOrder;
                 }
                 return order;
             });
-    
-            // Update pending and completed orders after toggling
-            const pending = updatedOrders
-                .filter(order => !order.orderReady)
-                .sort((a, b) => new Date(a.time) - new Date(b.time)); // FIFO
-    
-            const completed = updatedOrders
-                .filter(order => order.orderReady)
-                .sort((a, b) => new Date(b.time) - new Date(a.time)); // LIFO
-    
-            setPendingOrders(pending);
-            setCompletedOrders(completed);
-    
+
             return updatedOrders;
         });
     };
@@ -117,78 +119,93 @@ const KotUpdates = () => {
     const [pendingOrders, setPendingOrders] = useState([]);
     const [completedOrders, setCompletedOrders] = useState([]);
 
+    const formatTimestamp = (timestamp) => {
+        const date = new Date(timestamp.seconds * 1000);
+        return date.toLocaleString();
+    };
+
     return (
         <Container>
             <LeftMenu pageID={pageID} />
             <Navbar />
-            <h1>Pending KOTs</h1>
-            <div className="all-bills">
-                <div className="one-column">
-                    {pendingOrders.map((order, orderIndex) => (
-                        <div className="bill-container" key={order.id}>
-                            <div className="table">Table {idOrderCountMap[order.id]}</div>
-                            <div className="order-detail">Order No. {idOrderCountMap[order.id]}</div>
-                            {/* Mapping through orderDetails */}
-                            {order.orderDetails.map((item, index) => (
-                                <div className="order-item" key={index}>
-                                    <div className="about-item">
-                                        <div className="item-name">{item.itemName}</div>
-                                        <div className="item-more">{item.extraWithItem}</div>
-                                    </div>
-                                    <div className="item-count">
-                                        <CloseIcon />
-                                        <div className="val">{item.count}</div>
-                                    </div>
-                                </div>
-                            ))}
-                            <div className="prepare-status">
-                                <label>
-                                    <input
-                                        type="checkbox"
-                                        checked={order.orderReady}
-                                        onChange={() => handleOrderReadyToggle(order.id)}
-                                    />
-                                    Order Ready
-                                </label>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-            <h1>Completed KOTs</h1>
-            <div className="all-bills">
-                <div className="one-column">
-                    {completedOrders.map((order, orderIndex) => (
-                        <div className="bill-container" key={order.id}>
-                            <div className="table">Table {idOrderCountMap[order.id]}</div>
-                            <div className="order-detail">Order No. {idOrderCountMap[order.id]}</div>
-                            {/* Mapping through orderDetails */}
-                            {order.orderDetails.map((item, index) => (
-                                <div className="order-item" key={index}>
-                                    <div className="about-item">
-                                        <div className="item-name">{item.itemName}</div>
-                                        <div className="item-more">{item.extraWithItem}</div>
-                                    </div>
-                                    <div className="item-count">
-                                        <CloseIcon />
-                                        <div className="val">{item.count}</div>
+            <div className="flex-seperate">
+                <div>
+                    <h1>Pending KOTs</h1>
+                    <div className="all-bills">
+                        <div className="one-column">
+                            {pendingOrders.map((order, orderIndex) => (
+                                <div className="bill-container" key={order.id}>
+                                    <div className="table">Table {order.tableName}</div>
+                                    <div className="order-detail">Order No. {idOrderCountMap[order.id]}</div>
+                                    <div className="order-time">{formatTimestamp(order.timeOfOrder)}</div>
+                                    {/* Mapping through orderDetails */}
+                                    {order.orderDetails.map((item, index) => (
+                                        <div className="order-item" key={index}>
+                                            <div className="about-item">
+                                                <div className="item-name">{item.itemName}</div>
+                                                <div className="item-more">{item.extraWithItem}</div>
+                                            </div>
+                                            <div className="item-count">
+                                                <CloseIcon />
+                                                <div className="val">{item.count}</div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    <div className="prepare-status">
+                                        <label>
+                                            <input
+                                                type="checkbox"
+                                                checked={order.orderReady}
+                                                onChange={() => handleOrderReadyToggle(order.id)}
+                                            />
+                                            Order Ready
+                                        </label>
                                     </div>
                                 </div>
                             ))}
-                            <div className="prepare-status">
-                                <label>
-                                    <input
-                                        type="checkbox"
-                                        checked={order.orderReady}
-                                        onChange={() => handleOrderReadyToggle(order.id)}
-                                    />
-                                    Order Ready
-                                </label>
-                            </div>
                         </div>
-                    ))}
+                    </div>
+                </div>
+                <div>
+                    <h1>Completed KOTs</h1>
+                    <div className="all-bills">
+                        <div className="one-column">
+                            {completedOrders.map((order, orderIndex) => (
+                                <div className="bill-container" key={order.id}>
+                                    <div className="table">Table {order.tableName}</div>
+                                    <div className="order-detail">Order No. {idOrderCountMap[order.id]}</div>
+                                    <div className="order-time">{formatTimestamp(order.timeOfOrder)}</div>
+                                    {/* Mapping through orderDetails */}
+                                    {order.orderDetails.map((item, index) => (
+                                        <div className="order-item" key={index}>
+                                            <div className="about-item">
+                                                <div className="item-name">{item.itemName}</div>
+                                                <div className="item-more">{item.extraWithItem}</div>
+                                            </div>
+                                            <div className="item-count">
+                                                <CloseIcon />
+                                                <div className="val">{item.count}</div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    <div className="prepare-status">
+                                        <label>
+                                            <input
+                                                type="checkbox"
+                                                checked={order.orderReady}
+                                                onChange={() => handleOrderReadyToggle(order.id)}
+                                            />
+                                            Order Ready
+                                        </label>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 </div>
             </div>
+
+
         </Container>
     )
 }
@@ -221,6 +238,11 @@ const Container = styled.div`
         }
     }
 
+    .flex-seperate{
+        display: flex;
+        justify-content: space-between;
+    }
+
     h1{
       font-size: 2rem;
       font-weight: 500;
@@ -229,11 +251,11 @@ const Container = styled.div`
 
     .all-bills{
         display: flex;
-        justify-content: center;
+        /* justify-content: center; */
         margin-bottom: 50px;
         
         .one-column{
-            width: calc(33.33% - 6.66px);
+            width: 450px;
             display: flex;
             flex-direction: column;
             
@@ -288,7 +310,16 @@ const Container = styled.div`
                     text-transform: uppercase;
                     text-align: center;
                     color: #474747;
-                    margin-bottom: 40px;
+                }
+                
+                .order-time{
+                    font-size: 0.75rem;
+                    font-weight: 300;
+                    text-align: center;
+                    color: #474747;
+                    letter-spacing: 0.15rem;
+
+                    margin: 10px 0 40px 0;
                 }
 
 
