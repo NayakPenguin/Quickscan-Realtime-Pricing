@@ -320,6 +320,7 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
                 paymentCompleted: false,
                 canceledOrder: false,
                 totalPrice: totalPrice,
+                orderReady: false,
             });
 
             console.log('Order item added successfully with ID: ', newOrderItemDoc.id);

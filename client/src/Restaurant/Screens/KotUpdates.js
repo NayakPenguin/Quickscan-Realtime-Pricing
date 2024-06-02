@@ -4,6 +4,8 @@ import Navbar from "../Components/Navbar";
 import LeftMenu from "../Components/LeftMenu";
 import CloseIcon from '@material-ui/icons/Close';
 
+import { useParams, useNavigate } from 'react-router-dom';
+
 import { db } from "../../firebase";
 import { collection, onSnapshot, getDocs, addDoc, updateDoc, doc } from "firebase/firestore";
 
@@ -16,119 +18,114 @@ const KotUpdates = () => {
     const [parts, setParts] = useState({ part1: [], part2: [], part3: [] });
     const [ordersInRow, setOrdersInRow] = useState(1);
 
-    const [restaurantId, setRestaurantId] = useState("BrdwyKol");
+    const params = useParams();
+    const { creatorShopId } = useParams();
 
-    const ordersCollectionRef = collection(db, `Orders${restaurantId}`);
-    const ordersNoCollectionRef = collection(db, `OrderNumbers${restaurantId}`);
+    const ordersCollectionRef = collection(db, `Orders${creatorShopId}`);
+    const ordersNoCollectionRef = collection(db, `OrderNumbers${creatorShopId}`);
 
     useEffect(() => {
         const getOrderNos = async () => {
             try {
-                // Use onSnapshot to listen for real-time updates
                 const unsubscribe = onSnapshot(ordersNoCollectionRef, (snapshot) => {
                     const idOrderCountMapLocal = {};
-
+    
                     snapshot.docs.forEach((doc) => {
                         const { orderId, orderCount } = doc.data();
                         idOrderCountMapLocal[orderId] = orderCount;
                     });
-
+    
                     console.log(idOrderCountMapLocal);
                     setIdOrderCountMap(idOrderCountMapLocal);
                 });
-
-                // Clean up the subscription when the component unmounts
+    
                 return () => unsubscribe();
             } catch (error) {
                 console.log(error);
             }
         };
-
+    
         const getOrders = async () => {
             await getOrderNos();
-
+    
             try {
-                // Use onSnapshot to listen for real-time updates
                 const unsubscribe = onSnapshot(ordersCollectionRef, (snapshot) => {
                     const updatedData = snapshot.docs.map((doc) => ({
                         ...doc.data(),
                         id: doc.id,
                     }));
-
-                    // Sort the data based on idOrderCountMap
+    
                     updatedData.sort((a, b) => idOrderCountMap[a.id] - idOrderCountMap[b.id]);
-
+    
                     console.log(updatedData);
                     setAllOrders(updatedData);
+    
+                    const pending = updatedData
+                        .filter(order => !order.orderReady)
+                        .sort((a, b) => new Date(a.time) - new Date(b.time)); // FIFO
+    
+                    const completed = updatedData
+                        .filter(order => order.orderReady)
+                        .sort((a, b) => new Date(b.time) - new Date(a.time)); // LIFO
+    
+                    setPendingOrders(pending);
+                    setCompletedOrders(completed);
                 });
-
-                // Clean up the subscription when the component unmounts
+    
                 return () => unsubscribe();
             } catch (error) {
                 console.log(error);
             }
         };
-
+    
         getOrders();
+        console.log("IsRecursive");
     }, []);
 
-    useEffect(() => {
-        const handleResize = () => {
-            const screenWidth = window.innerWidth;
-            console.log("screenWidth : ", screenWidth);
-
-            if (screenWidth > 1200) {
-                setOrdersInRow(3);
-            } else if (screenWidth > 760) {
-                setOrdersInRow(2);
-            } else {
-                setOrdersInRow(1);
-            }
-        };
-
-        window.addEventListener('resize', handleResize());
-
-        return () => {
-            window.removeEventListener('resize', handleResize());
-        };
-    }, []);
-
-    useEffect(() => {
-        const splitOrdersIntoParts = () => {
-            const part1 = [];
-            const part2 = [];
-            const part3 = [];
-
-            for (let i = 0; i < ordersInRow; i++) {
-                const part = allOrders.filter((order, orderIndex) => idOrderCountMap[order.id] % ordersInRow === i);
-
-                if (i === 0) {
-                    part1.push(...part);
-                } else if (i === 1) {
-                    part2.push(...part);
-                } else if (i === 2) {
-                    part3.push(...part);
+    const handleOrderReadyToggle = async (orderId) => {
+        // Find the order to be updated
+        setAllOrders((prevOrders) => {
+            const updatedOrders = prevOrders.map((order) => {
+                if (order.id === orderId) {
+                    const updatedOrder = { ...order, orderReady: !order.orderReady };
+    
+                    // Update Firestore
+                    const orderRef = doc(db, `Orders${creatorShopId}`, orderId);
+                    updateDoc(orderRef, { orderReady: updatedOrder.orderReady });
+    
+                    return updatedOrder;
                 }
-            }
+                return order;
+            });
+    
+            // Update pending and completed orders after toggling
+            const pending = updatedOrders
+                .filter(order => !order.orderReady)
+                .sort((a, b) => new Date(a.time) - new Date(b.time)); // FIFO
+    
+            const completed = updatedOrders
+                .filter(order => order.orderReady)
+                .sort((a, b) => new Date(b.time) - new Date(a.time)); // LIFO
+    
+            setPendingOrders(pending);
+            setCompletedOrders(completed);
+    
+            return updatedOrders;
+        });
+    };
 
-            setParts({ part1, part2, part3 });
-        };
-
-        splitOrdersIntoParts();
-    }, [allOrders, ordersInRow, idOrderCountMap]);
-
+    const [pendingOrders, setPendingOrders] = useState([]);
+    const [completedOrders, setCompletedOrders] = useState([]);
 
     return (
         <Container>
             <LeftMenu pageID={pageID} />
             <Navbar />
-            <h1>
-                Pending KOTs
-            </h1>
+            <h1>Pending KOTs</h1>
             <div className="all-bills">
                 <div className="one-column">
-                    {parts.part1.map((order, orderIndex) => (
-                        <div className="bill-container" key={orderIndex}>
+                    {pendingOrders.map((order, orderIndex) => (
+                        <div className="bill-container" key={order.id}>
                             <div className="table">Table {idOrderCountMap[order.id]}</div>
                             <div className="order-detail">Order No. {idOrderCountMap[order.id]}</div>
                             {/* Mapping through orderDetails */}
@@ -148,83 +145,50 @@ const KotUpdates = () => {
                                 <label>
                                     <input
                                         type="checkbox"
-                                        checked={false}
+                                        checked={order.orderReady}
+                                        onChange={() => handleOrderReadyToggle(order.id)}
                                     />
-                                    Payment Completed
-                                </label>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-                <div className="one-column">
-                    {parts.part2.map((order, orderIndex) => (
-                        <div className="bill-container" key={orderIndex}>
-                            <div className="table">Table {idOrderCountMap[order.id]}</div>
-                            <div className="order-detail">Order No. {idOrderCountMap[order.id]}</div>
-
-                            {/* Mapping through orderDetails */}
-                            {order.orderDetails.map((item, index) => (
-                                <div className="order-item" key={index}>
-                                    <div className="about-item">
-                                        <div className="item-name">{item.itemName}</div>
-                                        <div className="item-more">{item.extraWithItem}</div>
-                                    </div>
-                                    <div className="item-count">
-                                        <CloseIcon />
-                                        <div className="val">{item.count}</div>
-                                    </div>
-                                </div>
-                            ))}
-
-                            <div className="prepare-status">
-                                <label>
-                                    <input
-                                        type="checkbox"
-                                        checked={false}
-                                    />
-                                    Payment Completed
-                                </label>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-                <div className="one-column">
-                    {parts.part3.map((order, orderIndex) => (
-                        <div className="bill-container" key={orderIndex}>
-                            <div className="table">Table {idOrderCountMap[order.id]}</div>
-                            <div className="order-detail">Order No. {idOrderCountMap[order.id]}</div>
-
-                            {/* Mapping through orderDetails */}
-                            {order.orderDetails.map((item, index) => (
-                                <div className="order-item" key={index}>
-                                    <div className="about-item">
-                                        <div className="item-name">{item.itemName}</div>
-                                        <div className="item-more">{item.extraWithItem}</div>
-                                    </div>
-                                    <div className="item-count">
-                                        <CloseIcon />
-                                        <div className="val">{item.count}</div>
-                                    </div>
-                                </div>
-                            ))}
-
-                            <div className="prepare-status">
-                                <label>
-                                    <input
-                                        type="checkbox"
-                                        checked={false}
-                                    />
-                                    Payment Completed
+                                    Order Ready
                                 </label>
                             </div>
                         </div>
                     ))}
                 </div>
             </div>
-            <h1>
-                Completed KOTs
-            </h1>
-
+            <h1>Completed KOTs</h1>
+            <div className="all-bills">
+                <div className="one-column">
+                    {completedOrders.map((order, orderIndex) => (
+                        <div className="bill-container" key={order.id}>
+                            <div className="table">Table {idOrderCountMap[order.id]}</div>
+                            <div className="order-detail">Order No. {idOrderCountMap[order.id]}</div>
+                            {/* Mapping through orderDetails */}
+                            {order.orderDetails.map((item, index) => (
+                                <div className="order-item" key={index}>
+                                    <div className="about-item">
+                                        <div className="item-name">{item.itemName}</div>
+                                        <div className="item-more">{item.extraWithItem}</div>
+                                    </div>
+                                    <div className="item-count">
+                                        <CloseIcon />
+                                        <div className="val">{item.count}</div>
+                                    </div>
+                                </div>
+                            ))}
+                            <div className="prepare-status">
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        checked={order.orderReady}
+                                        onChange={() => handleOrderReadyToggle(order.id)}
+                                    />
+                                    Order Ready
+                                </label>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
         </Container>
     )
 }
@@ -265,7 +229,7 @@ const Container = styled.div`
 
     .all-bills{
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
         margin-bottom: 50px;
         
         .one-column{
