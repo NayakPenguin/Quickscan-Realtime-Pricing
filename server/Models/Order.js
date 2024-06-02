@@ -16,6 +16,7 @@ const userDetailsSchema = new mongoose.Schema({
 
 const orderSchema = new mongoose.Schema({
     orderId: { type: String, required: true, unique: true },
+    creatorShopId: { type: String, required: true },
     canceledOrder: { type: Boolean, default: false },
     paymentCompleted: { type: Boolean, default: false },
     tableName: { type: String, required: true },

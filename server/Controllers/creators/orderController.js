@@ -2,7 +2,7 @@ const Order = require('../../Models/Order');
 
 // Function to create a new order
 const createOrder = async (req, res) => {
-    const { orderId, canceledOrder, paymentCompleted, tableName, timeOfOrder, totalPrice, userDetails, orderDetails } = req.body;
+    const { orderId, creatorShopId, canceledOrder, paymentCompleted, tableName, timeOfOrder, totalPrice, userDetails, orderDetails } = req.body;
 
     try {
         // Check if the orderId already exists
@@ -13,6 +13,7 @@ const createOrder = async (req, res) => {
 
         const newOrder = new Order({
             orderId,
+            creatorShopId,
             canceledOrder,
             paymentCompleted,
             tableName,
