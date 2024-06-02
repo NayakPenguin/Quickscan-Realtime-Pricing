@@ -140,6 +140,19 @@ const MenuStatusControl = () => {
         }
     };
 
+    const handleDeleteMenuItem = async (itemId) => {
+        try {
+            const categoryDocRef = doc(db, `Menu${creatorShopId}`, itemId);
+            await deleteDoc(categoryDocRef);
+
+            console.log('Category deleted successfully with ID: ', itemId);
+
+            setAllItems(prevMenuItems => prevMenuItems.filter(item => item.id !== itemId));
+        } catch (error) {
+            console.error('Error deleting category: ', error);
+        }
+    };
+
     const handleAddMenuItem = async () => {
         try {
             const menuCollectionRef = collection(db, `Menu${creatorShopId}`);
@@ -477,7 +490,7 @@ const MenuStatusControl = () => {
                                                         <RestoreIcon />
                                                     </div>
                                                 </div>
-                                                <MoreVertIcon />
+                                                <DeleteIcon onClick={() => handleDeleteMenuItem(item.id)} />
                                             </div>
                                         </div>
                                     </div>
