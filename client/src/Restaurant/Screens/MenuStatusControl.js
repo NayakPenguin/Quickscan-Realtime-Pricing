@@ -47,7 +47,16 @@ const MenuStatusControl = () => {
 
     const [showTagOptions, setShowTagOptions] = useState(false);
     const [selectedItemId, setSelectedItemId] = useState(null);
-    const [showCategoryOptions, setShowCategoryOptions] = useState(null);
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const handleSearch = (event) => {
+        setSearchQuery(event.target.value);
+    };
+
+    const filteredItems = menuDataObject[currSelectedCategory]?.filter((item) =>
+        item.name.toLowerCase().includes(searchQuery.toLowerCase())
+    ) || [];
+
 
     useEffect(() => {
         const categoriesCollectionRef = collection(db, `Categories${creatorShopId}`);
@@ -420,14 +429,14 @@ const MenuStatusControl = () => {
                 </div>
 
                 <div className="search-bar">
-                    <input type="text" placeholder="Search Food Iteam Here" />
+                    <input type="text" placeholder="Search Food Item Here" value={searchQuery} onChange={handleSearch} />
                     <div className="search-btn"><SearchIcon /></div>
                 </div>
 
                 <div className="food-list">
                     <GridContextProvider onChange={handleSwap}>
                         <GridDropZone id="items" boxesPerRow={1} rowHeight={100}>
-                            {menuDataObject[currSelectedCategory] != undefined && menuDataObject[currSelectedCategory].map((item, index) => (
+                            {filteredItems.map((item, index) => (
                                 <GridItem key={item.id}>
                                     <div className="food-container">
                                         <div className="fc-top-layer">
@@ -896,14 +905,14 @@ const Container = styled.div`
                                 .show-tag-options{
                                     display: flex;
                                     flex-direction: column;
-                                    position: absolute;
-                                    top: 35px;
+                                    position: fixed;
+                                    top: 5px;
                                     background-color: #f2f2f2;
-                                    right: -50px;
+                                    right: 280px;
                                     z-index: 10;
                                     width: 180px;
                                     border-radius: 10px;
-                                    max-height: 150px;
+                                    max-height: 80px;
                                     overflow-y: scroll;
                                     overflow-x: hidden;
                                     /* padding: 0 7.5px; */
@@ -932,7 +941,7 @@ const Container = styled.div`
                             }
 
                             .color-tag{
-                                background-color: #fde7d0;
+                                background-color: #8bd28b;
                             }
 
                             .circle{
