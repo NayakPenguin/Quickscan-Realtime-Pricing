@@ -5,6 +5,7 @@ import Navbar from "../Components/Navbar";
 
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import CallMadeIcon from '@material-ui/icons/CallMade';
 
 const Analytics = () => {
   const [pageID, setPageID] = useState("analytics");
@@ -97,6 +98,30 @@ const Analytics = () => {
         <div className="date-value" onClick={() => handleEndDateClick()}>{endDate == null ? "Present" : formatDate(endDate)}</div>
         <div className="search-btn" onClick={handleSearch}>GO</div>
       </div>
+      <div className="analytics-boxes-container">
+          <div className="analytics-box">
+            <div className="top-title">
+              Revenue
+            </div>
+            <div className="value">₹ 3,14,020.50</div>
+          </div>
+          <div className="analytics-box">
+            <div className="top-title">
+              Footfall
+            </div>
+            <div className="value">982</div>
+          </div>
+          <div className="analytics-box">
+            <div className="top-title">
+              Orders Raised
+            </div>
+            <div className="value">1284</div>
+          </div>
+          {/* <div className="analytics-box show-more-box">
+            <a href="/">View all order details </a>
+            <CallMadeIcon/>
+          </div> */}
+      </div>
     </Container>
   );
 }
@@ -186,6 +211,75 @@ const Container = styled.div`
         svg{
             font-size: 1rem;
         }
+    }
+  }
+
+  .analytics-boxes-container{
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    margin-top: 30px;
+
+    .analytics-box{
+      width: calc(25% - 10px);
+      min-width: 200px;
+      margin-right: 10px;
+      margin-bottom: 10px;
+      position: relative;
+
+      background-color: white;
+      overflow: hidden;
+      border: 2.5px solid black;
+      padding-top: 50px;
+      box-shadow: rgba(0, 0, 0, 0.20) 1px 1px 10px 0px;
+
+      display: grid;
+      place-items: center;
+
+      .top-title{
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background-color: #e9e6e1;
+        /* color: white; */
+        padding: 10px;
+        font-size: 1rem;
+        font-weight: 500;
+        letter-spacing: 0.25rem;
+        text-transform: uppercase;
+        text-align: center;
+        border-bottom: 2.5px solid black;
+      }
+
+      .value{
+        font-size: 1.25rem;
+        text-align: center;
+        font-weight: 500;
+        padding: 5px;
+        /* background-color: orange; */
+      }
+    }
+
+    .show-more-box{
+      padding: 10px;
+
+      display: flex;
+      justify-content: center;
+      
+      a{
+        text-decoration: none;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.07rem;
+        font-weight: 500;
+      }
+
+      svg{
+        font-size: 1rem;
+        margin-left: 5px;
+        fill: cornflowerblue;
+      }
     }
   }
 `
