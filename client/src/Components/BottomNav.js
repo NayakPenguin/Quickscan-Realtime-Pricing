@@ -299,7 +299,7 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
     const userDetails = {
         name: localStorage.getItem('name'),
         phone: localStorage.getItem('mobile'),
-        email: "not-taking-currently-from-user",
+        email: "-",
     }
 
     const tableName = localStorage.getItem('scanId');

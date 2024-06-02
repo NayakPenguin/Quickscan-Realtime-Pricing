@@ -6,7 +6,7 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import SearchIcon from '@material-ui/icons/Search';
 
 const Customers = () => {
-  const [pageID, setPageID] = useState("customers");
+  const pageID = "customers";
   const users = [
     {
       "name": "Atanu Nayak",

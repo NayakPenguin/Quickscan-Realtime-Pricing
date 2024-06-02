@@ -9,8 +9,8 @@ const LeftMenu = ({ pageID }) => {
     { name: "Orders", id: "orders", url: "orders" },
     { name: "Menu Status Control", id: "menu-status-control", url: "menu-status-control" },
     { name: "KOT Updates", id: "kot-updates", url: "kot-updates" },
-    // { name: "Analytics", id: "analytics", url: "analytics" },
     { name: "Customers", id: "customers", url: "customers" },
+    { name: "Analytics", id: "analytics", url: "analytics" },
   ];
 
   return (

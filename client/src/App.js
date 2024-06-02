@@ -16,6 +16,7 @@ import Orders from "./Restaurant/Screens/Orders";
 import MenuStatusControl from "./Restaurant/Screens/MenuStatusControl";
 import KotUpdates from "./Restaurant/Screens/KotUpdates";
 import Customers from "./Restaurant/Screens/Customers";
+import Analytics from "./Restaurant/Screens/Analytics";
 import Login from "./Restaurant/Screens/Login";
 
 const App = () => {
@@ -35,6 +36,8 @@ const App = () => {
         <Route path="/restaurant/:creatorShopId/orders" element={<Orders />} />
         <Route path="/restaurant/:creatorShopId/menu-status-control" element={<MenuStatusControl />} />
         <Route path="/restaurant/:creatorShopId/kot-updates" element={<KotUpdates />} />
+        <Route path="/restaurant/:creatorShopId/customers" element={<Customers />} />
+        <Route path="/restaurant/:creatorShopId/analytics" element={<Analytics />} />
       </Routes>
     </div>
   )
