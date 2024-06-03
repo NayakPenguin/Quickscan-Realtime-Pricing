@@ -300,6 +300,7 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
         name: localStorage.getItem('name'),
         phone: localStorage.getItem('mobile'),
         email: "-",
+        userId: `customer@${localStorage.getItem('mobile').replace(/\s/g, '')}`,
     }
 
     const tableName = localStorage.getItem('scanId');
@@ -343,6 +344,20 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
 
             console.log("newOrderNoItemDoc pushed!");
 
+            const mongoDoc = {
+                orderId: newOrderItemDoc.id,
+                creatorShopId: creatorShopId,
+                canceledOrder: false,
+                paymentCompleted: false,
+                tableName: tableName,
+                timeOfOrder: currentTime,
+                totalPrice: totalPrice,
+                userDetails: userDetails,
+                orderDetails: orderedMenuState,
+            }
+
+            await pushToMongoDB(mongoDoc);
+
             setOrderDone(true);
         } catch (error) {
             console.error('Error adding menu item: ', error);
@@ -350,6 +365,28 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
 
         console.log("orderedMenuState : ", orderedMenuState);
     }
+
+    const pushToMongoDB = async (mongoDoc) => {
+        console.log("mongoDoc : ", mongoDoc);
+        try {
+            const response = await fetch('http://localhost:8000/order/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(mongoDoc)
+            });
+    
+            if (!response.ok) {
+                throw new Error('Failed to push order to MongoDB');
+            }
+    
+            const data = await response.json();
+            console.log('Order pushed to MongoDB successfully:', data);
+        } catch (error) {
+            console.error('Error pushing order to MongoDB:', error);
+        }
+    };
 
     const downloadPDF = () => {
         const input = document.getElementById("curr-bill");
