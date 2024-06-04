@@ -28,13 +28,10 @@ const isTokenExpired = (decodedToken) => {
   return false;
 }
 
-const TableManagment = () => {
+const TableManagment = ({ creatorShopId }) => {
   const pageID = "table-management";
-  const params = useParams();
   const [boxesPerRow, setBoxesPerRow] = useState(calculateBoxesPerRow());
   const navigate = useNavigate();
-
-  const { creatorShopId } = useParams();
 
   const [showQR, setShowQR] = useState(false);
   const [qrTableNo, setQrTableNo] = useState("");
