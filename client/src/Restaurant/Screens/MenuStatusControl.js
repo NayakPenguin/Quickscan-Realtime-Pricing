@@ -24,6 +24,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 import { db } from "../../firebase";
 import { collection, getDocs, addDoc, updateDoc, doc, getDoc, deleteDoc } from "firebase/firestore";
+import { getCreatorShopId } from "../Controllers/ReastaurantID";
 
 const MenuStatusControl = () => {
     const [pageID, setPageID] = useState("menu-status-control");
@@ -38,9 +39,12 @@ const MenuStatusControl = () => {
     const [allCategories, setAllCategories] = useState([]);
     const [menuDataObject, setMenuDataObject] = useState({});
 
+    const creatorShopId = getCreatorShopId();
+    const navigate = useNavigate();
 
-    const params = useParams();
-    const { creatorShopId } = useParams();
+    useEffect(() => {
+        if (creatorShopId == null) navigate("/restaurant/login");
+    }, []);
 
     const menuCollectionRef = collection(db, `Menu${creatorShopId}`);
     const categoriesCollectionRef = collection(db, `Categories${creatorShopId}`);

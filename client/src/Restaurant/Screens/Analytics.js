@@ -1,16 +1,24 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import LeftMenu from "../Components/LeftMenu";
 import styled from "styled-components";
 import Navbar from "../Components/Navbar";
-
+import { useParams, useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import CallMadeIcon from '@material-ui/icons/CallMade';
+import { getCreatorShopId } from "../Controllers/ReastaurantID";
 
 const Analytics = () => {
   const [pageID, setPageID] = useState("analytics");
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+
+  const creatorShopId = getCreatorShopId();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+      if (creatorShopId == null) navigate("/restaurant/login");
+  }, []);
 
   const handleStartDateChange = (date) => {
     setStartDate(date);

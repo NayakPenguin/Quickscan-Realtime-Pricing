@@ -9,19 +9,24 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { db } from "../../firebase";
 import { collection, onSnapshot, getDocs, addDoc, updateDoc, doc } from "firebase/firestore";
 import KOTBillModal from "../Components/KOTBillModal";
+import { getCreatorShopId } from "../Controllers/ReastaurantID";
 
 const Orders = () => {
     const pageID = "orders";
 
     const [allOrders, setAllOrders] = useState([]);
     const [idOrderCountMap, setIdOrderCountMap] = useState({});
-    
+
     const [showKOTBillModal, setShowKOTBillModal] = useState(false);
     const [orderDetails, setOrderDetails] = useState({})
     const [totalPrice, setTotalPrice] = useState(0);
 
-    const params = useParams();
-    const { creatorShopId } = useParams();
+    const creatorShopId = getCreatorShopId();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (creatorShopId == null) navigate("/restaurant/login");
+    }, []);
 
     const ordersCollectionRef = collection(db, `Orders${creatorShopId}`);
     const ordersNoCollectionRef = collection(db, `OrderNumbers${creatorShopId}`);
@@ -128,13 +133,13 @@ const Orders = () => {
         setOrderDetails(order.orderDetails);
         console.log("order.totalPrice : ", order.totalPrice);
         setTotalPrice(order.totalPrice);
-    }; 
+    };
 
     return (
         <Container>
             <LeftMenu pageID={pageID} />
             <Navbar />
-            {showKOTBillModal ? <KOTBillModal setShowKOTBillModal={setShowKOTBillModal} orderDetails={orderDetails} totalPrice={totalPrice}/> : null}
+            {showKOTBillModal ? <KOTBillModal setShowKOTBillModal={setShowKOTBillModal} orderDetails={orderDetails} totalPrice={totalPrice} /> : null}
             <h1>All Orders</h1>
             {/* <div className="search">
                 <div className="options"></div>
@@ -174,7 +179,7 @@ const Orders = () => {
                                     </div>
                                 </div>
                                 <div className="options">
-                                <div className="gen kot" onClick={() => handleKotClick(order)}>KOT</div>
+                                    <div className="gen kot" onClick={() => handleKotClick(order)}>KOT</div>
                                     <div className="gen bill" onClick={() => handleKotClick(order)}>Bill</div>
                                 </div>
                             </div>
@@ -184,7 +189,7 @@ const Orders = () => {
             </div>
             <h3>Completed Payments</h3>
             <div className="orders zigzag paid-orders">
-            {
+                {
                     allOrders.length > 0 && allOrders.map((order, index) => (
                         order.paymentCompleted == true ? (
                             <div className="order" key={order.id}>

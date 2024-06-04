@@ -4,9 +4,19 @@ import styled from "styled-components";
 import Navbar from "../Components/Navbar";
 import FilterListIcon from '@material-ui/icons/FilterList';
 import SearchIcon from '@material-ui/icons/Search';
+import { getCreatorShopId } from "../Controllers/ReastaurantID";
+import { useParams, useNavigate } from 'react-router-dom';
 
 const Customers = () => {
   const pageID = "customers";
+
+  const creatorShopId = getCreatorShopId();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+      if (creatorShopId == null) navigate("/restaurant/login");
+  }, []);
+
   const users = [
     {
       "name": "Atanu Nayak",

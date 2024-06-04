@@ -8,6 +8,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 import { db } from "../../firebase";
 import { collection, onSnapshot, getDocs, addDoc, updateDoc, doc } from "firebase/firestore";
+import { getCreatorShopId } from "../Controllers/ReastaurantID";
 
 const KotUpdates = () => {
     const [pageID, setPageID] = useState("kot-updates");
@@ -18,8 +19,12 @@ const KotUpdates = () => {
     const [parts, setParts] = useState({ part1: [], part2: [], part3: [] });
     const [ordersInRow, setOrdersInRow] = useState(1);
 
-    const params = useParams();
-    const { creatorShopId } = useParams();
+    const creatorShopId = getCreatorShopId();
+    const navigate = useNavigate();
+    
+    useEffect(() => {
+        if (creatorShopId == null) navigate("/restaurant/login");
+    }, []);
 
     const ordersCollectionRef = collection(db, `Orders${creatorShopId}`);
     const ordersNoCollectionRef = collection(db, `OrderNumbers${creatorShopId}`);

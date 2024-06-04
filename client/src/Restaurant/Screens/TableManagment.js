@@ -18,6 +18,7 @@ import QRCodeModal from "../Components/QRCodeModal";
 
 import { db } from "../../firebase";
 import { collection, getDocs, addDoc, query, where, updateDoc, onSnapshot, doc } from "firebase/firestore";
+import { getCreatorShopId } from "../Controllers/ReastaurantID";
 
 const isTokenExpired = (decodedToken) => {
   if (decodedToken && decodedToken.exp) {
@@ -28,10 +29,16 @@ const isTokenExpired = (decodedToken) => {
   return false;
 }
 
-const TableManagment = ({ creatorShopId }) => {
+const TableManagment = () => {
   const pageID = "table-management";
   const [boxesPerRow, setBoxesPerRow] = useState(calculateBoxesPerRow());
   const navigate = useNavigate();
+
+  const creatorShopId = getCreatorShopId();
+
+  useEffect(() => {
+    if (creatorShopId == null) navigate("/restaurant/login");
+  }, []);
 
   const [showQR, setShowQR] = useState(false);
   const [qrTableNo, setQrTableNo] = useState("");

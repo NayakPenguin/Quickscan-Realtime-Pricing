@@ -18,7 +18,6 @@ import KotUpdates from "./Restaurant/Screens/KotUpdates";
 import Customers from "./Restaurant/Screens/Customers";
 import Analytics from "./Restaurant/Screens/Analytics";
 import Login from "./Restaurant/Screens/Login";
-import ProtectedRoute from "./Restaurant/Controllers/ProtectedRoute";
 
 const App = () => {
   const navigate = useNavigate();
@@ -33,12 +32,12 @@ const App = () => {
         <Route path="/user/bills" element={<UserBills/>} />
         <Route path="/user/profile" element={<UserProfile/>} />
 
-        <ProtectedRoute path="/restaurant/table-management" element={<TableManagment />} />
-        <ProtectedRoute path="/restaurant/orders" element={<Orders />} />
-        <ProtectedRoute path="/restaurant/menu-status-control" element={<MenuStatusControl />} />
-        <ProtectedRoute path="/restaurant/kot-updates" element={<KotUpdates />} />
-        <ProtectedRoute path="/restaurant/customers" element={<Customers />} />
-        <ProtectedRoute path="/restaurant/analytics" element={<Analytics />} />
+        <Route path="/restaurant/table-management" element={<TableManagment />} />
+        <Route path="/restaurant/orders" element={<Orders />} />
+        <Route path="/restaurant/menu-status-control" element={<MenuStatusControl />} />
+        <Route path="/restaurant/kot-updates" element={<KotUpdates />} />
+        <Route path="/restaurant/customers" element={<Customers />} />
+        <Route path="/restaurant/analytics" element={<Analytics />} />
         <Route path="/restaurant/login" element={<Login />} />
       </Routes>
     </div>
