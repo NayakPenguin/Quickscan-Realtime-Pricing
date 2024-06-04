@@ -16,14 +16,14 @@ import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const [isOwner, setIsOwner] = useState(false);
-    const [restaurantid,setRestaurantId] = useState("")
-    const [accesskey , setAccesskey] = useState("")
-    const restaurant = useSelector(state => state.restaurant)
+    const [creatorShopId, setCreatorShopId] = useState("");
+    const [password , setPassword] = useState("");
     const dispatch = useDispatch()
     const navigate = useNavigate();
 
     useEffect(() => {
-        const jwt = localStorage.getItem('authToken')
+        const jwt = localStorage.getItem('creatorToken')
+
         console.log(jwt)
         if(jwt) {
             const decodedHeader = jwtDecode(jwt);
@@ -34,9 +34,9 @@ const Login = () => {
 
     const handleLogin = async ()=>{
         try {
-            const response = await axios.post('http://localhost:8000/login', {
-                restaurant_id:restaurantid ,
-                access : accesskey
+            const response = await axios.post('http://localhost:8000/creator/verify-login', {
+                creatorShopId: creatorShopId,
+                password : password
             });
       
             // Handle the response, e.g., set state or perform additional actions
@@ -46,9 +46,9 @@ const Login = () => {
                 return 
                 //fixed the login issue with this logic
             }
-            localStorage.setItem('authToken',response.data.token)
-            dispatch(updateRestaurant({id:restaurantid,accesskey:accesskey}))
-            navigate('/show')
+            
+            localStorage.setItem('creatorToken', response.data.token);
+            navigate(`${creatorShopId}/table-management`);
           } catch (error) {
             // Handle errors, e.g., display an error message
             console.error('Login failed:', error.message);
@@ -73,22 +73,23 @@ const Login = () => {
                     <div className="svg-container">
                         <PersonIcon/>
                     </div>
-                    <div className="result">{
+                    {/* <div className="result">{
                         isOwner ? "Restaurant Owner" : "Restaurant Manager"
-                    }</div>
+                    }</div> */}
+                    <div className="result">Restaurant Management</div>
                     <div className="swap-icon" onClick={() => setIsOwner(!isOwner)}><SwapHorizIcon/></div>
                 </div>
                 <div className="input-container">
                     <div className="svg-container">
                         <RestaurantIcon/>
                     </div>
-                    <input type="text" placeholder="Registered Restaurant ID" onChange={(e) => setRestaurantId(e.target.value)} />
+                    <input type="text" placeholder="Registered Restaurant ID" onChange={(e) => setCreatorShopId(e.target.value)} />
                 </div>
                 <div className="input-container">
                     <div className="svg-container">
                         <VpnKeyIcon/>
                     </div>
-                    <input type="text" placeholder="Access Key" onChange={(e) => setAccesskey(e.target.value)}/>
+                    <input type="text" placeholder="Access Key" onChange={(e) => setPassword(e.target.value)}/>
                 </div>
                 <a href="/" className="two-fact-auth-req-link">Request 2FA to enhance security measures.</a>
                 <div className="login-btn" onClick={() => handleLogin()}>
