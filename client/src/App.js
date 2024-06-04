@@ -38,6 +38,7 @@ const App = () => {
         <Route path="/restaurant/:creatorShopId/kot-updates" element={<KotUpdates />} />
         <Route path="/restaurant/:creatorShopId/customers" element={<Customers />} />
         <Route path="/restaurant/:creatorShopId/analytics" element={<Analytics />} />
+        <Route path="/restaurant/login" element={<Login />} />
       </Routes>
     </div>
   )
