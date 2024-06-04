@@ -21,11 +21,13 @@ const loginCreator = async (req, res) => {
             return res.status(400).json({ message: 'Invalid creator shop name or password' });
         }
 
+        const expiresInMilliseconds = 20 * 60 * 60 * 1000; // 20 hours in milliseconds
+
         // Generate a JWT token
         const token = jwt.sign(
             { creatorId: creator._id, creatorShopId: creator.creatorShopId },
             process.env.JWT_SECRET,
-            { expiresIn: process.env.JWT_EXPIRE }
+            { expiresIn: expiresInMilliseconds }
         );
 
         res.status(200).json({ success: true, token });

@@ -34,9 +34,10 @@ const TableManagment = () => {
   const [boxesPerRow, setBoxesPerRow] = useState(calculateBoxesPerRow());
   const navigate = useNavigate();
 
-  const creatorShopId = getCreatorShopId();
+  var creatorShopId = null;
 
   useEffect(() => {
+    creatorShopId = getCreatorShopId();
     if (creatorShopId == null) navigate("/restaurant/login");
   }, []);
 

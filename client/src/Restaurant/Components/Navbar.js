@@ -2,9 +2,11 @@ import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 
 const Navbar = () => {
+  
   return (
     <Container>
-        
+        <div></div>
+        <div className="logout">Logout</div>
     </Container>
   )
 }
@@ -20,4 +22,19 @@ const Container = styled.div`
     position: fixed;
     top: 0;
     right: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 20px;
+
+    .logout{
+      font-size: 0.85rem;
+      padding: 5px 10px;
+      /* background-color: #fde7d0; */
+      background-color: #f88888;
+      color: white;
+      border: 2px solid black;
+    }
 `

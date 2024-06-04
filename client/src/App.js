@@ -18,12 +18,16 @@ import KotUpdates from "./Restaurant/Screens/KotUpdates";
 import Customers from "./Restaurant/Screens/Customers";
 import Analytics from "./Restaurant/Screens/Analytics";
 import Login from "./Restaurant/Screens/Login";
+import Test from "./Screens/Test";
 
 const App = () => {
   const navigate = useNavigate();
+
   return (
     <div>
       <Routes>
+        <Route path="/test" element={<Test/>} />
+        
         <Route path="/" element={<LandingPage/>} />
         <Route path="/qrscan/" element={<PreMenu/>} />
         <Route path="/qrscan/:creatorShopId/:scanId" element={<PreMenu/>} />
