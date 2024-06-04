@@ -47,6 +47,7 @@ const PreMenu = () => {
             alert('Please enter your mobile number.');
             return;
         }
+        
         if (!/^\d{10}$/.test(cleanedMobile)) {
             alert('Please enter a valid 10-digit mobile number.');
             return;
@@ -60,7 +61,8 @@ const PreMenu = () => {
             const response = await axios.post("http://localhost:8000/otp/get-otp", {
                 name: name.trim(),
                 mobile: cleanedMobile,
-                userId: userId
+                userId: userId,
+                email: "-",
             });
 
             console.log(response.data);

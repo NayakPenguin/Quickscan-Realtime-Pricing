@@ -50,7 +50,7 @@ const getOTP = async (req, res) => {
 
 // Function to handle OTP verification
 const verifyOTP = async (req, res) => {
-    const { userId, userOTP } = req.body; // Extract userId and userOTP from request body
+    const { name, mobile, userId, userOTP } = req.body; // Extract userId and userOTP from request body
 
     try {
         // Find the OTP document by userId
