@@ -24,36 +24,53 @@ const Login = () => {
     useEffect(() => {
         const jwt = localStorage.getItem('creatorToken')
 
-        console.log(jwt)
+        console.log(jwt);
+        
         if(jwt) {
             const decodedHeader = jwtDecode(jwt);
 
-            console.log(decodedHeader)
+            console.log(decodedHeader);
+            console.log(decodedHeader.creatorShopId);
+            navigate(`/restaurant/${decodedHeader.creatorShopId}/table-management`);
         }
-    },[])
+    },[]);
 
-    const handleLogin = async ()=>{
+    const handleLogin = async () => {
         try {
-            const response = await axios.post('http://localhost:8000/creator/verify-login', {
+            const loginDoc = {
                 creatorShopId: creatorShopId,
-                password : password
+                password: password
+            };
+    
+            console.log(loginDoc);
+    
+            const response = await fetch('http://localhost:8000/creator/verify-login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(loginDoc)
             });
-      
-            // Handle the response, e.g., set state or perform additional actions
-            console.log('Login successful:', response.data);
-            if(!response.data.token){
-                alert("Invalid credentials")
-                return 
-                //fixed the login issue with this logic
+    
+            const data = await response.json();
+    
+            console.log('API response:', data);
+    
+            if (!data.token) {
+                alert('Invalid credentials');
+                return;
             }
-            
-            localStorage.setItem('creatorToken', response.data.token);
-            navigate(`${creatorShopId}/table-management`);
-          } catch (error) {
-            // Handle errors, e.g., display an error message
+    
+            localStorage.setItem('creatorToken', data.token);
+            const decodedHeader = await jwtDecode(data.token);
+
+            navigate(`/restaurant/${decodedHeader.creatorShopId}/table-management`);
+        } catch (error) {
             console.error('Login failed:', error.message);
-          }
-    }
+        }
+    };
+
+
     return (
         <Container>
             <Navbar >
