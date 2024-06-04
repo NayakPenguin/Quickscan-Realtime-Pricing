@@ -1,12 +1,19 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
+  const navigate = useNavigate();
+
+  const logout = () => {
+    localStorage.removeItem("creatorToken");
+    navigate("/restaurant/login");
+  };
   
   return (
     <Container>
         <div></div>
-        <div className="logout">Logout</div>
+        <div className="logout" onClick={() => logout()}>Logout</div>
     </Container>
   )
 }
