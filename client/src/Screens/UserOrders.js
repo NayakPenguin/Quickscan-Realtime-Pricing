@@ -4,113 +4,81 @@ import MenuNav from "../Components/MenuNav";
 import BottomNavSimple from "../Components/BottomNavSimple";
 import CloseIcon from '@material-ui/icons/Close';
 
+import { getUserId } from '../Controllers/UserInfo';
+
 const UserOrders = () => {
+  const [orders, setOrders] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userDetails = getUserId();
+
+        if (!userDetails || !userDetails.userId) {
+          console.error("User details not available");
+          return;
+        }
+
+        const response = await fetch(`http://localhost:8000/order/byUserId/${userDetails.userId}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch data');
+        }
+        const data = await response.json();
+        setOrders(data.orders);
+        console.log('Data:', data);
+      } catch (error) {
+        console.error('Error fetching data:', error.message);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+
   return (
     <Container>
-        <MenuNav showSearch={false}/>
-        <h3 className="category-heading">Your Orders</h3>
-        <div className="content">
-          <div className="order-item">
-            <div className="top">
-              <div className="order-count">25</div>
-              <div className="order-info">
-                1st Apr, 2024
-                <a href="/show-live-menu" className="restaurant-name">
-                  Broadway Kolkata
-                </a>
-                <b className="amount">₹ 892.00</b>
-              </div>
-            </div>
-            <div className="items">
-              <div className="item">
-                <div className="item-count">
-                    <div className="val">2</div>
-                    <CloseIcon />
+      <MenuNav showSearch={false} />
+      <h3 className="category-heading">Your Orders</h3>
+      <div className="content">
+        {
+          orders &&
+          orders
+            .sort((a, b) => new Date(b.timeOfOrder) - new Date(a.timeOfOrder)) // Sort orders by timeOfOrder in descending order
+            .map((item, index) => (
+              <div className="order-item" key={index}>
+                <div className="top">
+                  <div className="order-count">{orders.length - index}</div>
+                  <div className="order-info">
+                    {new Date(item.timeOfOrder).toLocaleDateString('en-US', {
+                      day: 'numeric',
+                      month: 'short',
+                      year: 'numeric'
+                    })}
+                    <a href="/show-live-menu" className="restaurant-name">
+                      {item.creatorShopId}
+                    </a>
+                    <b className="amount">₹ {item.totalPrice}</b>
+                  </div>
                 </div>
-                <div className="about-item">
-                    <div className="item-name">Chicken Biryani</div>
-                    <div className="item-more">Kofta Graved</div>
-                </div>
-              </div>
-              <div className="item">
-                <div className="item-count">
-                    <div className="val">4</div>
-                    <CloseIcon />
-                </div>
-                <div className="about-item">
-                    <div className="item-name">Chicken Biryani</div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="order-item">
-            <div className="top">
-              <div className="order-count">24</div>
-              <div className="order-info">
-                1st Apr, 2024
-                <a href="/show-live-menu" className="restaurant-name">
-                  Broadway Kolkata
-                </a>
-                <b className="amount">₹ 892.00</b>
-              </div>
-            </div>
-            <div className="items">
-              <div className="item">
-                <div className="item-count">
-                    <div className="val">2</div>
-                    <CloseIcon />
-                </div>
-                <div className="about-item">
-                    <div className="item-name">Chicken Biryani</div>
-                    <div className="item-more">Kofta Graved</div>
+                <div className="items">
+                  {item.orderDetails.map((item2, index2) => (
+                    <div className="item" key={index2}>
+                      <div className="item-count">
+                        <div className="val">{item2.count}</div>
+                        <CloseIcon />
+                      </div>
+                      <div className="about-item">
+                        <div className="item-name">{item2.itemName}</div>
+                        <div className="item-more">{item2.extraWithItem}</div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
-              <div className="item">
-                <div className="item-count">
-                    <div className="val">4</div>
-                    <CloseIcon />
-                </div>
-                <div className="about-item">
-                    <div className="item-name">Chicken Biryani</div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="order-item">
-            <div className="top">
-              <div className="order-count">23</div>
-              <div className="order-info">
-                1st Apr, 2024
-                <a href="/show-live-menu" className="restaurant-name">
-                  Broadway Kolkata
-                </a>
-                <b className="amount">₹ 892.00</b>
-              </div>
-            </div>
-            <div className="items">
-              <div className="item">
-                <div className="item-count">
-                    <div className="val">2</div>
-                    <CloseIcon />
-                </div>
-                <div className="about-item">
-                    <div className="item-name">Chicken Biryani</div>
-                    <div className="item-more">Kofta Graved</div>
-                </div>
-              </div>
-              <div className="item">
-                <div className="item-count">
-                    <div className="val">4</div>
-                    <CloseIcon />
-                </div>
-                <div className="about-item">
-                    <div className="item-name">Chicken Biryani</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <BottomNavSimple currPage={"orders"} />
+            ))
+        }
+      </div>
+      <BottomNavSimple currPage={"orders"} />
     </Container>
   )
 }
@@ -222,6 +190,7 @@ const Container = styled.div`
                     letter-spacing: 0.1rem;
                 }
             }
+            
             .item-more{
                 font-size: 0.8rem;
                 font-weight: 300;

@@ -2,8 +2,11 @@ import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import MenuNav from "../Components/MenuNav";
 import BottomNavSimple from "../Components/BottomNavSimple";
+import { getUserId } from '../Controllers/UserInfo';
 
 const UserProfile = () => {
+  const userDetails = getUserId();
+
   return (
     <Container>
         <MenuNav showSearch={false}/>
@@ -13,10 +16,10 @@ const UserProfile = () => {
             <img className="profile-image" src="https://media.tenor.com/xTBnFraEFd4AAAAj/food-hungry.gif" alt="" />
             <div className="items">
               <div className="item">
-                <b>Name : </b> Atanu Nayak
+                <b>Name : </b> {userDetails.name}
               </div>
               <div className="item">
-                <b>Phone : </b> 9306191179
+                <b>Phone : </b> {userDetails.phone}
               </div>
             </div>
           </div>
