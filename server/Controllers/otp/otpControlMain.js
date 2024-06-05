@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const mongoose = require('mongoose');
 const OTP = require('../../Models/OTP');
 const User = require('../../Models/User');
+const Visit = require('../../Models/Visit');
 
 const otpStorage = {};
 
