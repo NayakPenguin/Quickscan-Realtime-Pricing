@@ -40,6 +40,9 @@ const verifyOTP = async (req, res) => {
     try {
         const otpRecord = await OTP.findOne({ userId });
 
+        console.log("otpRecord : ", otpRecord);
+        console.log("userOTP : ", userOTP);
+
         if (otpRecord && userOTP == otpRecord.otp) {
             
             const userRecord = await User.findOneAndUpdate(
