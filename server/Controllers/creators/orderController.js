@@ -58,4 +58,29 @@ const getOrderById = async (req, res) => {
     }
 };
 
-module.exports = { createOrder, getAllOrders, getOrderById };
+const getOrdersByCreatorShopId = async (req, res) => {
+    const { creatorShopId } = req.params;
+
+    try {
+        const orders = await Order.find({ creatorShopId });
+        res.status(200).json({ success: true, orders });
+    } catch (error) {
+        console.error('Error fetching orders by creatorShopId:', error);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+};
+
+// Function to get orders by creatorUserId
+const getOrdersByCreatorUserId = async (req, res) => {
+    const { creatorUserId } = req.params;
+
+    try {
+        const orders = await Order.find({ 'userDetails.userId': creatorUserId });
+        res.status(200).json({ success: true, orders });
+    } catch (error) {
+        console.error('Error fetching orders by creatorUserId:', error);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+};
+
+module.exports = { createOrder, getAllOrders, getOrderById, getOrdersByCreatorShopId, getOrdersByCreatorUserId };
