@@ -20,15 +20,6 @@ import { db } from "../../firebase";
 import { collection, getDocs, addDoc, query, where, updateDoc, onSnapshot, doc } from "firebase/firestore";
 import { getCreatorShopId } from "../Controllers/ReastaurantID";
 
-const isTokenExpired = (decodedToken) => {
-  if (decodedToken && decodedToken.exp) {
-    const currentTimestamp = Math.floor(Date.now() / 1000); // Convert to seconds
-    return decodedToken.exp < currentTimestamp;
-  }
-
-  return false;
-}
-
 const TableManagment = () => {
   const pageID = "table-management";
   const [boxesPerRow, setBoxesPerRow] = useState(calculateBoxesPerRow());
@@ -309,8 +300,11 @@ const TableManagment = () => {
   }, [customerInfoMap])
 
   const handleCreateSession = async (tableId) => {
+    console.log("handleCreateSession-tableId : ", tableId);
+
     try {
       const tableCustomerInfo = customerInfoMap[tableId];
+      const creatorShopId = getCreatorShopId();
 
       if (tableCustomerInfo) {
         const tableRef = doc(db, `Tables${creatorShopId}`, tableId);
@@ -341,6 +335,7 @@ const TableManagment = () => {
 
   const handleFreeSession = async (tableId) => {
     try {
+      const creatorShopId = getCreatorShopId();
       const tableRef = doc(db, `Tables${creatorShopId}`, tableId);
 
       await updateDoc(tableRef, {
@@ -388,6 +383,7 @@ const TableManagment = () => {
 
   const handleEditTable = async () => {
     try {
+      const creatorShopId = getCreatorShopId();
       const tablesCollectionRef = collection(db, `Tables${creatorShopId}`);
 
       // Get the table document by identifier

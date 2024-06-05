@@ -20,6 +20,7 @@ const getCreatorShopId = () => {
         // Check if token is expired
         if (expirationTime < currentTime) {
             console.log("Token has expired");
+            localStorage.removeItem("creatorToken");
             return null;
         }
         else{

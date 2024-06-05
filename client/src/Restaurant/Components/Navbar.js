@@ -43,5 +43,6 @@ const Container = styled.div`
       background-color: #f88888;
       color: white;
       border: 2px solid black;
+      cursor: pointer;
     }
 `
