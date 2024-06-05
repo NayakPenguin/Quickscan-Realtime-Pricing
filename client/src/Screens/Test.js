@@ -56,7 +56,12 @@ const Test = () => {
                 return null;
             }
             else{
-                return decodedToken;
+                return {
+                    "userId" : decodedToken.userId,
+                    "name" : decodedToken.userName,
+                    "phone" : decodedToken.userPhone,
+                    "email" : decodedToken.userEmail,
+                };
             }
     
             return null;
@@ -65,6 +70,7 @@ const Test = () => {
             return null;
         }
     };
+    
 
     useEffect(() => {
         // const resp = getCreatorShopId();

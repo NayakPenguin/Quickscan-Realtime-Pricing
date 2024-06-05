@@ -18,6 +18,8 @@ import GetAppIcon from '@material-ui/icons/GetApp';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
+import { getUserId } from '../Controllers/UserInfo'
+
 // Firebase
 import { db } from "../firebase";
 import { collection, getDocs, addDoc, updateDoc, doc, query, where } from "firebase/firestore";
@@ -296,12 +298,7 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
     };
 
 
-    const userDetails = {
-        name: localStorage.getItem('name'),
-        phone: localStorage.getItem('mobile'),
-        email: "-",
-        userId: `customer@${localStorage.getItem('mobile').replace(/\s/g, '')}`,
-    }
+    const userDetails = getUserId();
 
     const tableName = localStorage.getItem('scanId');
 
