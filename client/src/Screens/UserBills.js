@@ -101,7 +101,7 @@ const UserBills = () => {
                 ))}
                 <div className="total-price">
                   <div className="left">Total Amount</div>
-                  <div className="right">₹ {bill.totalPrice}</div>
+                  <div className="right">₹ {bill.totalPrice.toFixed(2)}</div>
                 </div>
               </div>
             ))}

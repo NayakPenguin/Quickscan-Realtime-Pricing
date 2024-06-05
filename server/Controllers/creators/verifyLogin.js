@@ -25,7 +25,7 @@ const loginCreator = async (req, res) => {
         const token = jwt.sign(
             { creatorId: creator._id, creatorShopId: creator.creatorShopId },
             process.env.JWT_SECRET,
-            { expiresIn: '1m' }
+            { expiresIn: '22h' }
         );
 
         res.status(200).json({ success: true, token });

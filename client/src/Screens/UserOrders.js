@@ -58,7 +58,7 @@ const UserOrders = () => {
                     <a href="/show-live-menu" className="restaurant-name">
                       {allCreatorData[item.creatorShopId]?.name}
                     </a>
-                    <b className="amount">₹ {item.totalPrice}</b>
+                    <b className="amount">₹ {item.totalPrice.toFixed(2)}</b>
                   </div>
                 </div>
                 <div className="items">
