@@ -5,6 +5,7 @@ import BottomNavSimple from "../Components/BottomNavSimple";
 import CloseIcon from '@material-ui/icons/Close';
 
 import { getUserId } from '../Controllers/UserInfo';
+import allCreatorData from '../Assets/LocalDB/AllCreatorData.json';
 
 const UserOrders = () => {
   const [orders, setOrders] = useState(null);
@@ -55,7 +56,7 @@ const UserOrders = () => {
                       year: 'numeric'
                     })}
                     <a href="/show-live-menu" className="restaurant-name">
-                      {item.creatorShopId}
+                      {allCreatorData[item.creatorShopId]?.name}
                     </a>
                     <b className="amount">₹ {item.totalPrice}</b>
                   </div>

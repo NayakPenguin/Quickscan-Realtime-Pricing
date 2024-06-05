@@ -15,6 +15,9 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import DeleteIcon from '@material-ui/icons/Delete';
 import GetAppIcon from '@material-ui/icons/GetApp';
 
+import allCreatorData from '../Assets/LocalDB/AllCreatorData.json';
+
+
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
@@ -486,7 +489,7 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
                                             <GetAppIcon />
                                         </div>
                                         <div className="restaurant-details">
-                                            <h2 className="restaurant-name">Restaurant Date</h2>
+                                            <h2 className="restaurant-name">{allCreatorData[creatorShopId]?.name}</h2>
                                             <p className="date">1st Apr 2024</p>
                                             <div className="order-id"><b>Order Id : </b>#A92hfF12hif001</div>
                                         </div>

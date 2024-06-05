@@ -7,198 +7,104 @@ import GetAppIcon from '@material-ui/icons/GetApp';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
-const AllBills = [
-  {
-    restaurantName : "Restaurant 1", 
-    billDate : "1st Apr 2024",
-    OrderId : "#sCSExTyOEZoErJkoyJ2R",
-    Order : [
-      {
-        count: 2,
-        itemName: 'Burger',
-        extraWithItem: 'Cheese, Lettuce',
-        price: 150.00
-      },
-      {
-        count: 1,
-        itemName: 'Pizza',
-        extraWithItem: 'Extra Cheese',
-        price: 300.00
-      },
-      {
-        count: 3,
-        itemName: 'Pasta',
-        extraWithItem: 'Olives, Extra Sauce',
-        price: 200.00
-      }
-    ]
-  },
-  {
-    restaurantName : "Restaurant 2", 
-    billDate : "21st Feb 2024",
-    OrderId : "#AdSExTyOEZoErJkoyJ89",
-    Order : [
-      {
-        count: 6,
-        itemName: 'Pizza',
-        extraWithItem: 'Extra Cheese, Chilli',
-        price: 300.00
-      },
-      {
-        count: 2,
-        itemName: 'Burger',
-        price: 150.00
-      },
-      {
-        count: 4,
-        itemName: 'Pasta',
-        extraWithItem: 'Olives, Extra Sauce',
-        price: 200.00
-      },
-      {
-        count: 4,
-        itemName: 'Pasta',
-        extraWithItem: 'Olives, Extra Sauce',
-        price: 200.00
-      },
-      {
-        count: 4,
-        itemName: 'Pasta',
-        extraWithItem: 'Olives, Extra Sauce',
-        price: 200.00
-      },
-      {
-        count: 4,
-        itemName: 'Pasta',
-        extraWithItem: 'Olives, Extra Sauce',
-        price: 200.00
-      },
-      {
-        count: 4,
-        itemName: 'Pasta',
-        extraWithItem: 'Olives, Extra Sauce',
-        price: 200.00
-      },
-      {
-        count: 4,
-        itemName: 'Pasta',
-        extraWithItem: 'Olives, Extra Sauce',
-        price: 200.00
-      },
-      {
-        count: 4,
-        itemName: 'Pasta',
-        extraWithItem: 'Olives, Extra Sauce',
-        price: 200.00
-      },
-      {
-        count: 4,
-        itemName: 'Pasta',
-        extraWithItem: 'Olives, Extra Sauce',
-        price: 200.00
-      },
-      {
-        count: 4,
-        itemName: 'Pasta',
-        extraWithItem: 'Olives, Extra Sauce',
-        price: 200.00
-      },
-      {
-        count: 4,
-        itemName: 'Pasta',
-        extraWithItem: 'Olives, Extra Sauce',
-        price: 200.00
-      },
-      {
-        count: 4,
-        itemName: 'Pasta',
-        extraWithItem: 'Olives, Extra Sauce',
-        price: 200.00
-      },
-      {
-        count: 4,
-        itemName: 'Pasta',
-        extraWithItem: 'Olives, Extra Sauce',
-        price: 200.00
-      },
-      {
-        count: 4,
-        itemName: 'Pasta',
-        extraWithItem: 'Olives, Extra Sauce',
-        price: 200.00
-      },
-      {
-        count: 4,
-        itemName: 'Pasta',
-        extraWithItem: 'Olives, Extra Sauce',
-        price: 200.00
-      }
-    ]
-  }
-];
-
-const calculateTotalPrice = (order) => {
-  return order.reduce((total, item) => total + (item.price * item.count), 0);
-};
-
-const downloadPDF = (bill) => {
-  const input = document.getElementById(`bill-${bill.restaurantName.replace(/\s+/g, '-')}`);
-  input.classList.add('pdf-content');
-
-  html2canvas(input, { scrollX: -window.scrollX, scrollY: -window.scrollY, scale: 2 })
-    .then((canvas) => {
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF({
-        orientation: 'p',
-        unit: 'px',
-        format: [canvas.width, canvas.height]  // Custom format for full content
-      });
-      pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
-      pdf.save(`${bill.restaurantName}-${bill.OrderId}-bill.pdf`);
-      input.classList.remove('pdf-content');
-    });
-};
+import { getUserId } from '../Controllers/UserInfo';
+import allCreatorData from '../Assets/LocalDB/AllCreatorData.json';
 
 const UserBills = () => {
+  const [orders, setOrders] = useState(null);
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userDetails = getUserId();
+  
+        if (!userDetails || !userDetails.userId) {
+          console.error("User details not available");
+          return;
+        }
+  
+        const response = await fetch(`http://localhost:8000/order/byUserId/${userDetails.userId}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch data');
+        }
+        const data = await response.json();
+        setOrders(data.orders);
+        console.log('Data:', data);
+      } catch (error) {
+        console.error('Error fetching data:', error.message);
+      }
+    };
+  
+    fetchData();
+  }, []);
+  
+  const downloadPDF = (bill) => {
+    const input = document.getElementById(`bill-${bill.creatorShopId.replace(/\s+/g, '-')}`);
+    input.classList.add('pdf-content');
+  
+    html2canvas(input, { scrollX: -window.scrollX, scrollY: -window.scrollY, scale: 2 })
+      .then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF({
+          orientation: 'p',
+          unit: 'px',
+          format: [canvas.width, canvas.height]  // Custom format for full content
+        });
+        pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+        pdf.save(`${bill.creatorShopId}-${bill.OrderId}-bill.pdf`);
+        input.classList.remove('pdf-content');
+      });
+  };
+
   return (
     <Container>
       <MenuNav showSearch={false} />
       <h3 className="category-heading">Your Bills</h3>
       <div className="content">
-        {AllBills.map((bill, index) => (
-          <div className="zigzag bill" key={index} id={`bill-${bill.restaurantName.replace(/\s+/g, '-')}`}>
-            <div className="download-button" onClick={() => downloadPDF(bill)}>
-              <div className="text">Download PDF</div>
-              <GetAppIcon />
-            </div>
-            <div className="restaurant-details">
-              <h2 className="restaurant-name">{bill.restaurantName}</h2>
-              <p className="date">{bill.billDate}</p>
-              <div className="order-id"><b>Order Id : </b>{bill.OrderId}</div>
-            </div>
-            {bill.Order.map((item, index) => (
-              <div className="order-item" key={index}>
-                <div className="left">
-                  <div className="item-count">
-                    <div className="val">{item.count}</div>
-                    <CloseIcon />
-                  </div>
-                  <div className="about-item">
-                    <div className="item-name">{item.itemName}</div>
-                    {item.extraWithItem && <div className="item-more">{item.extraWithItem}</div>}
-                  </div>
+        {
+          orders &&
+          orders
+            .sort((a, b) => new Date(b.timeOfOrder) - new Date(a.timeOfOrder)) // Sort orders by timeOfOrder in descending order
+            .map((bill, index) => (
+              <div className="zigzag bill" key={index} id={`bill-${bill.creatorShopId.replace(/\s+/g, '-')}`}>
+                <div className="download-button" onClick={() => downloadPDF(bill)}>
+                  <div className="text">Download PDF</div>
+                  <GetAppIcon />
                 </div>
-                <div className="right">
-                  <div className="price">₹ {item.price.toFixed(2)}</div>
+                <div className="restaurant-details">
+                  <h2 className="restaurant-name">{allCreatorData[bill.creatorShopId]?.name}</h2>
+                  <p className="date">
+                    {new Date(bill.timeOfOrder).toLocaleDateString('en-US', {
+                      day: 'numeric',
+                      month: 'short',
+                      year: 'numeric'
+                    })}
+                  </p>
+                  <div className="order-id"><b>Order Id : </b>{bill.orderId}</div>
+                </div>
+                {bill.orderDetails.map((item, index) => (
+                  <div className="order-item" key={index}>
+                    <div className="left">
+                      <div className="item-count">
+                        <div className="val">{item.count}</div>
+                        <CloseIcon />
+                      </div>
+                      <div className="about-item">
+                        <div className="item-name">{item.itemName}</div>
+                        {item.extraWithItem && <div className="item-more">{item.extraWithItem}</div>}
+                      </div>
+                    </div>
+                    <div className="right">
+                      <div className="price">₹ {item.price.toFixed(2)}</div>
+                    </div>
+                  </div>
+                ))}
+                <div className="total-price">
+                  <div className="left">Total Amount</div>
+                  <div className="right">₹ {bill.totalPrice}</div>
                 </div>
               </div>
             ))}
-            <div className="total-price">
-              <div className="left">Total Amount</div>
-              <div className="right">₹ {calculateTotalPrice(bill.Order).toFixed(2)}</div>
-            </div>
-          </div>
-        ))}
       </div>
       <BottomNavSimple currPage={"bills"} />
     </Container>
