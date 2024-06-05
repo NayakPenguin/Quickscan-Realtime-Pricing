@@ -42,6 +42,7 @@ app.get("/", (req, res) => {
 app.use("/otp", require("./Routers/router_otp"));
 app.use("/creator", require("./Routers/router_creator"));
 app.use('/order', require("./Routers/router_order"));
+app.use('/last-visit', require("./Routers/router_lastVisit"));
 
 app.get("/protected", authenticateJWT, (req, res) => {
   res.json({ message: "Protected route accessed", user: req.user });

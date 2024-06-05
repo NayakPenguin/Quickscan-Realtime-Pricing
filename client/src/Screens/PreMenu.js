@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams, useHistory, redirect } from "react-router-dom";
-import { useNavigate } from 'react-router-dom';
 import styled from "styled-components";
-import axios from 'axios'
+import { useParams, useNavigate } from "react-router-dom";
+import axios from 'axios';
 
 import { isAuthenticated } from '../Controllers/IsAuthenticated';
+import { getUserId } from '../Controllers/UserInfo';
 
 const PreMenu = () => {
     const [name, setName] = useState("");
@@ -19,22 +19,56 @@ const PreMenu = () => {
     const { creatorShopId, scanId } = useParams();
 
     useEffect(() => {
-        if (creatorShopId && scanId) {
-            localStorage.setItem('creatorShopId', creatorShopId);
-            localStorage.setItem('scanId', scanId);
+        const checkAndNavigate = async () => {
+            if (creatorShopId && scanId) {
+                localStorage.setItem('creatorShopId', creatorShopId);
+                localStorage.setItem('scanId', scanId);
 
-            if(isAuthenticated() == true){
-                navigate("/restaurant/menu");
+                if (isAuthenticated()) {
+                    await PushVisit(creatorShopId);
+                    navigate("/restaurant/menu");
+                }
             }
-        }
-    }, []);
-    
-    const API_BASE_URL = "localhost:8000";
+        };
 
-    useEffect(() => {
-        // console.log(creatorShopId);
-        // console.log(scanId);
-    }, [creatorShopId, scanId]);
+        checkAndNavigate();
+    }, [creatorShopId, scanId, navigate]);
+
+    const PushVisit = async (creatorShopId) => {
+        const userDetails = getUserId();
+    
+        if (!userDetails || !userDetails.userId) {
+            console.error("User details not available or token has expired");
+            return;
+        }
+    
+        const visitData = {
+            userId: userDetails.userId,
+            userName: userDetails.name,
+            userPhone: userDetails.phone,
+            userEmail: userDetails.email,
+            creatorShopId: creatorShopId
+        };
+    
+        try {
+            const response = await fetch('http://localhost:8000/last-visit/add-visit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(visitData)
+            });
+    
+            if (!response.ok) {
+                throw new Error('Failed to push visit data');
+            }
+    
+            const data = await response.json();
+            console.log('Visit data pushed successfully:', data);
+        } catch (error) {
+            console.error('Error pushing visit data:', error.message);
+        }
+    };
 
     const handleOpenOTP = async () => {
         if (!name.trim()) {

@@ -51,11 +51,11 @@ const verifyOTP = async (req, res) => {
                 { upsert: true, new: true } // Create a new document if none exists, return the updated document
             );
 
-            await Visit.findOneAndUpdate(
-                { userId, creatorShopId }, // Find the document by userId and creatorShopId
-                { lastVisit: new Date(), userName, userPhone, userEmail }, // Update the last visit date to the current date
-                { upsert: true, new: true } // Create a new document if none exists, return the updated document
-            );
+            // await Visit.findOneAndUpdate(
+            //     { userId, creatorShopId }, // Find the document by userId and creatorShopId
+            //     { lastVisit: new Date(), userName, userPhone, userEmail }, // Update the last visit date to the current date
+            //     { upsert: true, new: true } // Create a new document if none exists, return the updated document
+            // );
 
             const token = jwt.sign(
                 { userId, userName: userRecord.userName, userPhone: userRecord.userPhone, userEmail: userRecord.userEmail },

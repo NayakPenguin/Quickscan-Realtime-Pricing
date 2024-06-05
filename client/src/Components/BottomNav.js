@@ -21,7 +21,7 @@ import allCreatorData from '../Assets/LocalDB/AllCreatorData.json';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
-import { getUserId } from '../Controllers/UserInfo'
+import { getUserId } from '../Controllers/UserInfo';
 
 // Firebase
 import { db } from "../firebase";
