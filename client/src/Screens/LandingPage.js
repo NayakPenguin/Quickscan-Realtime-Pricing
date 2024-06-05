@@ -18,6 +18,7 @@ const LandingPage = () => {
   }, []);
 
   let prevScrollPos = 0;
+  
   const handleScroll = () => {
     const currentScrollPos = window.pageYOffset;
     setVisible(prevScrollPos > currentScrollPos || currentScrollPos < 10);
