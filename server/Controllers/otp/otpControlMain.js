@@ -53,7 +53,7 @@ const verifyOTP = async (req, res) => {
 
             await Visit.findOneAndUpdate(
                 { userId, creatorShopId }, // Find the document by userId and creatorShopId
-                { lastVisit: new Date() }, // Update the last visit date to the current date
+                { lastVisit: new Date(), userName, userPhone, userEmail }, // Update the last visit date to the current date
                 { upsert: true, new: true } // Create a new document if none exists, return the updated document
             );
 

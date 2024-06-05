@@ -9,6 +9,18 @@ const visitSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    userName: {
+        type: String,
+        required: true
+    },
+    userPhone: {
+        type: String,
+        required: true
+    },
+    userEmail: {
+        type: String,
+        required: true
+    },
     lastVisit: {
         type: Date,
         default: Date.now

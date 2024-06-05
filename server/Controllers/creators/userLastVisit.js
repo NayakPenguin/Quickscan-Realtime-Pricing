@@ -4,12 +4,13 @@ const getUsersByCreatorShopId = async (req, res) => {
     const { creatorShopId } = req.params;
 
     try {
-        // Find all visits associated with the given creatorShopId and sort them by lastVisit date in descending order
         const visits = await Visit.find({ creatorShopId }).sort({ lastVisit: -1 });
-
-        // Extract user details from the visits
+        
         const users = visits.map(visit => ({
             userId: visit.userId,
+            userName: visit.userName,
+            userPhone: visit.userPhone,
+            userEmail: visit.userEmail,
             lastVisit: visit.lastVisit
         }));
 
