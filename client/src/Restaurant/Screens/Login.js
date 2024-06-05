@@ -13,6 +13,8 @@ import {updateRestaurant} from '../../userslice'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
 
+import { db } from "../../firebase";
+import { collection, getDocs, deleteDoc, doc, writeBatch } from "firebase/firestore";
 
 const Login = () => {
     const [isOwner, setIsOwner] = useState(false);
@@ -34,6 +36,19 @@ const Login = () => {
             navigate(`/restaurant/${decodedHeader.creatorShopId}/table-management`);
         }
     },[]);
+
+    const DeleteCollection = async (collectionName) => {
+        const collectionRef = collection(db, collectionName);
+        const snapshot = await getDocs(collectionRef);
+        const batch = writeBatch(db);
+
+        snapshot.forEach(doc => {
+            batch.delete(doc.ref);
+        });
+
+        await batch.commit();
+        console.log(`Collection ${collectionName} documents deleted successfully.`);
+    };
 
     const handleLogin = async () => {
         try {
@@ -60,7 +75,10 @@ const Login = () => {
                 alert('Invalid credentials');
                 return;
             }
-    
+
+            await DeleteCollection(`Orders${creatorShopId}`);
+            await DeleteCollection(`OrderNumbers${creatorShopId}`);
+
             localStorage.setItem('creatorToken', data.token);
             const decodedHeader = await jwtDecode(data.token);
 
