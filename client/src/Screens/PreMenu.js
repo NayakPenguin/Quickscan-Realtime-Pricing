@@ -59,10 +59,10 @@ const PreMenu = () => {
             const userId = `customer@${cleanedMobile}`;
 
             const response = await axios.post("http://localhost:8000/otp/get-otp", {
-                name: name.trim(),
-                mobile: cleanedMobile,
                 userId: userId,
-                email: "-",
+                userName: name.trim(),
+                userPhone: cleanedMobile,
+                userEmail: "-",
             });
 
             console.log(response.data);
@@ -79,9 +79,10 @@ const PreMenu = () => {
     
         try {
             const response = await axios.post("http://localhost:8000/otp/verify-otp", {
-                name: name.trim(),
-                mobile: mobile.replace(/\s/g, ''),
                 userId: `customer@${mobile.replace(/\s/g, '')}`,
+                userName: name.trim(),
+                userPhone: mobile.replace(/\s/g, ''),
+                userEmail: "-",
                 userOTP: userOTP
             });
     

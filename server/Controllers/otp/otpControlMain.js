@@ -12,30 +12,16 @@ function generateOTP() {
 }
 
 const getOTP = async (req, res) => {
-    const { userId, userName, userPhone, userEmail } = req.body;
+    const { userId } = req.body; // Only extract userId for OTP generation
     const generatedOTP = generateOTP();
 
     try {
-        // Upsert (update or insert) the user information in the User collection
-        await User.findOneAndUpdate(
-            { userId }, // Find the document by userId
-            { userId, userName, userPhone, userEmail }, // Set the new user information
-            { upsert: true, new: true } // Create a new document if none exists, return the updated document
-        );
-
         // Upsert (update or insert) the OTP document in the OTP collection
-        const result = await OTP.findOneAndUpdate(
+        await OTP.findOneAndUpdate(
             { userId }, // Find the document by userId
             { otp: generatedOTP, createdAt: new Date() }, // Set the new OTP and update the timestamp
             { upsert: true, new: true } // Create a new document if none exists, return the updated document
         );
-
-        // Determine if a new document was created or an existing one was updated
-        if (result) {
-            console.log(`OTP updated for userId: ${userId}`);
-        } else {
-            console.log(`OTP created for userId: ${userId}`);
-        }
 
         // Call sending SMS API here (if applicable)
 
@@ -50,7 +36,7 @@ const getOTP = async (req, res) => {
 
 // Function to handle OTP verification
 const verifyOTP = async (req, res) => {
-    const { name, mobile, userId, userOTP } = req.body; // Extract userId and userOTP from request body
+    const { userId, userOTP, userName, userPhone, userEmail } = req.body; // Extract user details and OTP from request body
 
     try {
         // Find the OTP document by userId
@@ -58,17 +44,20 @@ const verifyOTP = async (req, res) => {
 
         // Check if the OTP matches the stored OTP
         if (otpRecord && userOTP == otpRecord.otp) {
-            // Find the user document by userId
-            const userRecord = await User.findOne({ userId });
+            // Upsert (update or insert) the user information in the User collection
+            const userRecord = await User.findOneAndUpdate(
+                { userId }, // Find the document by userId
+                { userId, userName, userPhone, userEmail }, // Set the new user information
+                { upsert: true, new: true } // Create a new document if none exists, return the updated document
+            );
 
             // Generate a JWT token if the OTP is verified
             const token = jwt.sign(
                 { userId, userName: userRecord.userName, userPhone: userRecord.userPhone, userEmail: userRecord.userEmail },
                 process.env.JWT_SECRET,
-                {
-                    expiresIn: process.env.JWT_EXPIRE,
-                }
+                { expiresIn: process.env.JWT_EXPIRE }
             );
+
             // Respond with a success message and the token
             res.status(200).json({ success: true, message: 'OTP verification successful', token });
         } else {
@@ -81,5 +70,4 @@ const verifyOTP = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
-
 module.exports = { getOTP, verifyOTP };
