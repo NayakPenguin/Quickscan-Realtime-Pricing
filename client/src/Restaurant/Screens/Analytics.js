@@ -7,19 +7,61 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import CallMadeIcon from '@material-ui/icons/CallMade';
 import { getCreatorShopId } from "../Controllers/ReastaurantID";
+import allCreatorData from "../../Assets/LocalDB/AllCreatorData.json";
 
 const Analytics = () => {
   const [pageID, setPageID] = useState("analytics");
   const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+  const [endDate, setEndDate] = useState(new Date());
+  const [users, setUsers] = useState(null);
+  const [orders, setOrders] = useState(null);
+  const [revenue, setRevenue] = useState(0);
+  const [footfall, setFootfall] = useState(0);
+  const [ordersRaised, setOrdersRaised] = useState(0);
 
   const creatorShopId = getCreatorShopId();
   const navigate = useNavigate();
 
   useEffect(() => {
-      if (creatorShopId == null) navigate("/restaurant/login");
+    if (creatorShopId == null) navigate("/restaurant/login");
+    if (allCreatorData && allCreatorData.BrdwyKol && allCreatorData.BrdwyKol.startDate) {
+      const startDateString = allCreatorData.BrdwyKol.startDate;
+      const [day, month, year] = startDateString.split('/');
+      const parsedStartDate = new Date(`${year}-${month}-${day}`);
+      setStartDate(parsedStartDate);
+    }
+    fetchData();
   }, []);
 
+  const fetchData = async () => {
+    try {
+      if (!creatorShopId) {
+        console.error("creatorShopId not available");
+        return;
+      }
+
+      const response = await fetch(`http://localhost:8000/creator/user-visit/${creatorShopId}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch data');
+      }
+      const data = await response.json();
+      console.log('users :', data);
+      setUsers(data.users);
+
+      const response2 = await fetch(`http://localhost:8000/order/byCreatorShopId/${creatorShopId}`);
+      if (!response2.ok) {
+        throw new Error('Failed to fetch data');
+      }
+      const data2 = await response2.json();
+      console.log('orders :', data2);
+      setOrders(data2.orders);
+      
+      handleCalculateData(data2.orders, data.users);
+    } catch (error) {
+      console.error('Error fetching data:', error.message);
+    }
+  };
+  
   const handleStartDateChange = (date) => {
     setStartDate(date);
   };
@@ -32,18 +74,44 @@ const Analytics = () => {
   const endDatePickerRef = useRef(null);
 
   const handleSearch = () => {
-    // Handle search logic using startDate and endDate
-    console.log('Start Date:', formatDate(startDate));
-    console.log('End Date:', formatDate(endDate));
+    const filteredOrders = orders.filter(order => {
+      const orderDate = new Date(order.timeOfOrder);
+      return (!startDate || orderDate >= startDate) && (!endDate || orderDate <= new Date(endDate.getTime() + (24 * 60 * 60 * 1000)));
+    });
+    
+    const filteredUsers = users.filter(user => {
+      const visitDate = new Date(user.lastVisit);
+      return (!startDate || visitDate >= startDate) && (!endDate || visitDate <= new Date(endDate.getTime() + (24 * 60 * 60 * 1000)));
+    });
+
+    // Calculate revenue, footfall, and orders raised based on filtered data
+    handleCalculateData(filteredOrders, filteredUsers);
+  };
+
+  const handleCalculateData = (filteredOrders, filteredUsers) => {
+    console.log("Recieved Filtered Data!");
+    console.log("filteredOrders : ", filteredOrders);
+    console.log("filteredUsers : ", filteredUsers);
+
+
+    const calculatedRevenue = filteredOrders.reduce((total, order) => total + order.totalPrice, 0);
+
+    const calculatedFootfall = filteredUsers.length;
+
+    const calculatedOrdersRaised = filteredOrders.length;
+
+    setRevenue(calculatedRevenue);
+    setFootfall(calculatedFootfall);
+    setOrdersRaised(calculatedOrdersRaised);
   };
 
   const formatDate = (date) => {
     if (!date) return ''; // Return empty string if date is null or undefined
-  
+
     const day = date.getDate(); // Get the day of the month
     const month = date.toLocaleString('default', { month: 'long' }); // Get the month name
     const year = date.getFullYear(); // Get the year
-  
+
     // Add ordinal suffix to the day (e.g., "1st", "2nd", "3rd", etc.)
     const ordinalSuffix = (day) => {
       if (day >= 11 && day <= 13) {
@@ -60,10 +128,10 @@ const Analytics = () => {
           return 'th';
       }
     };
-  
+
     return `${day}${ordinalSuffix(day)} ${month} ${year}`;
   };
-  
+
   const handleStartDateClick = () => {
     startDatePickerRef.current.setOpen(true);
   };
@@ -102,30 +170,26 @@ const Analytics = () => {
             ref={endDatePickerRef}
           />
         </div>
-        <div className="date-value" onClick={() => handleStartDateClick()}>{startDate == null ? "Start Date - 1st April 2024" : formatDate(startDate)}</div>
+        <div className="date-value" onClick={() => handleStartDateClick()}>{startDate == null ? "Restaurant Start Date" : formatDate(startDate)}</div>
         <div className="date-value" onClick={() => handleEndDateClick()}>{endDate == null ? "Present" : formatDate(endDate)}</div>
         <div className="search-btn" onClick={handleSearch}>GO</div>
       </div>
       <div className="analytics-boxes-container">
-          <div className="analytics-box">
-            <div className="top-title">
-              Revenue
-            </div>
-            <div className="value">₹ 3,14,020.50</div>
-          </div>
-          <div className="analytics-box">
-            <div className="top-title">
-              Footfall
-            </div>
-            <div className="value">982</div>
-          </div>
-          <div className="analytics-box">
-            <div className="top-title">
-              Orders Raised
-            </div>
-            <div className="value">1284</div>
-          </div>
-          {/* <div className="analytics-box show-more-box">
+        <div className="analytics-box">
+          <div className="top-title">Revenue</div>
+          <div className="value">₹ {revenue.toFixed(2)}</div>
+        </div>
+
+        <div className="analytics-box">
+          <div className="top-title">Footfall</div>
+          <div className="value">{footfall}</div>
+        </div>
+
+        <div className="analytics-box">
+          <div className="top-title">Orders Raised</div>
+          <div className="value">{ordersRaised}</div>
+        </div>
+        {/* <div className="analytics-box show-more-box">
             <a href="/">View all order details </a>
             <CallMadeIcon/>
           </div> */}

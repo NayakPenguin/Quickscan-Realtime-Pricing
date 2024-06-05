@@ -12,93 +12,37 @@ const Customers = () => {
 
   const creatorShopId = getCreatorShopId();
   const navigate = useNavigate();
+  
+  useEffect(() => {
+    if (creatorShopId == null) navigate("/restaurant/login");
+  }, []);
+  
+  const [users, setUsers] = useState(null);
 
   useEffect(() => {
-      if (creatorShopId == null) navigate("/restaurant/login");
+    const fetchData = async () => {
+      try {
+        if (!creatorShopId) {
+          console.error("creatorShopId not available");
+          return;
+        }
+
+        const response = await fetch(`http://localhost:8000/creator/user-visit/${creatorShopId}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch data');
+        }
+        const data = await response.json();
+        setUsers(data.users);
+        console.log('Data:', data);
+
+      } catch (error) {
+        console.error('Error fetching data:', error.message);
+      }
+    };
+
+    fetchData();
   }, []);
 
-  const users = [
-    {
-      "name": "Atanu Nayak",
-      "phone": "+91 9306191179",
-      "email": "nayak.primary@gmail.com",
-      "lastOrder": "15 Jan 2024",
-      "customerTag": "Internal",
-      "isOnline": "true",
-    },
-    {
-      "name": "John Doe",
-      "phone": "+1 1234567890",
-      "email": "john.doe@example.com",
-      "lastOrder": "14 Jan 2024",
-      "customerTag": "External",
-      "isOnline": "true",
-    },
-    {
-      "name": "Alice Smith",
-      "phone": "+44 9876543210",
-      "email": "alice.smith@example.com",
-      "lastOrder": "13 Jan 2024",
-      "customerTag": "Internal",
-      "isOnline": "true",
-    },
-    {
-      "name": "Bob Johnson",
-      "phone": "+61 8765432109",
-      "email": "bob.johnson@example.com",
-      "lastOrder": "12 Jan 2024",
-      "customerTag": "External",
-      "isOnline": "true",
-    },
-    {
-      "name": "Emily White",
-      "phone": "+81 2345678901",
-      "email": "emily.white@example.com",
-      "lastOrder": "11 Jan 2024",
-      "customerTag": "Internal",
-      "isOnline": "false",
-    },
-    {
-      "name": "Michael Brown",
-      "phone": "+1 3456789012",
-      "email": "michael.brown@example.com",
-      "lastOrder": "10 Jan 2024",
-      "customerTag": "External",
-      "isOnline": "false",
-    },
-    {
-      "name": "Sophia Davis",
-      "phone": "+44 7654321098",
-      "email": "sophia.davis@example.com",
-      "lastOrder": "9 Jan 2024",
-      "customerTag": "Internal",
-      "isOnline": "false",
-    },
-    {
-      "name": "David Wilson",
-      "phone": "+61 9876543210",
-      "email": "david.wilson@example.com",
-      "lastOrder": "8 Jan 2024",
-      "customerTag": "External",
-      "isOnline": "false",
-    },
-    {
-      "name": "Olivia Miller",
-      "phone": "+81 8765432109",
-      "email": "olivia.miller@example.com",
-      "lastOrder": "7 Jan 2024",
-      "customerTag": "Internal",
-      "isOnline": "false",
-    },
-    {
-      "name": "Daniel Turner",
-      "phone": "+1 9876543210",
-      "email": "daniel.turner@example.com",
-      "lastOrder": "6 Jan 2024",
-      "customerTag": "External",
-      "isOnline": "false",
-    }
-  ];
 
   return (
     <Container>
@@ -130,7 +74,7 @@ const Customers = () => {
             Tag
           </div>
         </div>
-        {users.map((user, index) => (
+        {users && users.map((user, index) => (
           <div key={index} className={`row${index % 2 === 1 ? ' alternate' : ''}`}>
             {
               user.isOnline == "true" ? (
@@ -139,12 +83,16 @@ const Customers = () => {
                 </div>
               ) : null
             }
-            <div className="box name">{user.name}</div>
-            <div className="box phone-no">{user.phone}</div>
-            <div className="box email">{user.email}</div>
-            <div className="box last-order">{user.lastOrder}</div>
+            <div className="box name">{user.userName}</div>
+            <div className="box phone-no">{user.userPhone}</div>
+            <div className="box email">{user.userEmail}</div>
+            <div className="box last-order">{new Date(user.lastVisit).toLocaleDateString('en-US', {
+                      day: 'numeric',
+                      month: 'short',
+                      year: 'numeric'
+                    })}</div>
             <div className="box customer-tag">
-              <div className="tag">{user.customerTag}</div>
+              <div className="tag">External</div>
             </div>
           </div>
         ))}
