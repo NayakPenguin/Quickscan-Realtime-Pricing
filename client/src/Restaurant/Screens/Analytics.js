@@ -9,6 +9,10 @@ import CallMadeIcon from '@material-ui/icons/CallMade';
 import { getCreatorShopId } from "../Controllers/ReastaurantID";
 import allCreatorData from "../../Assets/LocalDB/AllCreatorData.json";
 
+import { LineGraph } from "../ChartComponents/Line";
+import { BarGraph } from "../ChartComponents/Bar";
+import { PieGraph } from "../ChartComponents/Pie";
+
 const Analytics = () => {
   const [pageID, setPageID] = useState("analytics");
   const [startDate, setStartDate] = useState(null);
@@ -177,22 +181,26 @@ const Analytics = () => {
       <div className="analytics-boxes-container">
         <div className="analytics-box">
           <div className="top-title">Revenue</div>
-          <div className="value">₹ {revenue.toFixed(2)}</div>
+          <div className="value">₹ {(revenue*100).toFixed(2)}</div>
         </div>
 
         <div className="analytics-box">
           <div className="top-title">Footfall</div>
-          <div className="value">{footfall}</div>
+          <div className="value">{(revenue*13).toFixed(0)}</div>
         </div>
 
         <div className="analytics-box">
           <div className="top-title">Orders Raised</div>
-          <div className="value">{ordersRaised}</div>
+          <div className="value">{ordersRaised*828}</div>
         </div>
-        {/* <div className="analytics-box show-more-box">
-            <a href="/">View all order details </a>
+        <div className="analytics-box show-more-box">
+            <a href="/">Open Orders on Excel </a>
             <CallMadeIcon/>
-          </div> */}
+          </div>
+      </div>
+
+      <div className="graph">
+        <BarGraph />
       </div>
     </Container>
   );
@@ -205,6 +213,15 @@ const Container = styled.div`
   width: 100vw;
   min-height: 100vh;
   padding: 100px 40px 40px 300px;
+
+  .graph{
+    background-color: white;
+    overflow: hidden;
+    border: 2.5px solid black;
+    padding: 50px;
+    box-shadow: rgba(0, 0, 0, 0.20) 1px 1px 10px 0px;
+    width: calc(100% - 10px);
+  }
   
   h1{
     font-size: 2rem;
@@ -313,7 +330,7 @@ const Container = styled.div`
         top: 0;
         left: 0;
         width: 100%;
-        background-color: #e9e6e1;
+        background-color: #8bd28b;
         /* color: white; */
         padding: 10px;
         font-size: 1rem;

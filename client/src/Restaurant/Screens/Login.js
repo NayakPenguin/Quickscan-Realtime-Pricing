@@ -103,7 +103,7 @@ const Login = () => {
         <Container>
             <Navbar >
                 <div className="left">
-                    <img src="https://live.staticflickr.com/65535/49816898282_e611b8f730_b.jpg" alt="" />
+                    <img src="https://static.vecteezy.com/system/resources/previews/023/870/096/non_2x/cute-coffee-cup-kawaii-icon-logo-illustration-free-png.png" alt="" />
                 </div>
                 <div className="right">
                     <a href="/" className="normal-link">
