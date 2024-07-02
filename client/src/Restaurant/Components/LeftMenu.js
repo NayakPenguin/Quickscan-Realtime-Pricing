@@ -25,7 +25,7 @@ const LeftMenu = ({ pageID }) => {
           </a>
         ))}
       </div>
-      <div className="bottom">Slurp.in V.20</div>
+      <div className="bottom">QuickScan V.20</div>
     </Container>
   );
 };

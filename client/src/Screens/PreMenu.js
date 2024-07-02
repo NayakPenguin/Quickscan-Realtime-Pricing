@@ -203,7 +203,7 @@ const PreMenu = () => {
             <div className="bottom-img">
             </div>
             <div className="bottom">
-                Powered by <br /> <b>slurp.in</b>
+                Developed by <br /> <b>Atanu Nayak</b>
             </div>
         </Container>
     )

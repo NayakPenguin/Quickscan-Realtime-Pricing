@@ -23,13 +23,13 @@ import { getCreatorShopId } from "../Controllers/ReastaurantID";
 const TableManagment = () => {
   const pageID = "table-management";
   const [boxesPerRow, setBoxesPerRow] = useState(calculateBoxesPerRow());
+
+
+  const creatorShopId = getCreatorShopId();
   const navigate = useNavigate();
 
-  var creatorShopId = null;
-
   useEffect(() => {
-    creatorShopId = getCreatorShopId();
-    if (creatorShopId == null) navigate("/restaurant/login");
+      if (creatorShopId == null) navigate("/restaurant/login");
   }, []);
 
   const [showQR, setShowQR] = useState(false);

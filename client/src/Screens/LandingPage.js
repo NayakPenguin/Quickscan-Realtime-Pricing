@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import img1 from "../Assets/Images/img1.png"
+import img2 from "../Assets/Images/img2.png"
 
 // Material Ui Icons
 import CallMadeIcon from '@material-ui/icons/CallMade';
@@ -256,16 +257,16 @@ const LandingPage = () => {
       </PreMenu>
       <Navbar visible={visible}>
         <div className="left">
-          <img src="https://live.staticflickr.com/65535/49816898282_e611b8f730_b.jpg" alt="" />
+          <img src="https://static.vecteezy.com/system/resources/previews/023/870/096/non_2x/cute-coffee-cup-kawaii-icon-logo-illustration-free-png.png" alt="" />
         </div>
         <div className="right">
-          <a href="/restaurant-login" className="login-btn">Restaurant Login <CallMadeIcon /></a>
+          <a href="/restaurant/login" className="login-btn">Restaurant Login <CallMadeIcon /></a>
         </div>
       </Navbar>
       <Page>
         <div className="left">
-          <h1>Instant cloud development</h1>
-          <p>CodeSandbox gives you 24/7 collaborative cloud development environments (CDEs) that resume in 2 seconds.</p>
+          <h1>Quickscan <br /> Realtime Pricing</h1>
+          <p>Welcome to the future of dining! Our innovative QR-code based menus not only enhance your customer's experience but also streamline your restaurant's operations with AI!</p>
           <img className="only-phone-image" src={img1} alt="" />
           <div className="btns">
             <div className="join-us-btn">
@@ -278,14 +279,14 @@ const LandingPage = () => {
         </div>
         <div className="right">
           {/* <img src="https://qrfy.com/static/media/concepts.326302a8a527031eb92b.webp" alt="" /> */}
-          <img src="https://creazilla-store.fra1.digitaloceanspaces.com/icons/3210540/qrcode-icon-md.png" alt="" />
+          <img src={img2} alt="" />
         </div>
         <div className="downarrowdancer">
           <ExpandMoreIcon />
         </div>
       </Page>
       <Page2>
-        <h1>Slurp Features</h1>
+        <h1>QuickScan Features</h1>
         <div className="super-screen-holder">
           <div className="screens-holder">
             {screensData.map((screen, index) => (
@@ -305,7 +306,7 @@ const LandingPage = () => {
       </Page3>
       <Footer>
           <div className="caution-text">
-            *Our advanced QR technology ensures a safe and secure dining experience for your patrons, with encrypted data transmission and robust security measures in place. With Slurp, prioritize both efficiency and peace of mind, knowing that your customers' safety is always our top priority.
+            *Our advanced QR technology ensures a safe and secure dining experience for your patrons, with encrypted data transmission and robust security measures in place. With QuickScan, prioritize both efficiency and peace of mind, knowing that your customers' safety is always our top priority.
           </div>
           <div className="bottom">
             <div className="links">
@@ -459,6 +460,8 @@ const Page = styled.div`
         img{
             height: 400px;
             margin-left: -50px;
+            border-radius: 100%;
+            border: 5px solid black;
         }
     }
     

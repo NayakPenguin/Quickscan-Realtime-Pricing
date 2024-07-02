@@ -60,7 +60,7 @@ const QRCodeModal = ({setShowQR, qrTableNo}) => {
     };
 
     useEffect(() => {
-        const newValue = `https://slurp-client.web.app/qrscan/${qrTableNo.tableNo}`;
+        const newValue = `https://quickscan-alpha-v1.web.app/qrscan/${qrTableNo.tableNo}`;
         setValue(newValue);
         console.log(qrTableNo.tableNo);
         console.log(newValue);
