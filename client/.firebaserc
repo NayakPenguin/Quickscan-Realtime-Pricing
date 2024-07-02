@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "slurp-client"
-  }
+    "default": "slurp-client",
+    "staging": "quickscan-alpha-v1"
+  },
+  "targets": {},
+  "etags": {}
 }
