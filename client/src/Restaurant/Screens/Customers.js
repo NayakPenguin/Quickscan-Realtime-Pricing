@@ -27,7 +27,7 @@ const Customers = () => {
           return;
         }
 
-        const response = await fetch(`http://localhost:8000/creator/user-visit/${creatorShopId}`);
+        const response = await fetch(`http://ec2-15-206-82-121.ap-south-1.compute.amazonaws.com:9000/creator/user-visit/${creatorShopId}`);
         if (!response.ok) {
           throw new Error('Failed to fetch data');
         }

@@ -14,6 +14,7 @@ const PreMenu = () => {
     const [loading, setLoading] = useState(false);
     const [otp, setOtp] = useState(['', '', '', '', '', '']);
     const inputRefs = useRef([]);
+    const [backendOTP, setBackendOTP] = useState(null);
     
     const navigate = useNavigate();
     const { creatorShopId, scanId } = useParams();
@@ -51,7 +52,7 @@ const PreMenu = () => {
         };
     
         try {
-            const response = await fetch('http://localhost:8000/last-visit/add-visit', {
+            const response = await fetch('http://ec2-15-206-82-121.ap-south-1.compute.amazonaws.com:9000/last-visit/add-visit', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -92,11 +93,13 @@ const PreMenu = () => {
         try {
             const userId = `customer@${cleanedMobile}`;
 
-            const response = await axios.post("http://localhost:8000/otp/get-otp", {
+            const response = await axios.post("http://ec2-15-206-82-121.ap-south-1.compute.amazonaws.com:9000/otp/get-otp", {
                 userId: userId
             });
 
             console.log(response.data);
+            setBackendOTP(response.data.otp);
+
         } catch (error) {
             console.error('Error fetching OTP:', error);
         } finally {
@@ -109,7 +112,7 @@ const PreMenu = () => {
         const userOTP = otp.join('');
     
         try {
-            const response = await axios.post("http://localhost:8000/otp/verify-otp", {
+            const response = await axios.post("http://ec2-15-206-82-121.ap-south-1.compute.amazonaws.com:9000/otp/verify-otp", {
                 userId: `customer@${mobile.replace(/\s/g, '')}`,
                 userName: name.trim(),
                 userPhone: mobile.replace(/\s/g, ''),
@@ -157,6 +160,13 @@ const PreMenu = () => {
 
     return (
         <Container>
+            {
+                backendOTP != null ?
+                <Error>
+                    <p className="big-otp">{backendOTP}</p>
+                    We apologize for the inconvenience. The Twilio credits for the WhatsApp API provider platform have expired. Please use <span>{backendOTP}</span> as your OTP.
+                </Error> : null
+            }
             <div className="top">
                 <h1>Hello,</h1>
             </div>
@@ -362,5 +372,30 @@ const Container = styled.div`
             font-size: 1.5rem;
             font-weight: 600;
         }
+    }
+`
+
+const Error = styled.div`
+    position: fixed;
+    top: 20px;
+    right: 0;
+    width: calc(100vw - 20px);
+    min-height: 60px;
+    background-color: #ea5f5f;
+
+    font-size: 0.85rem;
+    padding: 10px;
+    color: white;
+    font-weight: 200;
+
+    span{
+        font-weight: 600;
+        color: white;
+    }
+
+    .big-otp{
+        font-size: 1.25rem;
+        color: yellowgreen;
+        font-weight: 600;
     }
 `
