@@ -24,7 +24,6 @@ const TableManagment = () => {
   const pageID = "table-management";
   const [boxesPerRow, setBoxesPerRow] = useState(calculateBoxesPerRow());
 
-
   const creatorShopId = getCreatorShopId();
   const navigate = useNavigate();
 
@@ -462,7 +461,7 @@ const TableManagment = () => {
       <LeftMenu pageID={pageID} />
       <Navbar />
 
-      {showQR ? <QRCodeModal setShowQR={setShowQR} qrTableNo={qrTableNo} /> : null}
+      {showQR ? <QRCodeModal setShowQR={setShowQR} creatorShopId={creatorShopId} qrTableNo={qrTableNo} /> : null}
 
       <h1>Table Managment</h1>
 

@@ -48,7 +48,7 @@ app.get("/protected", authenticateJWT, (req, res) => {
   res.json({ message: "Protected route accessed", user: req.user });
 });
 
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 9000;
 
 app.listen(port, "0.0.0.0", (err) => {
   if (err) {

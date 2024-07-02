@@ -9,14 +9,14 @@ const LeftMenu = ({ pageID }) => {
     { name: "Orders", id: "orders", url: "orders" },
     { name: "Menu Status Control", id: "menu-status-control", url: "menu-status-control" },
     { name: "KOT Updates", id: "kot-updates", url: "kot-updates" },
-    { name: "Customers", id: "customers", url: "customers" },
+    // { name: "Customers", id: "customers", url: "customers" },
     { name: "Analytics", id: "analytics", url: "analytics" },
   ];
 
   return (
     <Container>
       <div className="top">
-        <img src="https://live.staticflickr.com/65535/49816898282_e611b8f730_b.jpg" alt="" />
+        <img src="https://static.vecteezy.com/system/resources/previews/023/870/096/non_2x/cute-coffee-cup-kawaii-icon-logo-illustration-free-png.png" alt="" />
       </div>
       <div className="middle">
         {menuItems.map((item, index) => (

@@ -25,8 +25,10 @@ const loginCreator = async (req, res) => {
         const token = jwt.sign(
             { creatorId: creator._id, creatorShopId: creator.creatorShopId },
             process.env.JWT_SECRET,
-            { expiresIn: '22h' }
+            { expiresIn: '10y' }
         );
+
+        const decoded = jwt.decode(token);
 
         res.status(200).json({ success: true, token });
     } catch (error) {

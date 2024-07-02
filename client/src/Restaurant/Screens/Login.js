@@ -88,6 +88,16 @@ const Login = () => {
         }
     };
 
+    const handleLoginTest = async () => {
+        const dummyToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjcmVhdG9ySWQiOiI2NjVjYTAxMWQ5MGE1MGNiN2Y0MjVmOWUiLCJjcmVhdG9yU2hvcElkIjoiQnJkd3lLb2wiLCJpYXQiOjE3MTk5MzE5NjMsImV4cCI6MjAzNTUwNzk2M30.-uLCiWyDIwxJ-EvDTFmewlo0Iyk40WU6Kdvh3AhiX-8";
+        
+        localStorage.setItem('creatorToken', dummyToken);
+
+        const decodedHeader = await jwtDecode(dummyToken);
+
+        navigate(`/restaurant/${decodedHeader.creatorShopId}/table-management`);
+    }   
+
 
     return (
         <Container>
@@ -129,6 +139,9 @@ const Login = () => {
                 <a href="/" className="two-fact-auth-req-link">Request 2FA to enhance security measures.</a>
                 <div className="login-btn" onClick={() => handleLogin()}>
                     Login
+                </div>
+                <div className="login-btn test" onClick={() => handleLoginTest()}>
+                    Login as Test User
                 </div>
             </Form>
             <div className="bottom">
@@ -311,5 +324,9 @@ const Form = styled.div`
         margin-top: 15px;
         font-size: 0.85rem;
         cursor: pointer;
+    }
+
+    .test{
+        background-color: orange;
     }
 `

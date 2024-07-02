@@ -4,7 +4,7 @@ import qrImage from '../../DummyDB/demo_qr2.png'
 import QRCode from 'react-qr-code';
 import {QRCodeSVG} from 'qrcode.react';
 
-const QRCodeModal = ({setShowQR, qrTableNo}) => {
+const QRCodeModal = ({setShowQR, creatorShopId, qrTableNo}) => {
     const [back, setBack] = useState('#FFFFFF');
     const [fore, setFore] = useState('#000000');
     const [size, setSize] = useState(null);
@@ -60,8 +60,10 @@ const QRCodeModal = ({setShowQR, qrTableNo}) => {
     };
 
     useEffect(() => {
-        const newValue = `https://quickscan-alpha-v1.web.app/qrscan/${qrTableNo.tableNo}`;
+        const newValue = `https://quickscan-alpha-v1.web.app/qrscan/${creatorShopId}/${qrTableNo.tableNo}`;
         setValue(newValue);
+        
+        console.log(creatorShopId);
         console.log(qrTableNo.tableNo);
         console.log(newValue);
     }, [qrTableNo])
@@ -73,7 +75,7 @@ const QRCodeModal = ({setShowQR, qrTableNo}) => {
             </div>
             <div className="main-container">
                 <div className="qr-code-container">
-                    {qrTableNo && (
+                    {qrTableNo && creatorShopId && (
                         <QRCode
                             value={value}
                             size={size === '' ? 0 : size}
