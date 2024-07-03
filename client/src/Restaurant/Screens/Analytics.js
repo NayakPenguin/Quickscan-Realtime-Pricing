@@ -358,16 +358,16 @@ const Container = styled.div`
       
       a{
         text-decoration: none;
+        color: black;
         font-size: 0.85rem;
-        text-transform: uppercase;
-        letter-spacing: 0.07rem;
+        /* text-transform: uppercase; */
+        /* letter-spacing: 0.07rem; */
         font-weight: 500;
       }
 
       svg{
         font-size: 1rem;
         margin-left: 5px;
-        fill: cornflowerblue;
       }
     }
   }

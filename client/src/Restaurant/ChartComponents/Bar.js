@@ -42,16 +42,29 @@ export const BarGraph = () => {
 
   // Random prices for demonstration
   const randomPrices = [
-    8.99, 17.99, 15.99, 14.99, 7.99, 16.99, 14.99, 10.99, 10.99, 11.99, 15.99, 13.99, 12.99, 8.99, 9.99, 16.99
+    8.99, 17.99, 15.99, 14.99, 7.99, 16.99, 14.99, 10.99, 10.99, 11.99, 15.99, 13.99, 12.99, 8.99, 9.99, 16.99, 8.99, 22.50
   ];
 
   const barChartData = {
     labels: [
-      "Spinach and Feta Salad", "Steak Fajitas", "Shrimp Scampi", "Vegetarian Sushi",
-      "Caprese Salad", "Tomato Basil Bruschetta", "Lemon Garlic Butter Shrimp",
-      "Beef and Broccoli Stir-Fry", "Quinoa and Roasted Vegetables", "Margherita Pizza",
-      "Beef Tacos", "Teriyaki Glazed Salmon", "BBQ Pulled Pork Sandwich", "Chicken Alfredo Pasta",
-      "Greek Salad", "Pesto Pasta", "Grilled Salmon"
+      "Butter Chicken",
+      "Paneer Tikka",
+      "Fish Curry",
+      "Vegetable Biryani",
+      "Chicken Tandoori",
+      "Prawn Masala",
+      "Palak Paneer",
+      "Dal Makhani",
+      "Mutton Rogan Josh",
+      "Masala Dosa",
+      "Chicken Biryani",
+      "Aloo Gobi",
+      "Keema Pav",
+      "Chole Bhature",
+      "Chicken Tikka Salad",
+      "Pesto Pasta",
+      "Tandoori Salmon",
+      "Greek Salad"
     ],
     datasets: [
       {
