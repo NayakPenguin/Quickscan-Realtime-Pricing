@@ -59,7 +59,7 @@ const Login = () => {
     
             console.log(loginDoc);
     
-            const response = await fetch('http://ec2-15-206-82-121.ap-south-1.compute.amazonaws.com:9000/creator/verify-login', {
+            const response = await fetch('https://quickscan.tonmoy1912.in/creator/verify-login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

@@ -52,7 +52,7 @@ const PreMenu = () => {
         };
     
         try {
-            const response = await fetch('http://ec2-15-206-82-121.ap-south-1.compute.amazonaws.com:9000/last-visit/add-visit', {
+            const response = await fetch('https://quickscan.tonmoy1912.in/last-visit/add-visit', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -93,7 +93,7 @@ const PreMenu = () => {
         try {
             const userId = `customer@${cleanedMobile}`;
 
-            const response = await axios.post("http://ec2-15-206-82-121.ap-south-1.compute.amazonaws.com:9000/otp/get-otp", {
+            const response = await axios.post("https://quickscan.tonmoy1912.in/otp/get-otp", {
                 userId: userId
             });
 
@@ -112,7 +112,7 @@ const PreMenu = () => {
         const userOTP = otp.join('');
     
         try {
-            const response = await axios.post("http://ec2-15-206-82-121.ap-south-1.compute.amazonaws.com:9000/otp/verify-otp", {
+            const response = await axios.post("https://quickscan.tonmoy1912.in/otp/verify-otp", {
                 userId: `customer@${mobile.replace(/\s/g, '')}`,
                 userName: name.trim(),
                 userPhone: mobile.replace(/\s/g, ''),

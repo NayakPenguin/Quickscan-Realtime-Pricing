@@ -369,7 +369,7 @@ const BottomNav = ({ menuData, currPage, realTimeOrderedItemCount }) => {
     const pushToMongoDB = async (mongoDoc) => {
         console.log("mongoDoc : ", mongoDoc);
         try {
-            const response = await fetch('http://ec2-15-206-82-121.ap-south-1.compute.amazonaws.com:9000/order/create', {
+            const response = await fetch('https://quickscan.tonmoy1912.in/order/create', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

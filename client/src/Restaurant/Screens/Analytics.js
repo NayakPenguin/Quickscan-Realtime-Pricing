@@ -44,7 +44,7 @@ const Analytics = () => {
         return;
       }
 
-      const response = await fetch(`http://ec2-15-206-82-121.ap-south-1.compute.amazonaws.com:9000/creator/user-visit/${creatorShopId}`);
+      const response = await fetch(`https://quickscan.tonmoy1912.in/creator/user-visit/${creatorShopId}`);
       if (!response.ok) {
         throw new Error('Failed to fetch data');
       }
@@ -52,7 +52,7 @@ const Analytics = () => {
       console.log('users :', data);
       setUsers(data.users);
 
-      const response2 = await fetch(`http://ec2-15-206-82-121.ap-south-1.compute.amazonaws.com:9000/order/byCreatorShopId/${creatorShopId}`);
+      const response2 = await fetch(`https://quickscan.tonmoy1912.in/order/byCreatorShopId/${creatorShopId}`);
       if (!response2.ok) {
         throw new Error('Failed to fetch data');
       }
