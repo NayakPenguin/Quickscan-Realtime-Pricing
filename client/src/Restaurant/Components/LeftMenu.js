@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 const LeftMenu = ({ pageID }) => {
-  const creatorShopId = "BrdwyKol";
+  const creatorShopId = "WindsorDel";
 
   const menuItems = [
     { name: "Table Management", id: "table-management", url: "table-management" },

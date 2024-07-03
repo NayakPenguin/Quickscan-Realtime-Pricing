@@ -1,7 +1,7 @@
 import { jwtDecode } from "jwt-decode";
 
 const getCreatorShopId = () => {
-    console.log("Hi you hit me up!");
+    // console.log("Hi you hit me up!");
     const token = localStorage.getItem("creatorToken");
 
     if (!token) {
@@ -24,6 +24,7 @@ const getCreatorShopId = () => {
             return null;
         }
         else{
+            console.log(decodedToken.creatorShopId);
             return decodedToken.creatorShopId;
         }
 
