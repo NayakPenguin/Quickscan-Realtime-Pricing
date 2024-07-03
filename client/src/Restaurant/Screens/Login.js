@@ -89,7 +89,7 @@ const Login = () => {
     };
 
     const handleLoginTest = async () => {
-        const dummyToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjcmVhdG9ySWQiOiI2NjVjYTAxMWQ5MGE1MGNiN2Y0MjVmOWUiLCJjcmVhdG9yU2hvcElkIjoiQnJkd3lLb2wiLCJpYXQiOjE3MTk5MzE5NjMsImV4cCI6MjAzNTUwNzk2M30.-uLCiWyDIwxJ-EvDTFmewlo0Iyk40WU6Kdvh3AhiX-8";
+        const dummyToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjcmVhdG9ySWQiOiI2Njg1MzllZjBhOWYzNTc5ZTYyNjA5MGUiLCJjcmVhdG9yU2hvcElkIjoiV2luZHNvckRlbCIsImlhdCI6MTcyMDAwNzc4OSwiZXhwIjoyMDM1NTgzNzg5fQ.HTOC39TWmaQgQ6LMrOG4_OKJIx1nrMg4-5KHF5MJ6B8";
         
         localStorage.setItem('creatorToken', dummyToken);
 

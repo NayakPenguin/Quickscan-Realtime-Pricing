@@ -2,73 +2,65 @@
   {
     "index_order": 1,
     "type": "Non-veg",
-    "name": "Chicken Alfredo Pasta",
+    "name": "Butter Chicken",
     "allow_visibility": true,
     "unavailable": false,
-    "price": 12.99,
+    "price": 350,
     "discount": "",
     "tag": "Top Seller 🔥",
     "details": [],
     "details_options": [],
     "ordered": false,
-    "category": "Tea, coffee & Snacks"
+    "category": "Main Course"
   },
   {
     "index_order": 2,
     "type": "Veg",
-    "name": "Margherita Pizza",
+    "name": "Paneer Tikka",
     "allow_visibility": true,
     "unavailable": false,
-    "price": 10.99,
+    "price": 250,
     "discount": "10",
     "tag": "",
-    "category": "Tea, coffee & Snacks",
+    "category": "Starters",
     "details_options": [
       {
-        "options": ["Small", "Medium", "Large"],
-        "extra": [0, 2, 4]
-      },
-      {
-        "options": ["Thin Crust", "Stuffed"],
-        "extra": [0, 1.5]
-      },
-      {
-        "options": ["Low", "Indian", "WB"],
-        "extra": [0, 1.5, 9]
+        "options": ["Regular", "Spicy"],
+        "extra": [0, 20]
       }
     ],
-    "details": ["Size", "Pizza Crust", "Salt"],
+    "details": ["Spice Level"],
     "ordered": false
   },
   {
     "index_order": 3,
-    "type": "Veg",
-    "name": "Grilled Salmon",
+    "type": "Non-veg",
+    "name": "Fish Curry",
     "allow_visibility": true,
     "unavailable": false,
-    "price": 16.99,
+    "price": 400,
     "discount": "",
     "tag": "",
     "details": [],
-    "category": "Tea, coffee & Snacks",
+    "category": "Main Course",
     "details_options": [],
     "ordered": false
   },
   {
     "index_order": 4,
     "type": "Veg",
-    "name": "Vegetarian Sushi",
+    "name": "Vegetable Biryani",
     "allow_visibility": true,
     "unavailable": false,
-    "price": 14.99,
+    "price": 200,
     "discount": "",
     "tag": "Top Seller 🔥",
-    "category": "Tea, coffee & Snacks",
-    "details": ["Number of Pieces"],
+    "category": "Main Course",
+    "details": ["Serving Size"],
     "details_options": [
       {
-        "options": ["6", "8", "12"],
-        "extra": [0, 2, 4]
+        "options": ["Regular", "Large"],
+        "extra": [0, 50]
       }
     ],
     "ordered": false
@@ -76,18 +68,18 @@
   {
     "index_order": 5,
     "type": "Non-veg",
-    "name": "Beef Tacos",
+    "name": "Chicken Tandoori",
     "allow_visibility": true,
     "unavailable": false,
-    "price": 11.99,
+    "price": 300,
     "discount": "10",
     "tag": "Few Left ⏰",
-    "details": ["Spiciness Level"],
-    "category": "Tea, coffee & Snacks",
+    "details": ["Spice Level"],
+    "category": "Starters",
     "details_options": [
       {
         "options": ["Mild", "Medium", "Hot"],
-        "extra": [0, 1, 2]
+        "extra": [0, 20, 40]
       }
     ],
     "ordered": false
@@ -95,18 +87,18 @@
   {
     "index_order": 6,
     "type": "Non-veg",
-    "name": "Shrimp Scampi",
+    "name": "Prawn Masala",
     "allow_visibility": true,
     "unavailable": false,
-    "price": 15.99,
+    "price": 450,
     "discount": "",
     "tag": "",
-    "category": "Breakfast Delights",
-    "details": ["Garlic Bread"],
+    "category": "Main Course",
+    "details": ["Garlic Naan"],
     "details_options": [
       {
         "options": ["Yes", "No"],
-        "extra": [0, 1]
+        "extra": [0, 30]
       }
     ],
     "ordered": false
@@ -114,18 +106,18 @@
   {
     "index_order": 7,
     "type": "Veg",
-    "name": "Spinach and Feta Salad",
+    "name": "Palak Paneer",
     "allow_visibility": true,
     "unavailable": false,
-    "price": 8.99,
+    "price": 220,
     "discount": "",
     "tag": "",
     "details": ["Dressing"],
-    "category": "Breakfast Delights",
+    "category": "Main Course",
     "details_options": [
       {
-        "options": ["Balsamic Vinaigrette", "Ranch", "Italian"],
-        "extra": [0, 0, 0]
+        "options": ["Cream", "No Cream"],
+        "extra": [0, 20]
       }
     ],
     "ordered": false
@@ -133,18 +125,18 @@
   {
     "index_order": 8,
     "type": "Veg",
-    "name": "Eggplant Parmesan",
+    "name": "Dal Makhani",
     "allow_visibility": true,
     "unavailable": false,
-    "price": 9.99,
+    "price": 180,
     "discount": "",
     "tag": "",
-    "details": ["Cheese Type"],
-    "category": "Breakfast Delights",
+    "details": ["Butter"],
+    "category": "Main Course",
     "details_options": [
       {
-        "options": ["Mozzarella", "Parmesan", "Cheddar"],
-        "extra": [0, 1, 2]
+        "options": ["With Butter", "Without Butter"],
+        "extra": [0, 20]
       }
     ],
     "ordered": false
@@ -152,18 +144,18 @@
   {
     "index_order": 9,
     "type": "Non-veg",
-    "name": "BBQ Pulled Pork Sandwich",
+    "name": "Mutton Rogan Josh",
     "allow_visibility": true,
     "unavailable": false,
-    "price": 13.99,
+    "price": 500,
     "discount": "",
     "tag": "",
     "details": ["Side Dish"],
-    "category": "Breakfast Delights",
+    "category": "Main Course",
     "details_options": [
       {
-        "options": ["Fries", "Coleslaw", "Mixed Vegetables"],
-        "extra": [0, 1, 2]
+        "options": ["Rice", "Naan", "Roti"],
+        "extra": [0, 30, 20]
       }
     ],
     "ordered": false
@@ -171,18 +163,18 @@
   {
     "index_order": 10,
     "type": "Veg",
-    "name": "Caprese Salad",
+    "name": "Masala Dosa",
     "allow_visibility": true,
     "unavailable": false,
-    "price": 7.99,
+    "price": 100,
     "discount": "",
     "tag": "",
-    "category": "Healthy Salads",
-    "details": ["Tomato Type"],
+    "category": "Breakfast",
+    "details": ["Chutney Type"],
     "details_options": [
       {
-        "options": ["Roma", "Cherry", "Heirloom"],
-        "extra": [0, 1, 2]
+        "options": ["Coconut", "Tomato", "Mint"],
+        "extra": [0, 10, 10]
       }
     ],
     "ordered": false
@@ -190,18 +182,18 @@
   {
     "index_order": 11,
     "type": "Non-veg",
-    "name": "Steak Fajitas",
+    "name": "Chicken Biryani",
     "allow_visibility": true,
     "unavailable": false,
-    "price": 17.99,
+    "price": 250,
     "discount": "",
     "tag": "",
-    "category": "Healthy Salads",
+    "category": "Main Course",
     "details": ["Serving Size"],
     "details_options": [
       {
         "options": ["Single", "Double"],
-        "extra": [0, 5]
+        "extra": [0, 50]
       }
     ],
     "ordered": false
@@ -209,18 +201,18 @@
   {
     "index_order": 12,
     "type": "Veg",
-    "name": "Mushroom Risotto",
+    "name": "Aloo Gobi",
     "allow_visibility": true,
     "unavailable": false,
-    "price": 12.99,
+    "price": 150,
     "discount": "30",
     "tag": "",
-    "details": ["Mushroom Type"],
-    "category": "Healthy Salads",
+    "details": ["Spice Level"],
+    "category": "Main Course",
     "details_options": [
       {
-        "options": ["Button", "Portobello", "Shiitake"],
-        "extra": [0, 2, 4]
+        "options": ["Mild", "Medium", "Hot"],
+        "extra": [0, 10, 20]
       }
     ],
     "ordered": false
@@ -228,18 +220,18 @@
   {
     "index_order": 13,
     "type": "Non-veg",
-    "name": "Lemon Garlic Butter Shrimp",
+    "name": "Keema Pav",
     "allow_visibility": true,
     "unavailable": false,
-    "price": 16.99,
-    "category": "Healthy Salads",
+    "price": 200,
+    "category": "Starters",
     "discount": "",
     "tag": "",
     "details": ["Spiciness Level"],
     "details_options": [
       {
         "options": ["Mild", "Medium", "Hot"],
-        "extra": [0, 1, 2]
+        "extra": [0, 10, 20]
       }
     ],
     "ordered": false
@@ -247,18 +239,18 @@
   {
     "index_order": 14,
     "type": "Veg",
-    "name": "Quinoa and Roasted Vegetables",
+    "name": "Chole Bhature",
     "allow_visibility": true,
     "unavailable": false,
-    "price": 10.99,
-    "category": "Healthy Salads",
+    "price": 120,
+    "category": "Main Course",
     "discount": "",
     "tag": "",
-    "details": ["Quinoa Color"],
+    "details": ["Bhature Type"],
     "details_options": [
       {
-        "options": ["White", "Red", "Black"],
-        "extra": [0, 1, 2]
+        "options": ["Plain", "Stuffed"],
+        "extra": [0, 20]
       }
     ],
     "ordered": false
@@ -266,18 +258,18 @@
   {
     "index_order": 15,
     "type": "Non-veg",
-    "name": "Chicken Caesar Salad",
+    "name": "Chicken Tikka Salad",
     "allow_visibility": true,
     "unavailable": false,
     "category": "Healthy Salads",
-    "price": 11.99,
+    "price": 180,
     "discount": "",
     "tag": "",
     "details": ["Dressing"],
     "details_options": [
       {
         "options": ["Caesar", "Ranch"],
-        "extra": [0, 1]
+        "extra": [0, 10]
       }
     ],
     "ordered": false
@@ -289,14 +281,14 @@
     "allow_visibility": true,
     "unavailable": false,
     "category": "Healthy Salads",
-    "price": 9.99,
+    "price": 220,
     "discount": "",
     "tag": "",
     "details": ["Pasta Type"],
     "details_options": [
       {
         "options": ["Spaghetti", "Fettuccine", "Penne"],
-        "extra": [0, 1, 2]
+        "extra": [0, 20, 30]
       }
     ],
     "ordered": false
@@ -304,18 +296,18 @@
   {
     "index_order": 17,
     "type": "Non-veg",
-    "name": "Teriyaki Glazed Salmon",
+    "name": "Tandoori Salmon",
     "category": "Healthy Salads",
     "allow_visibility": true,
     "unavailable": false,
-    "price": 15.99,
+    "price": 550,
     "discount": "",
     "tag": "",
     "details": ["Serving Size"],
     "details_options": [
       {
         "options": ["Single", "Double"],
-        "extra": [0, 5]
+        "extra": [0, 100]
       }
     ],
     "ordered": false
@@ -327,52 +319,14 @@
     "allow_visibility": true,
     "unavailable": false,
     "category": "Healthy Salads",
-    "price": 8.99,
+    "price": 150,
     "discount": "",
     "tag": "",
-    "details": ["Olives Type"],
+    "details": ["Dressing"],
     "details_options": [
       {
-        "options": ["Kalamata", "Green", "Black"],
-        "extra": [0, 1, 2]
-      }
-    ],
-    "ordered": false
-  },
-  {
-    "index_order": 19,
-    "type": "Non-veg",
-    "name": "Beef and Broccoli Stir-Fry",
-    "allow_visibility": true,
-    "unavailable": false,
-    "price": 14.99,
-    "category": "Healthy Salads",
-    "discount": "",
-    "tag": "",
-    "details": ["Spiciness Level"],
-    "details_options": [
-      {
-        "options": ["Mild", "Medium", "Hot"],
-        "extra": [0, 1, 2]
-      }
-    ],
-    "ordered": false
-  },
-  {
-    "index_order": 20,
-    "type": "Veg",
-    "name": "Tomato Basil Bruschetta",
-    "allow_visibility": true,
-    "unavailable": false,
-    "price": 7.99,
-    "discount": "",
-    "category": "Healthy Salads",
-    "tag": "",
-    "details": ["Bread Type"],
-    "details_options": [
-      {
-        "options": ["Baguette", "Ciabatta", "Sourdough"],
-        "extra": [0, 1, 2]
+        "options": ["Olive Oil", "Balsamic Vinegar"],
+        "extra": [0, 10]
       }
     ],
     "ordered": false

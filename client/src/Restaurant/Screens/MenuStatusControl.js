@@ -44,6 +44,7 @@ const MenuStatusControl = () => {
 
     useEffect(() => {
         if (creatorShopId == null) navigate("/restaurant/login");
+        console.log(creatorShopId);
     }, []);
 
     const menuCollectionRef = collection(db, `Menu${creatorShopId}`);
@@ -96,6 +97,7 @@ const MenuStatusControl = () => {
                 });
 
                 setMenuDataObject(categoryMap);
+                console.log(categoryMap);
             } catch (error) {
                 console.log(error);
             }
