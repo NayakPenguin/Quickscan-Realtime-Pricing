@@ -6,6 +6,9 @@ import axios from 'axios';
 import { isAuthenticated } from '../Controllers/IsAuthenticated';
 import { getUserId } from '../Controllers/UserInfo';
 
+import { db } from "../firebase";
+import { collection, getDocs, addDoc, query, where, updateDoc, onSnapshot, doc } from "firebase/firestore";
+
 const PreMenu = () => {
     const [name, setName] = useState("");
     const [mobile, setMobile] = useState("");
@@ -18,15 +21,17 @@ const PreMenu = () => {
     
     const navigate = useNavigate();
     const { creatorShopId, scanId } = useParams();
+    console.log(scanId);
 
     useEffect(() => {
+        console.log(scanId);
         const checkAndNavigate = async () => {
             if (creatorShopId && scanId) {
                 localStorage.setItem('creatorShopId', creatorShopId);
                 localStorage.setItem('scanId', scanId);
 
                 if (isAuthenticated()) {
-                    await PushVisit(creatorShopId);
+                    await PushVisit(creatorShopId, scanId);
                     navigate("/restaurant/menu");
                 }
             }
@@ -35,7 +40,9 @@ const PreMenu = () => {
         checkAndNavigate();
     }, [creatorShopId, scanId, navigate]);
 
-    const PushVisit = async (creatorShopId) => {
+    const PushVisit = async (creatorShopId, scanId) => {
+        await handleCreateSession();
+
         const userDetails = getUserId();
     
         if (!userDetails || !userDetails.userId) {
@@ -70,6 +77,37 @@ const PreMenu = () => {
             console.error('Error pushing visit data:', error.message);
         }
     };
+
+    const handleCreateSession = async () => {
+        const tableNo = scanId; // Assuming scanId is the table number
+        console.log("handleCreateSession-tableId: ", tableNo);
+        
+        try {
+            const q = query(collection(db, 'TablesWindsorDel'), where('tableNo', '==', tableNo));
+            const querySnapshot = await getDocs(q);
+            
+            if (querySnapshot.empty) {
+                console.log('No matching documents.');
+                return;
+            }
+            
+            querySnapshot.forEach(async (docSnapshot) => {
+                const tableRef = doc(db, 'TablesWindsorDel', docSnapshot.id);
+                console.log("Document Reference: ", tableRef.path);
+                
+                await updateDoc(tableRef, {
+                    status: "occ",
+                    sessionStartTime: new Date(),
+            });
+      
+            console.log('Session created successfully!');
+          });
+      
+        } catch (error) {
+          console.error('Error creating session:', error);
+        }
+      };
+      
 
     const handleOpenOTP = async () => {
         if (!name.trim()) {
@@ -127,6 +165,11 @@ const PreMenu = () => {
                 localStorage.setItem('token', token);
                 localStorage.setItem('name',  name.trim());
                 localStorage.setItem('mobile', mobile.replace(/\s/g, ''));
+                localStorage.setItem('creatorShopId', creatorShopId);
+                localStorage.setItem('scanId', scanId);
+
+                await PushVisit();
+
                 console.log(message);
                 navigate("/restaurant/menu");
             } else {
