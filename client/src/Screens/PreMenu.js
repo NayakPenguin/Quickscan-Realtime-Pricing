@@ -207,7 +207,8 @@ const PreMenu = () => {
                 backendOTP != null ?
                 <Error>
                     <p className="big-otp">{backendOTP}</p>
-                    {/* We apologize for the inconvenience. The Twilio credits for the WhatsApp API provider platform have expired. Please use <span>{backendOTP}</span> as your OTP. */}
+                    {/* This OTP is also sent to your Whatsapp. */}
+                    We apologize for the inconvenience. The Twilio credits for the WhatsApp API provider platform have expired. Please use <span>{backendOTP}</span> as your OTP.
                 </Error> : null
             }
             <div className="top">
